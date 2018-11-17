@@ -5,7 +5,7 @@ import FiltersStore from "./FiltersStore";
 import ProfilesStore from "./ProfilesStore";
 import SearchStore from "./SearchStore";
 import OptionsStore from "./OptionsStore";
-import ExplorerStore from "./ExplorerStore";
+import ExplorerStore from "./Explorer/ExplorerStore";
 import ProfileEditorStore from "./ProfileEditorStore";
 import TrackersStore from "./TrackersStore";
 import EditorStore from "./EditorStore";

@@ -2,7 +2,7 @@ import getLogger from "./getLogger";
 import {destroy} from "mobx-state-tree";
 import getExplorerModulesJson from "./getExplorerModulesJson";
 import loadLocalExplorerModule from "./loadLocalExplorerModule";
-import {ExplorerModuleStore} from "../stores/ExplorerStore";
+import {ExplorerModuleStore} from "../stores/Explorer/ExplorerStore";
 
 const compareVersions = require('compare-versions');
 
