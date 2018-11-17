@@ -1,11 +1,16 @@
+require("@babel/register")({
+  "presets": ["@babel/preset-env"],
+  cache: false
+});
+
 require('./defaultBuildEnv');
-import getExploreSectionCodeMeta from "../src/js/tools/getExploreSectionCodeMeta";
 
 const fs = require('fs-extra');
 const path = require('path');
+const getExploreSectionCodeMeta = require('../src/tools/getExploreModuleCodeMeta').default;
 
 const buildExplorersJson = () => {
-  const place = path.join(__dirname, '..', 'src', 'exploreSections');
+  const place = path.join(__dirname, '../src/explorerModules');
   return fs.readdir(place).then(files => {
     const trackerIds = files.filter(filename => /.+\.js$/.test(filename)).map(filename => path.basename(filename, path.extname(filename)));
     return Promise.all(trackerIds.sort().map(id => {
@@ -18,7 +23,7 @@ const buildExplorersJson = () => {
       return result;
     });
   }).then(trackers => {
-    return fs.writeJson(path.join(__dirname, '..', 'src', 'explorers.json'), trackers, {
+    return fs.writeJson(path.join(__dirname, '../src/explorers.json'), trackers, {
       spaces: 2
     });
   });
