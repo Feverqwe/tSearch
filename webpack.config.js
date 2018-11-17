@@ -105,6 +105,7 @@ const config = {
       {from: './src/assets', to: './assets'},
       {from: './src/_locales', to: './_locales'},
       {from: './src/trackers', to: './trackers'},
+      {from: './src/explorerModules', to: './explorerModules'},
     ]),
     new HtmlWebpackPlugin({
       filename: 'sandbox.html',
