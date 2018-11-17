@@ -1,4 +1,4 @@
-import {types} from "mobx-state-tree";
+import {flow, isAlive, types} from "mobx-state-tree";
 
 
 /**
@@ -21,7 +21,20 @@ const ExplorerStore = types.model('ExplorerStore', {
   sections: types.maybe(types.array(ExplorerSectionStore)),
 }).actions(self => {
   return {
-    fetchSections: () => {},
+    fetchSections: flow(function* () {
+      self.state = 'pending';
+      try {
+
+        if (isAlive(self)) {
+          self.state = 'done';
+        }
+      } catch (err) {
+        logger.error('fetchSections error', err);
+        if (isAlive(self)) {
+          self.state = 'error';
+        }
+      }
+    }),
   };
 }).views(self => {
   return {};
