@@ -102,7 +102,7 @@ class ExploreSection extends React.Component {
       isEmpty: false
     };
 
-    if (this.sectionStore.state === 'idle' && !this.sectionStore.collapsed) {
+    if (this.sectionStore.state === 'idle' && this.moduleStore && !this.sectionStore.collapsed) {
       this.sectionStore.fetchData();
     }
   }
@@ -112,7 +112,16 @@ class ExploreSection extends React.Component {
     return this.props.sectionStore;
   }
 
+  /**@return {ExplorerModuleStore}*/
+  get moduleStore() {
+    return this.sectionStore && this.sectionStore.module;
+  }
+
   render() {
+    if (!this.moduleStore) {
+      return (`Module ${this.sectionStore.id} is not found`);
+    }
+
     const classList = ['section'];
     if (this.sectionStore.state === 'pending') {
       classList.push('section-loading');

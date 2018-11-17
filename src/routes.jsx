@@ -1,11 +1,6 @@
 import React from 'react';
-import Main from "./pages/Main";
-import Search from "./pages/Search";
 import NotFound from "./pages/NotFound";
 import {Redirect} from "react-router-dom";
-import History from "./pages/History";
-import Options from "./pages/Options";
-import ProfileEditor from "./pages/ProfileEditor";
 import ComponentLoader from "./components/ComponentLoader";
 
 const qs = require('querystring');
@@ -16,7 +11,7 @@ const routes = [{
   exact: true,
   render: props => {
     return (
-      <Main {...props}/>
+      <ComponentLoader {...props} load-page={'main'}/>
     );
   },
 }, {
@@ -29,7 +24,7 @@ const routes = [{
       );
     }
     return (
-      <ProfileEditor {...props} id={id}/>
+      <ComponentLoader {...props} load-page={'profile-editor'} id={id}/>
     );
   },
 }, {
@@ -42,14 +37,14 @@ const routes = [{
       );
     }
     return (
-      <Search key={query.query} {...props} query={query.query}/>
+      <ComponentLoader key={query.query} {...props} load-page={'search'} query={query.query}/>
     );
   },
 }, {
   path: '/history',
   render: props => {
     return (
-      <History {...props}/>
+      <ComponentLoader {...props} load-page={'history'}/>
     );
   },
 }, {
@@ -62,7 +57,7 @@ const routes = [{
       );
     }
     return (
-      <Options {...props} page={page}/>
+      <ComponentLoader {...props} load-page={'options'} page={page}/>
     );
   },
 }, {

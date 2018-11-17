@@ -2,6 +2,7 @@ import {flow, isAlive, resolveIdentifier, types} from "mobx-state-tree";
 import getLogger from "../tools/getLogger";
 import getExplorerModules from "../tools/getExplorerModules";
 import {TrackerOptionsStore} from "./TrackerStore";
+import ExplorerModuleWorker from "../tools/explorerModuleWorker";
 
 
 const logger = getLogger('ExplorerStore');
@@ -115,12 +116,51 @@ const ExplorerModuleMetaStore = types.model('ExplorerModuleMetaStore', {
  * @property {TrackerOptionsStore} [options]
  * @property {ExplorerModuleMetaStore} meta
  * @property {string} code
+ * @property {function} setOptions
+ * @property {*} worker
+ * @property {function} createWorker
+ * @property {function} destroyWorker
+ * @property {function} reloadWorker
+ * @property {function} beforeDestroy
  */
 const ExplorerModuleStore = types.model('ExplorerModuleStore', {
   id: types.identifier,
   options: types.optional(TrackerOptionsStore, {}),
   meta: ExplorerModuleMetaStore,
   code: types.string
+}).actions(/**ExplorerModuleStore*/self => {
+  return {
+    setOptions(value) {
+      self.options = value;
+    }
+  };
+}).views(/**ExplorerModuleStore*/self => {
+  let worker = null;
+  return {
+    get worker() {
+      return worker;
+    },
+    createWorker() {
+      if (!worker) {
+        worker = new ExplorerModuleWorker(self.toJSON());
+      }
+    },
+    destroyWorker() {
+      if (worker) {
+        worker.destroy();
+      }
+      worker = null;
+    },
+    reloadWorker() {
+      if (worker) {
+        self.destroyWorker();
+        self.createWorker();
+      }
+    },
+    beforeDestroy() {
+      self.destroyWorker();
+    }
+  };
 });
 
 
@@ -129,13 +169,16 @@ const ExplorerModuleStore = types.model('ExplorerModuleStore', {
  * @property {string} id
  * @property {string} [state]
  * @property {boolean} [collapsed]
- * @property {ExplorerModuleStore|undefined} module
  * @property {function:Promise} fetchData
+ * @property {*} module
  */
 const ExplorerSectionStore = types.model('ExplorerSectionStore', {
   id: types.identifier,
   state: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
   collapsed: types.optional(types.boolean, false),
+  authRequired: types.maybe(types.model({
+    url: types.string
+  })),
 }).actions(self => {
   return {
     fetchData: flow(function* () {

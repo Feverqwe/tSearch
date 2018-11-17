@@ -37,6 +37,26 @@ class ComponentLoader extends React.Component {
           result = await import('../pages/CodeMaker');
           break;
         }
+        case 'profile-editor': {
+          result = await import('../pages/ProfileEditor');
+          break;
+        }
+        case 'search': {
+          result = await import('../pages/Search');
+          break;
+        }
+        case 'history': {
+          result = await import('../pages/History');
+          break;
+        }
+        case 'options': {
+          result = await import('../pages/Options');
+          break;
+        }
+        case 'main': {
+          result = await import('../pages/Main');
+          break;
+        }
         default: {
           throw new Error('Component is not found');
         }
