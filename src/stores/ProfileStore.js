@@ -1,4 +1,4 @@
-import {resolveIdentifier, types} from 'mobx-state-tree';
+import {isAlive, resolveIdentifier, types} from 'mobx-state-tree';
 import TrackerStore from "./TrackerStore";
 
 
@@ -30,7 +30,9 @@ const ProfileTrackerStore = types.model('ProfileTrackerStore', {
 }).views(self => {
   return {
     get tracker() {
-      return resolveIdentifier(TrackerStore, self, self.id);
+      if (isAlive(self)) {
+        return resolveIdentifier(TrackerStore, self, self.id);
+      }
     }
   };
 });

@@ -1,23 +1,28 @@
 import React from "react";
 import {inject, observer} from "mobx-react/index";
 import PropTypes from "prop-types";
+import getLogger from "../../tools/getLogger";
+
+const Sortable = require('sortablejs');
+
+const logger = getLogger('Explorer');
 
 @inject('rootStore')
 @observer
 class Explorer extends React.Component {
   static propTypes = {
-    rootStore: PropTypes.object.isRequired,
+    rootStore: PropTypes.object,
   };
 
   constructor(props) {
     super(props);
 
     if (this.explorerStore.state === 'idle') {
-      this.explorerStore.fetchSections();
+      this.explorerStore.fetch();
     }
   }
 
-  /**ExplorerStore*/
+  /**@return {ExplorerStore}*/
   get explorerStore() {
     return this.props.rootStore.explorer;
   }
@@ -70,7 +75,7 @@ class Explorer extends React.Component {
         <ExploreSection key={section.id} data-index={index} explorerStore={this.explorerStore} sectionStore={section}/>
       );
       return result;
-    });
+    }, []);
 
     return (
       <ul ref={this.refSections} className="explore">
@@ -94,24 +99,44 @@ class ExploreSection extends React.Component {
       page: 0,
       minBodyHeight: 0,
       showOptions: false,
+      isEmpty: false
     };
 
-    if (this.sectionStore.state === 'idle') {
-      this.sectionStore.fetchModule();
+    if (this.sectionStore.state === 'idle' && !this.sectionStore.collapsed) {
+      this.sectionStore.fetchData();
     }
   }
 
-  /**@return ExplorerSectionStore*/
+  /**@return {ExplorerSectionStore}*/
   get sectionStore() {
     return this.props.sectionStore;
   }
 
   render() {
-    if (this.sectionStore.state !== 'done') {
-      return (`Loading section: ${this.sectionStore.state}`);
+    const classList = ['section'];
+    if (this.sectionStore.state === 'pending') {
+      classList.push('section-loading');
+    } else
+    if (this.sectionStore.authRequired) {
+      classList.push('section-login');
+    } else
+    if (this.sectionStore.state === 'error') {
+      classList.push('section-error');
     }
 
-    return null;
+    if (this.sectionStore.id === 'favorite' && this.state.isEmpty) {
+      classList.push('section-empty');
+    }
+
+    if (this.sectionStore.collapsed) {
+      classList.push('section-collapsed');
+    }
+
+    return (
+      <li data-index={this.props['data-index']} className={classList.join(' ')}>
+        {this.sectionStore.id}
+      </li>
+    );
   }
 }
 

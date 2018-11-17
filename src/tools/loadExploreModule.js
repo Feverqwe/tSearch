@@ -1,5 +1,5 @@
 import getLogger from "./getLogger";
-import getExploreSectionCodeMeta from "./getExploreSectionCodeMeta";
+import getExploreModuleCodeMeta from "./getExploreSectionCodeMeta";
 
 const debug = getLogger('loadExploreSections');
 
@@ -9,7 +9,7 @@ const loadExploreModule = id => {
   }).then(response => {
     return {
       id: id,
-      meta: getExploreSectionCodeMeta(response),
+      meta: getExploreModuleCodeMeta(response),
       info: {
         lastUpdate: 0,
         disableAutoUpdate: false,

@@ -3,6 +3,7 @@ import Header from "../components/Header";
 import Profiles from "../components/Profiles";
 import ScrollTop from "../components/ScrollTop";
 import Filters from "../components/Filters";
+import Explorer from "../components/Explorer/Explorer";
 
 class Main extends React.Component {
   render() {
@@ -15,7 +16,7 @@ class Main extends React.Component {
             <Filters/>
           </div>
           <div className="main">
-            Main...
+            <Explorer/>
           </div>
         </div>
         <ScrollTop/>

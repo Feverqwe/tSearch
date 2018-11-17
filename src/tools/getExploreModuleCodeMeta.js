@@ -18,7 +18,7 @@ const fieldType = {
   defaultLocale: 'string',
 };
 
-const getExploreSectionCodeMeta = function (code) {
+const getExploreModuleCodeMeta = function (code) {
   const result = getCodeMeta(code, fieldType);
 
   result.actions = result.action;
@@ -30,4 +30,4 @@ const getExploreSectionCodeMeta = function (code) {
   return result;
 };
 
-export default getExploreSectionCodeMeta;
+export default getExploreModuleCodeMeta;
