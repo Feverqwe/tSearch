@@ -1,5 +1,8 @@
-import {types, getParent} from "mobx-state-tree";
+import {getParent, types} from "mobx-state-tree";
 import processLocale from "../../tools/processLocale";
+import getLogger from "../../tools/getLogger";
+
+const logger = getLogger('ExplorerSectionStore');
 
 /**
  * @typedef {{}} ExplorerModuleMetaActionStore
@@ -40,7 +43,7 @@ const ExplorerModuleMetaActionStore = types.model('ExplorerModuleMetaActionStore
         module.sendCommand(self.command).finally(() => {
           self.setLoading(false);
         }).catch(err => {
-          debug('handleClick error', self.command, err);
+          logger.error('handleClick error', self.command, err);
         });
       }
     }

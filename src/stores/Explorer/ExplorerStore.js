@@ -4,8 +4,10 @@ import getExplorerModules from "../../tools/getExplorerModules";
 import ExplorerModuleStore from "./ExplorerModuleStore";
 import ExplorerSectionStore from "./ExplorerSectionStore";
 
+const promiseLimit = require('promise-limit');
 
 const logger = getLogger('ExplorerStore');
+const limitOne = promiseLimit(1);
 
 /**
  * @typedef {{}} ExplorerStore
@@ -20,6 +22,12 @@ const ExplorerStore = types.model('ExplorerStore', {
   modules: types.maybe(types.map(ExplorerModuleStore)),
 }).actions(/**ExplorerStore*/self => {
   return {
+    setSections(sections) {
+      self.sections = sections;
+    },
+    setState(value) {
+      self.state = value;
+    },
     fetch: flow(function* () {
       self.state = 'pending';
       try {
@@ -41,7 +49,40 @@ const ExplorerStore = types.model('ExplorerStore', {
     }),
   };
 }).views(self => {
-  return {};
+  return {
+    saveSections() {
+      return limitOne(() => {
+        const sections = self.sections.map(section => section.getSnapshot());
+        return new Promise(resolve => chrome.storage.local.set({explorerSections: sections}, resolve));
+      });
+    },
+    moveSection(index, prevIndex, nextIndex) {
+      const sections = self.sections.slice(0);
+      const item = sections[index];
+      const prevItem = sections[prevIndex];
+      const nextItem = sections[nextIndex];
+
+      sections.splice(index, 1);
+
+      if (prevItem) {
+        const pos = sections.indexOf(prevItem);
+        if (pos !== -1) {
+          sections.splice(pos + 1, 0, item);
+        }
+      } else
+      if (nextItem) {
+        const pos = sections.indexOf(nextItem);
+        if (pos !== -1) {
+          sections.splice(pos, 0, item);
+        }
+      } else {
+        sections.push(item);
+      }
+
+      self.setSections(sections);
+      return self.saveSections();
+    },
+  };
 });
 
 const fetchModules = async () => {

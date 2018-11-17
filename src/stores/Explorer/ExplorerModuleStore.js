@@ -2,6 +2,9 @@ import {types} from "mobx-state-tree";
 import {TrackerOptionsStore} from "../TrackerStore";
 import ExplorerModuleWorker from "../../tools/explorerModuleWorker";
 import ExplorerModuleMetaStore from "./ExplorerModuleMetaStore";
+import getLogger from "../../tools/getLogger";
+
+const logger = getLogger('ExplorerModuleStore');
 
 /**
  * @typedef {{}} ExplorerModuleStore

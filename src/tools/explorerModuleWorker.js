@@ -12,16 +12,14 @@ class ExplorerModuleWorker extends ModuleWorker {
     }
     return this.initPromise = super.init();
   }
-  search(query) {
+  getItems() {
     return this.init().then(() => {
-      return this.callFn('events.search', [{
-        query: query
-      }])
+      return this.callFn('events.getItems');
     });
   }
-  searchNext(next) {
+  sendCommand(command) {
     return this.init().then(() => {
-      return this.callFn('events.getNextPage', [next]);
+      return this.callFn('events.command', [command]);
     });
   }
 }
