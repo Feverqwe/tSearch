@@ -14,13 +14,11 @@ const limitOne = promiseLimit(1);
  * @property {string} [state]
  * @property {ExplorerSectionStore[]} sections
  * @property {Map<*,ExplorerModuleStore>|undefined} modules
- * @property {ExplorerPageStore} [page]
  * @property {function} setSections
  * @property {function} setState
  * @property {function:Promise} fetch
  * @property {function} saveSections
  * @property {function} moveSection
- * @property {function} afterCreate
  */
 const ExplorerStore = types.model('ExplorerStore', {
   state: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),

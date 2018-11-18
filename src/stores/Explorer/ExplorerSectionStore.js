@@ -16,8 +16,12 @@ const logger = getLogger('ExplorerSectionStore');
  * @property {{url:string}|undefined} authRequired
  * @property {ExplorerItemStore[]} items
  * @property {function:Promise} fetchData
+ * @property {function} setZoom
+ * @property {function} setRowCount
+ * @property {function} toggleCollapse
  * @property {*} module
  * @property {function} getSnapshot
+ * @property {*} page
  */
 const ExplorerSectionStore = types.model('ExplorerSectionStore', {
   id: types.identifier,
@@ -49,6 +53,15 @@ const ExplorerSectionStore = types.model('ExplorerSectionStore', {
         }
       }
     }),
+    setZoom(value) {
+      self.zoom = value;
+    },
+    setRowCount(value) {
+      self.rowCount = value;
+    },
+    toggleCollapse() {
+      self.collapsed = !self.collapsed;
+    },
   };
 }).views(self => {
   return {

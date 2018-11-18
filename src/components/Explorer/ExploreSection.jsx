@@ -16,7 +16,6 @@ class ExploreSection extends React.Component {
     this.state = {
       minHeight: 0,
       showOptions: false,
-      isEmpty: false
     };
   }
 
@@ -43,7 +42,7 @@ class ExploreSection extends React.Component {
       classList.push('section-error');
     }
 
-    if (this.sectionStore.id === 'favorite' && this.state.isEmpty) {
+    if (this.sectionStore.id === 'favorite' && !this.sectionStore.items.length) {
       classList.push('section-empty');
     }
 
@@ -89,7 +88,7 @@ class ExplorerSectionHeader extends React.Component {
 
   /**@return {ExplorerModuleStore|undefined}*/
   get moduleStore() {
-    return this.sectionStore.moduleStore;
+    return this.sectionStore.module;
   }
 
   zoomRange = null;
@@ -100,14 +99,14 @@ class ExplorerSectionHeader extends React.Component {
   handleZoomRangeChange = (e) => {
     this.props.setMinHeight(0);
     const zoom = parseInt(this.zoomRange.value, 10);
-    this.sectionStore.setItemZoom(zoom);
+    this.sectionStore.setZoom(zoom);
   };
 
-  handleResetItemZoom = (e) => {
+  handleResetZoom = (e) => {
     e.preventDefault();
     this.props.setMinHeight(0);
     this.zoomRange.value = 100;
-    this.sectionStore.setItemZoom(100);
+    this.sectionStore.setZoom(100);
   };
 
   handleOptionsClick = (e) => {
@@ -186,7 +185,7 @@ class ExplorerSectionHeader extends React.Component {
           <div className={'section__setup'}>
             <input ref={this.refZoomRange} onChange={this.handleZoomRangeChange} defaultValue={sectionStore.zoom} type="range"
                    className="setup__size_range" min="1" max="150"/>
-            <a onClick={this.handleResetItemZoom} title={chrome.i18n.getMessage('default')} className="setup__size_default" href="#"/>
+            <a onClick={this.handleResetZoom} title={chrome.i18n.getMessage('default')} className="setup__size_default" href="#"/>
             <select ref={this.refRowCount} onChange={this.handleRowCountChange} defaultValue={sectionStore.rowCount}
                     className="setup__lines">
               <option value="1">1</option>
