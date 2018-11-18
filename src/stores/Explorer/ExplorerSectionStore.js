@@ -3,6 +3,7 @@ import ExplorerModuleStore from "./ExplorerModuleStore";
 import getLogger from "../../tools/getLogger";
 import ExplorerItemStore from "./ExplorerItemStore";
 import RootStore from "../RootStore";
+import {ErrorWithCode} from "../../tools/errors";
 
 const logger = getLogger('ExplorerSectionStore');
 
@@ -38,21 +39,33 @@ const ExplorerSectionStore = types.model('ExplorerSectionStore', {
     fetchData: flow(function* () {
       const id = self.id;
       self.state = 'pending';
+      self.authRequired = undefined;
       try {
         if (!self.module) {
-          throw new Error('Module is not exists');
+          throw new Error(`Module is not exists`);
         }
         self.module.createWorker();
         const result = yield self.module.worker.getItems();
-        const items = result.items || [];
+        if (!result) {
+          throw new ErrorWithCode(`Result is empty`, 'EMPTY_RESULT');
+        }
+        if (!result.success) {
+          throw new ErrorWithCode(`Result is not success`, 'NOT_SUCCESS');
+        }
         if (isAlive(self)) {
-          self.items = items;
+          self.items = result.items;
           self.state = 'done';
         }
       } catch (err) {
-        logger.error('fetchData error', id, err);
-        if (isAlive(self)) {
-          self.state = 'error';
+        if (err.code === 'AUTH_REQUIRED') {
+          if (isAlive(self)) {
+            self.setAuthRequired(err.url);
+          }
+        } else {
+          logger.error('fetchData error', id, err);
+          if (isAlive(self)) {
+            self.state = 'error';
+          }
         }
       }
     }),
@@ -64,6 +77,9 @@ const ExplorerSectionStore = types.model('ExplorerSectionStore', {
     },
     toggleCollapse() {
       self.collapsed = !self.collapsed;
+    },
+    setAuthRequired(url) {
+      self.authRequired = {url};
     },
   };
 }).views(self => {

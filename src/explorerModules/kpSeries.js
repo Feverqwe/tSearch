@@ -128,5 +128,10 @@ const getItems = () => {
 };
 
 API_event('getItems', () => {
-  return getItems().then(items => ({items}));
+  return getItems().then(items => {
+    return {
+      success: true,
+      items
+    };
+  });
 });

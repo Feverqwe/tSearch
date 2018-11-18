@@ -155,13 +155,18 @@ const getItems = () => {
 };
 
 API_event('getItems', () => {
-  return {};
+  throw new Error('Get items is not supported, yet');
 });
 
 API_event('command', command => {
   switch (command) {
     case 'update': {
-      return getItems().then(items => ({items}));
+      return getItems().then(items => {
+        return {
+          success: true,
+          items
+        };
+      });
     }
   }
 });
