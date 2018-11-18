@@ -3,6 +3,7 @@ import getLogger from "../../tools/getLogger";
 import getExplorerModules from "../../tools/getExplorerModules";
 import ExplorerModuleStore from "./ExplorerModuleStore";
 import ExplorerSectionStore from "./ExplorerSectionStore";
+import _isEqual from "lodash.isequal";
 
 const promiseLimit = require('promise-limit');
 
@@ -53,10 +54,28 @@ const ExplorerStore = types.model('ExplorerStore', {
     }),
   };
 }).views(self => {
+  const storageChangeListener = (changes, namespace) => {
+    if (self.state !== 'done') return;
+
+    if (namespace === 'sync') {
+      const change = changes.explorerSections;
+      if (change) {
+        const explorerSections = change.newValue || [];
+        if (!_isEqual(explorerSections, self.getSectionsSnapshot())) {
+          self.setSections([]);
+          self.setSections(explorerSections);
+        }
+      }
+    }
+  };
+
   return {
+    getSectionsSnapshot() {
+      return self.sections.map(section => section.getSnapshot());
+    },
     saveSections() {
       return limitOne(() => {
-        const sections = self.sections.map(section => section.getSnapshot());
+        const sections = self.getSectionsSnapshot();
         return new Promise(resolve => chrome.storage.sync.set({explorerSections: sections}, resolve));
       });
     },
@@ -85,7 +104,13 @@ const ExplorerStore = types.model('ExplorerStore', {
 
       self.setSections(sections);
       return self.saveSections();
-    }
+    },
+    afterCreate() {
+      chrome.storage.onChanged.addListener(storageChangeListener);
+    },
+    beforeDestroy() {
+      chrome.storage.onChanged.removeListener(storageChangeListener);
+    },
   };
 });
 
