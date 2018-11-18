@@ -1,7 +1,7 @@
 import {clone, getParent, getRoot, types} from "mobx-state-tree";
 
 /**
- * @typedef {{}} ExplorerSectionItemStore
+ * @typedef {{}} ExplorerItemStore
  * @property {string} title
  * @property {string|undefined} titleOriginal
  * @property {string} url
@@ -11,7 +11,7 @@ import {clone, getParent, getRoot, types} from "mobx-state-tree";
  * @property {function} handleAddFavorite
  * @property {function} handleRemoveFavorite
  */
-const ExplorerSectionItemStore = types.model('ExplorerSectionItemStore', {
+const ExplorerItemStore = types.model('ExplorerItemStore', {
   title: types.string,
   titleOriginal: types.maybe(types.string),
   url: types.string,
@@ -41,4 +41,4 @@ const ExplorerSectionItemStore = types.model('ExplorerSectionItemStore', {
   };
 });
 
-export default ExplorerSectionItemStore;
+export default ExplorerItemStore;

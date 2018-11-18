@@ -1,7 +1,7 @@
 import {clone, flow, getParent, getRoot, isAlive, resolveIdentifier, types} from "mobx-state-tree";
 import ExplorerModuleStore from "./ExplorerModuleStore";
 import getLogger from "../../tools/getLogger";
-import ExplorerSectionItemStore from "./ExplorerSectionItemStore";
+import ExplorerItemStore from "./ExplorerItemStore";
 
 const logger = getLogger('ExplorerSectionStore');
 
@@ -13,7 +13,7 @@ const logger = getLogger('ExplorerSectionStore');
  * @property {number} [rowCount]
  * @property {number} [zoom]
  * @property {{url:string}|undefined} authRequired
- * @property {ExplorerSectionItemStore[]} items
+ * @property {ExplorerItemStore[]} items
  * @property {function:Promise} fetchData
  * @property {*} module
  * @property {function} getSnapshot
@@ -27,7 +27,7 @@ const ExplorerSectionStore = types.model('ExplorerSectionStore', {
   authRequired: types.maybe(types.model({
     url: types.string
   })),
-  items: types.array(ExplorerSectionItemStore),
+  items: types.array(ExplorerItemStore),
 }).actions(self => {
   return {
     fetchData: flow(function* () {
@@ -35,10 +35,10 @@ const ExplorerSectionStore = types.model('ExplorerSectionStore', {
       self.state = 'pending';
       try {
         self.module.createWorker();
-        const result = {}; // yield self.module.worker.getItems();
+        const result = yield self.module.worker.getItems();
+        const items = result.items || [];
         if (isAlive(self)) {
-          const items = result.items || [];
-          self.items = result.items;
+          self.items = items;
           self.state = 'done';
         }
       } catch (err) {

@@ -3,6 +3,7 @@ import getLogger from "../../tools/getLogger";
 import getExplorerModules from "../../tools/getExplorerModules";
 import ExplorerModuleStore from "./ExplorerModuleStore";
 import ExplorerSectionStore from "./ExplorerSectionStore";
+import throttle from "lodash.throttle";
 
 const promiseLimit = require('promise-limit');
 
@@ -10,16 +11,60 @@ const logger = getLogger('ExplorerStore');
 const limitOne = promiseLimit(1);
 
 /**
+ * @typedef {{}} ExplorerPageStore
+ * @property {number} [width]
+ * @property {function} setWidth
+ * @property {function} init
+ * @property {function} afterCreate
+ * @property {function} beforeDestroy
+ */
+const ExplorerPageStore = types.model('ExplorerPageStore', {
+  width: types.optional(types.number, 0),
+}).actions(self => {
+  return {
+    setWidth(value) {
+      self.width = value;
+    }
+  };
+}).views(self => {
+  const onResize = () => {
+    self.setWidth(document.body.clientWidth);
+  };
+
+  const onResizeThrottled = throttle(onResize, 32);
+
+  return {
+    init() {
+      onResize();
+    },
+    afterCreate() {
+      window.addEventListener('resize', onResizeThrottled);
+    },
+    beforeDestroy() {
+      onResizeThrottled.cancel();
+      window.removeEventListener('resize', onResizeThrottled);
+    }
+  };
+});
+
+/**
  * @typedef {{}} ExplorerStore
  * @property {string} [state]
  * @property {ExplorerSectionStore[]} sections
  * @property {Map<*,ExplorerModuleStore>|undefined} modules
+ * @property {ExplorerPageStore} [page]
+ * @property {function} setSections
+ * @property {function} setState
  * @property {function:Promise} fetch
+ * @property {function} saveSections
+ * @property {function} moveSection
+ * @property {function} afterCreate
  */
 const ExplorerStore = types.model('ExplorerStore', {
   state: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
   sections: types.array(ExplorerSectionStore),
   modules: types.maybe(types.map(ExplorerModuleStore)),
+  page: types.optional(ExplorerPageStore, {}),
 }).actions(/**ExplorerStore*/self => {
   return {
     setSections(sections) {
@@ -82,6 +127,9 @@ const ExplorerStore = types.model('ExplorerStore', {
       self.setSections(sections);
       return self.saveSections();
     },
+    afterCreate() {
+      self.page.init();
+    }
   };
 });
 
