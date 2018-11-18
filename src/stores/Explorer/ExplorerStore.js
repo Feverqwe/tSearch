@@ -57,7 +57,7 @@ const ExplorerStore = types.model('ExplorerStore', {
     saveSections() {
       return limitOne(() => {
         const sections = self.sections.map(section => section.getSnapshot());
-        return new Promise(resolve => chrome.storage.local.set({explorerSections: sections}, resolve));
+        return new Promise(resolve => chrome.storage.sync.set({explorerSections: sections}, resolve));
       });
     },
     moveSection(index, prevIndex, nextIndex) {
@@ -95,7 +95,7 @@ const fetchModules = async () => {
 
 const fetchSections = async () => {
   const storage = await new Promise(resolve => chrome.storage.sync.get({
-    sections: [{
+    explorerSections: [{
       id: 'favorite'
     }, {
       id: 'kpFavorites'
@@ -117,7 +117,7 @@ const fetchSections = async () => {
       id: 'ggGamesTop'
     }]
   }, resolve));
-  return storage.sections;
+  return storage.explorerSections;
 };
 
 export default ExplorerStore;

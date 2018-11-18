@@ -39,6 +39,9 @@ const ExplorerSectionStore = types.model('ExplorerSectionStore', {
       const id = self.id;
       self.state = 'pending';
       try {
+        if (!self.module) {
+          throw new Error('Module is not exists');
+        }
         self.module.createWorker();
         const result = yield self.module.worker.getItems();
         const items = result.items || [];
