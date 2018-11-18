@@ -6,7 +6,6 @@ import ExplorerSectionItem from "./ExplorerSectionItem";
 @observer
 class ExploreSection extends React.Component {
   static propTypes = {
-    explorerStore: PropTypes.object.isRequired,
     sectionStore: PropTypes.object.isRequired,
     index: PropTypes.number.isRequired,
   };
@@ -21,19 +20,9 @@ class ExploreSection extends React.Component {
     };
   }
 
-  /**@return {ExplorerStore}*/
-  get explorerStore() {
-    return this.props.explorerStore;
-  }
-
   /**@return {ExplorerSectionStore}*/
   get sectionStore() {
     return this.props.sectionStore;
-  }
-
-  /**@return {ExplorerModuleStore}*/
-  get moduleStore() {
-    return this.sectionStore && this.sectionStore.module;
   }
 
   setMinHeight = (height) => {
@@ -43,10 +32,6 @@ class ExploreSection extends React.Component {
   };
 
   render() {
-    if (!this.moduleStore) {
-      return (`Module ${this.sectionStore.id} is not found`);
-    }
-
     const classList = ['section'];
     if (this.sectionStore.state === 'pending') {
       classList.push('section-loading');
@@ -69,13 +54,13 @@ class ExploreSection extends React.Component {
     let body = null;
     if (!this.sectionStore.collapsed) {
       body = (
-        <SectionBody setMinHeight={this.setMinHeight} minHeight={this.state.minHeight} sectionStore={this.sectionStore}/>
+        <ExplorerSectionBody setMinHeight={this.setMinHeight} minHeight={this.state.minHeight} sectionStore={this.sectionStore}/>
       );
     }
 
     return (
       <li data-index={this.props.index} className={classList.join(' ')}>
-        <SectionHeader setMinHeight={this.setMinHeight} sectionStore={this.sectionStore} moduleStore={this.moduleStore}/>
+        <ExplorerSectionHeader setMinHeight={this.setMinHeight} sectionStore={this.sectionStore}/>
         {body}
       </li>
     );
@@ -83,10 +68,9 @@ class ExploreSection extends React.Component {
 }
 
 @observer
-class SectionHeader extends React.Component {
+class ExplorerSectionHeader extends React.Component {
   static propTypes = {
     sectionStore: PropTypes.object.isRequired,
-    moduleStore: PropTypes.object.isRequired,
     setMinHeight: PropTypes.func.isRequired,
   };
 
@@ -103,9 +87,9 @@ class SectionHeader extends React.Component {
     return this.props.sectionStore;
   }
 
-  /**@return {ExplorerModuleStore}*/
+  /**@return {ExplorerModuleStore|undefined}*/
   get moduleStore() {
-    return this.props.moduleStore;
+    return this.sectionStore.moduleStore;
   }
 
   zoomRange = null;
@@ -141,9 +125,6 @@ class SectionHeader extends React.Component {
     ) {
       e.preventDefault();
       this.sectionStore.toggleCollapse();
-      if (!this.sectionStore.collapsed) {
-        this.moduleStore.preloadItems();
-      }
     }
   };
 
@@ -159,55 +140,54 @@ class SectionHeader extends React.Component {
   };
 
   render() {
-    const section = this.sectionStore;
-    const module = this.moduleStore;
+    const sectionStore = this.sectionStore;
+    const moduleStore = this.moduleStore;
 
-    let openSite = null;
-    let moduleActions = null;
-    if (!section.collapsed) {
-      if (module.meta.siteURL) {
+    let actionsCtr = null;
+    if (!sectionStore.collapsed) {
+      let openSite = null;
+      if (moduleStore && moduleStore.meta.siteURL) {
         openSite = (
-          <a href={module.meta.siteURL} title={chrome.i18n.getMessage('goToTheWebsite')} className="action action__open" target="_blank"/>
+          <a href={moduleStore.meta.siteURL} title={chrome.i18n.getMessage('goToTheWebsite')} className="action action__open" target="_blank"/>
         );
       }
 
-      moduleActions = module.meta.actions.map((action, i) => {
-        const classList = ['action'];
-        if (action.isLoading) {
-          classList.push('loading');
-        }
-        switch (action.icon) {
-          case 'update': {
-            classList.push('action__update');
-            return <a key={i} href={"#"} onClick={action.handleClick} className={classList.join(' ')}
-                      title={action.getTitle()}/>;
+      let moduleActions = null;
+      if (moduleStore) {
+        moduleActions = moduleStore.meta.actions.map((action, i) => {
+          const classList = ['action'];
+          if (action.isLoading) {
+            classList.push('loading');
           }
-          default: {
-            return <a key={i} href={"#"} onClick={action.handleClick} className={classList.join(' ')}
-                      title={action.getTitle()}>{action.getTitle()}</a>;
+          switch (action.icon) {
+            case 'update': {
+              classList.push('action__update');
+              return <a key={i} href={"#"} onClick={action.handleClick} className={classList.join(' ')}
+                        title={action.getTitle()}/>;
+            }
+            default: {
+              return <a key={i} href={"#"} onClick={action.handleClick} className={classList.join(' ')}
+                        title={action.getTitle()}>{action.getTitle()}</a>;
+            }
           }
-        }
-      });
+        });
+      }
 
-      /*if (module.authRequired) {
-        actions.unshift(
-          <a key={'authRequired'} className="action  action__open" target="_blank" href={module.authRequired.url}
+      /*if (sectionStore.authRequired) {
+        moduleActions.unshift(
+          <a key={'authRequired'} className="action  action__open" target="_blank" href={sectionStore.authRequired.url}
              title={chrome.i18n.getMessage('login')}/>
         );
       }*/
 
-    }
-
-    let actionsCtr = null;
-    if (!section.collapsed) {
       let options = null;
       if (this.state.showOptions) {
         options = (
           <div className={'section__setup'}>
-            <input ref={this.refZoomRange} onChange={this.handleZoomRangeChange} defaultValue={section.zoom} type="range"
+            <input ref={this.refZoomRange} onChange={this.handleZoomRangeChange} defaultValue={sectionStore.zoom} type="range"
                    className="setup__size_range" min="1" max="150"/>
             <a onClick={this.handleResetItemZoom} title={chrome.i18n.getMessage('default')} className="setup__size_default" href="#"/>
-            <select ref={this.refRowCount} onChange={this.handleRowCountChange} defaultValue={section.rowCount}
+            <select ref={this.refRowCount} onChange={this.handleRowCountChange} defaultValue={sectionStore.rowCount}
                     className="setup__lines">
               <option value="1">1</option>
               <option value="2">2</option>
@@ -230,10 +210,17 @@ class SectionHeader extends React.Component {
       );
     }
 
+    let title = null;
+    if (moduleStore) {
+      title = moduleStore.meta.getName();
+    } else {
+      title = sectionStore.id;
+    }
+
     return (
       <div onClick={this.handleCollapse} className="section__head">
         <div className="section__move"/>
-        <div className="section__title">{module.meta.getName()}</div>
+        <div className="section__title">{title}</div>
         {actionsCtr}
         <div className="section__collapses"/>
       </div>
@@ -242,7 +229,7 @@ class SectionHeader extends React.Component {
 }
 
 @observer
-class SectionBody extends React.Component {
+class ExplorerSectionBody extends React.Component {
   static propTypes = {
     sectionStore: PropTypes.object.isRequired,
     minHeight: PropTypes.number.isRequired,
@@ -274,6 +261,11 @@ class SectionBody extends React.Component {
     return itemCount * section.rowCount;
   }
 
+  body = null;
+  refBody = (element) => {
+    this.body = element;
+  };
+
   setPage = (page) => {
     const bodyHeight = this.body.clientHeight;
     if (bodyHeight > this.props.minHeight) {
@@ -282,11 +274,6 @@ class SectionBody extends React.Component {
     this.setState({
       page: page
     });
-  };
-
-  body = null;
-  refBody = (element) => {
-    this.body = element;
   };
 
   render() {
@@ -317,7 +304,7 @@ class SectionBody extends React.Component {
 
     return (
       <>
-        <ExplorerSectionPages page={pageNumber} count={items.length} displayCount={displayItemCount}
+        <ExplorerSectionPageSwitcher page={pageNumber} count={items.length} displayCount={displayItemCount}
                              setPage={this.setPage}/>
         <ul ref={this.refBody} style={bodyStyle} className="section__body">{contentItems}</ul>
       </>
@@ -325,7 +312,7 @@ class SectionBody extends React.Component {
   }
 }
 
-class ExplorerSectionPages extends React.Component {
+class ExplorerSectionPageSwitcher extends React.Component {
   static propTypes = {
     page: PropTypes.number.isRequired,
     count: PropTypes.number.isRequired,
