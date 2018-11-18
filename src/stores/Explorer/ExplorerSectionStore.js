@@ -3,7 +3,7 @@ import ExplorerModuleStore from "./ExplorerModuleStore";
 import getLogger from "../../tools/getLogger";
 import ExplorerItemStore from "./ExplorerItemStore";
 import RootStore from "../RootStore";
-import {ErrorWithCode} from "../../tools/errors";
+import ExplorerCommandStore from "./ExplorerCommandStore";
 
 const logger = getLogger('ExplorerSectionStore');
 
@@ -16,13 +16,19 @@ const logger = getLogger('ExplorerSectionStore');
  * @property {number} [zoom]
  * @property {{url:string}|undefined} authRequired
  * @property {ExplorerItemStore[]} items
+ * @property {Map<*,ExplorerCommandStore>} commands
  * @property {function:Promise} fetchData
+ * @property {function:Promise} fetchCommand
  * @property {function} setZoom
  * @property {function} setRowCount
  * @property {function} toggleCollapse
+ * @property {function} setAuthRequired
+ * @property {function} setItems
+ * @property {function} createCommand
  * @property {*} module
  * @property {function} getSnapshot
  * @property {*} page
+ * @property {function} getCommand
  */
 const ExplorerSectionStore = types.model('ExplorerSectionStore', {
   id: types.identifier,
@@ -34,37 +40,62 @@ const ExplorerSectionStore = types.model('ExplorerSectionStore', {
     url: types.string
   })),
   items: types.array(ExplorerItemStore),
+  commands: types.map(ExplorerCommandStore),
 }).actions(self => {
   return {
     fetchData: flow(function* () {
       const id = self.id;
       self.state = 'pending';
-      self.authRequired = undefined;
+      self.setAuthRequired();
       try {
         if (!self.module) {
           throw new Error(`Module is not exists`);
         }
         self.module.createWorker();
         const result = yield self.module.worker.getItems();
-        if (!result) {
-          throw new ErrorWithCode(`Result is empty`, 'EMPTY_RESULT');
-        }
-        if (!result.success) {
-          throw new ErrorWithCode(`Result is not success`, 'NOT_SUCCESS');
-        }
         if (isAlive(self)) {
-          self.items = result.items;
+          self.setItems(result.items);
           self.state = 'done';
         }
       } catch (err) {
         if (err.code === 'AUTH_REQUIRED') {
           if (isAlive(self)) {
-            self.setAuthRequired(err.url);
+            self.setAuthRequired({url: err.url});
+            self.state = 'done';
           }
         } else {
           logger.error('fetchData error', id, err);
           if (isAlive(self)) {
             self.state = 'error';
+          }
+        }
+      }
+    }),
+    fetchCommand: flow(function* (commandStore, actionStore) {
+      commandStore.setState('pending');
+      self.setAuthRequired();
+      try {
+        if (!self.module) {
+          throw new Error(`Module is not exists`);
+        }
+        self.module.createWorker();
+        const result = yield self.module.worker.sendCommand(actionStore.command);
+        if (isAlive(self)) {
+          if (result.items) {
+            self.setItems(result.items);
+          }
+          commandStore.setState('done');
+        }
+      } catch (err) {
+        if (err.code === 'AUTH_REQUIRED') {
+          if (isAlive(self)) {
+            self.setAuthRequired({url: err.url});
+            commandStore.setState('done');
+          }
+        } else {
+          logger.error('fetchCommand error', actionStore.command, err);
+          if (isAlive(self)) {
+            commandStore.setState('error');
           }
         }
       }
@@ -78,8 +109,14 @@ const ExplorerSectionStore = types.model('ExplorerSectionStore', {
     toggleCollapse() {
       self.collapsed = !self.collapsed;
     },
-    setAuthRequired(url) {
-      self.authRequired = {url};
+    setAuthRequired(obj) {
+      self.authRequired = obj;
+    },
+    setItems(items) {
+      self.items = items;
+    },
+    createCommand(index) {
+      self.commands.set(index, {index});
     },
   };
 }).views(self => {
@@ -101,7 +138,10 @@ const ExplorerSectionStore = types.model('ExplorerSectionStore', {
       if (isAlive(self)) {
         return getParentOfType(self, RootStore).page;
       }
-    }
+    },
+    getCommand(index) {
+      return self.commands.get(index);
+    },
   };
 });
 

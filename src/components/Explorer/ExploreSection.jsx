@@ -154,21 +154,9 @@ class ExplorerSectionHeader extends React.Component {
       let moduleActions = null;
       if (moduleStore) {
         moduleActions = moduleStore.meta.actions.map((action, i) => {
-          const classList = ['action'];
-          if (action.isLoading) {
-            classList.push('loading');
-          }
-          switch (action.icon) {
-            case 'update': {
-              classList.push('action__update');
-              return <a key={i} href={"#"} onClick={action.handleClick} className={classList.join(' ')}
-                        title={action.getTitle()}/>;
-            }
-            default: {
-              return <a key={i} href={"#"} onClick={action.handleClick} className={classList.join(' ')}
-                        title={action.getTitle()}>{action.getTitle()}</a>;
-            }
-          }
+          return (
+            <ExplorerAction key={i} index={i} actionStore={action} sectionStore={this.sectionStore}/>
+          );
         });
       }
 
@@ -223,6 +211,67 @@ class ExplorerSectionHeader extends React.Component {
         {actionsCtr}
         <div className="section__collapses"/>
       </div>
+    );
+  }
+}
+
+@observer
+class ExplorerAction extends React.Component {
+  static propTypes = {
+    sectionStore: PropTypes.object.isRequired,
+    actionStore: PropTypes.object.isRequired,
+    index: PropTypes.number.isRequired,
+  };
+
+  constructor(props) {
+    super(props);
+
+    if (!this.commandStore) {
+      this.sectionStore.createCommand(this.props.index);
+    }
+  }
+
+  /**@return ExplorerSectionStore*/
+  get sectionStore() {
+    return this.props.sectionStore;
+  }
+
+  /**@return ExplorerCommandStore*/
+  get commandStore() {
+    return this.sectionStore.getCommand(this.props.index)
+  }
+
+  /**@return ExplorerModuleMetaActionStore*/
+  get actionStore() {
+    return this.props.actionStore;
+  }
+
+  handleClick = (e) => {
+    e.preventDefault();
+    this.sectionStore.fetchCommand(this.commandStore, this.actionStore);
+  };
+
+  render() {
+    const actionStore = this.actionStore;
+
+    const title = actionStore.getTitle();
+    let child = title;
+
+    const classList = ['action'];
+    if (this.commandStore.state === 'pending') {
+      classList.push('loading');
+    }
+
+    switch (actionStore.icon) {
+      case 'update': {
+        classList.push('action__update');
+        child = null;
+        break;
+      }
+    }
+
+    return (
+      <a href="#" onClick={this.handleClick} className={classList.join(' ')} title={title}>{child}</a>
     );
   }
 }

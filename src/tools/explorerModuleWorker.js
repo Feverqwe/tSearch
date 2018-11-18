@@ -1,4 +1,5 @@
 import ModuleWorker from "./moduleWorker";
+import {ErrorWithCode} from "./errors";
 
 class ExplorerModuleWorker extends ModuleWorker {
   constructor(module) {
@@ -15,13 +16,23 @@ class ExplorerModuleWorker extends ModuleWorker {
   getItems() {
     return this.init().then(() => {
       return this.callFn('events.getItems');
-    });
+    }).then(postProcessResult);
   }
   sendCommand(command) {
     return this.init().then(() => {
       return this.callFn('events.command', [command]);
-    });
+    }).then(postProcessResult);
   }
 }
+
+const postProcessResult = (result) => {
+  if (!result) {
+    throw new ErrorWithCode(`Result is empty`, 'EMPTY_RESULT');
+  }
+  if (!result.success) {
+    throw new ErrorWithCode(`Result is not success`, 'NOT_SUCCESS');
+  }
+  return result;
+};
 
 export default ExplorerModuleWorker;
