@@ -40,8 +40,6 @@ const ExplorerModuleMetaStore = types.model('ExplorerModuleMetaStore', {
   actions: types.array(ExplorerModuleMetaActionStore),
   locales: types.frozen(),
   defaultLocale: types.maybe(types.string),
-}).actions(self => {
-  return {};
 }).views(self => {
   let locale = null;
 
