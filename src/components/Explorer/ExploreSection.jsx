@@ -1,7 +1,6 @@
 import {observer} from "mobx-react";
 import React from "react";
 import PropTypes from "prop-types";
-import Dialog from "../Dialog";
 import ExplorerSectionItem from "../../stores/Explorer/ExplorerSectionItem";
 
 @observer
@@ -70,7 +69,7 @@ class ExploreSection extends React.Component {
     let body = null;
     if (!this.sectionStore.collapsed) {
       body = (
-        <SectionBody setMinHeight={this.setMinHeight} minHeight={this.state.minHeight} explorerStore={this.explorerStore} sectionStore={this.sectionStore} moduleStore={this.moduleStore}/>
+        <SectionBody setMinHeight={this.setMinHeight} minHeight={this.state.minHeight} sectionStore={this.sectionStore}/>
       );
     }
 
@@ -245,9 +244,7 @@ class SectionHeader extends React.Component {
 @observer
 class SectionBody extends React.Component {
   static propTypes = {
-    explorerStore: PropTypes.object.isRequired,
     sectionStore: PropTypes.object.isRequired,
-    moduleStore: PropTypes.object.isRequired,
     minHeight: PropTypes.number.isRequired,
     setMinHeight: PropTypes.func.isRequired,
   };
@@ -264,26 +261,15 @@ class SectionBody extends React.Component {
     }
   }
 
-  /**@return {ExplorerStore}*/
-  get explorerStore() {
-    return this.props.explorerStore;
-  }
-
   /**@return {ExplorerSectionStore}*/
   get sectionStore() {
     return this.props.sectionStore;
   }
 
-  /**@return {ExplorerModuleStore}*/
-  get moduleStore() {
-    return this.props.moduleStore;
-  }
-
   getDisplayItemCount() {
-    const explorer = this.explorerStore;
     const section = this.sectionStore;
 
-    const itemCount = Math.ceil((explorer.page.width - 175) / (120 * section.zoom / 100 + 10 * 2)) - 1;
+    const itemCount = Math.ceil((section.page.width - 175) / (120 * section.zoom / 100 + 10 * 2)) - 1;
 
     return itemCount * section.rowCount;
   }

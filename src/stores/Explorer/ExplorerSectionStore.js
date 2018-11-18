@@ -1,7 +1,8 @@
-import {clone, flow, getParent, getRoot, isAlive, resolveIdentifier, types} from "mobx-state-tree";
+import {flow, getParentOfType, isAlive, resolveIdentifier, types} from "mobx-state-tree";
 import ExplorerModuleStore from "./ExplorerModuleStore";
 import getLogger from "../../tools/getLogger";
 import ExplorerItemStore from "./ExplorerItemStore";
+import RootStore from "../RootStore";
 
 const logger = getLogger('ExplorerSectionStore');
 
@@ -63,6 +64,11 @@ const ExplorerSectionStore = types.model('ExplorerSectionStore', {
         rowCount: self.rowCount,
         zoom: self.zoom,
       };
+    },
+    get page() {
+      if (isAlive(self)) {
+        return getParentOfType(self, RootStore).page;
+      }
     }
   };
 });

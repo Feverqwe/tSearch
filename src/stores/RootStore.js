@@ -10,7 +10,7 @@ import ProfileEditorStore from "./ProfileEditorStore";
 import TrackersStore from "./TrackersStore";
 import EditorStore from "./EditorStore";
 import CodeMakerStore from "./CodeMakerStore";
-
+import PageStore from "./PageStore";
 
 /**
  * @typedef {{}} RootStore
@@ -25,6 +25,7 @@ import CodeMakerStore from "./CodeMakerStore";
  * @property {ProfileEditorStore|undefined|null} profileEditor
  * @property {EditorStore|undefined|null} editor
  * @property {CodeMakerStore|undefined|null} codeMaker
+ * @property {PageStore} [page]
  * @property {function} createSearch
  * @property {function} destroySearch
  * @property {function} createProfileEditor
@@ -33,6 +34,7 @@ import CodeMakerStore from "./CodeMakerStore";
  * @property {function} destroyEditor
  * @property {function} createCodeMaker
  * @property {function} destroyCodeMaker
+ * @property {function} afterCreate
  */
 const RootStore = types.model('RootStore', {
   searchForm: types.optional(SearchForm, {}),
@@ -46,6 +48,7 @@ const RootStore = types.model('RootStore', {
   profileEditor: types.maybeNull(ProfileEditorStore),
   editor: types.maybeNull(EditorStore),
   codeMaker: types.maybeNull(CodeMakerStore),
+  page: types.optional(PageStore, {}),
 }).actions(/**RootStore*/self => {
   return {
     createSearch(query) {
@@ -73,6 +76,9 @@ const RootStore = types.model('RootStore', {
     },
     destroyCodeMaker() {
       self.codeMaker = null;
+    },
+    afterCreate() {
+      self.page.init();
     },
   };
 });
