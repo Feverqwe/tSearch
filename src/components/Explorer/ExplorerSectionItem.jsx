@@ -1,7 +1,7 @@
 import {observer} from "mobx-react";
 import React from "react";
 import PropTypes from "prop-types";
-import Dialog from "../../components/Dialog";
+import Dialog from "../Dialog";
 
 @observer
 class ExplorerSectionItem extends React.Component {

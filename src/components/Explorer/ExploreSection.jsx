@@ -1,7 +1,7 @@
 import {observer} from "mobx-react";
 import React from "react";
 import PropTypes from "prop-types";
-import ExplorerSectionItem from "../../stores/Explorer/ExplorerSectionItem";
+import ExplorerSectionItem from "./ExplorerSectionItem";
 
 @observer
 class ExploreSection extends React.Component {
