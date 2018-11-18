@@ -155,7 +155,9 @@ const getItems = () => {
 };
 
 API_event('getItems', () => {
-  throw new Error('Get items is not supported, yet');
+  return {
+    success: true,
+  };
 });
 
 API_event('command', command => {

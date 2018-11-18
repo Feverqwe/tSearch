@@ -54,24 +54,26 @@ const ExplorerSectionStore = types.model('ExplorerSectionStore', {
         self.module.createWorker();
         const result = yield self.module.worker.getItems();
         if (isAlive(self)) {
-          self.setItems(result.items);
+          if (result.items) {
+            self.setItems(result.items);
+          }
           self.state = 'done';
         }
       } catch (err) {
         if (err.code === 'AUTH_REQUIRED') {
           if (isAlive(self)) {
             self.setAuthRequired({url: err.url});
-            self.state = 'done';
           }
         } else {
           logger.error('fetchData error', id, err);
-          if (isAlive(self)) {
-            self.state = 'error';
-          }
+        }
+        if (isAlive(self)) {
+          self.state = 'error';
         }
       }
     }),
     fetchCommand: flow(function* (commandStore, actionStore) {
+      const command = actionStore.command;
       commandStore.setState('pending');
       self.setAuthRequired();
       try {
@@ -79,7 +81,7 @@ const ExplorerSectionStore = types.model('ExplorerSectionStore', {
           throw new Error(`Module is not exists`);
         }
         self.module.createWorker();
-        const result = yield self.module.worker.sendCommand(actionStore.command);
+        const result = yield self.module.worker.sendCommand(command);
         if (isAlive(self)) {
           if (result.items) {
             self.setItems(result.items);
@@ -90,13 +92,12 @@ const ExplorerSectionStore = types.model('ExplorerSectionStore', {
         if (err.code === 'AUTH_REQUIRED') {
           if (isAlive(self)) {
             self.setAuthRequired({url: err.url});
-            commandStore.setState('done');
           }
         } else {
-          logger.error('fetchCommand error', actionStore.command, err);
-          if (isAlive(self)) {
-            commandStore.setState('error');
-          }
+          logger.error('fetchCommand error', command, err);
+        }
+        if (isAlive(self)) {
+          commandStore.setState('error');
         }
       }
     }),
