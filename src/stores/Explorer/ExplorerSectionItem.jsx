@@ -110,20 +110,20 @@ class ExplorerSectionItem extends React.Component {
     const actions = [];
     if (sectionStore.id === 'favorite') {
       actions.push(
-        <div key={'rmFavorite'} onClick={this.handleRemoveFavorite} className="action__rmFavorite"
-             title={chrome.i18n.getMessage('removeFromFavorite')}/>
+        <div key={'rmFavorite'} onClick={this.handleRemoveFavorite} title={chrome.i18n.getMessage('removeFromFavorite')}
+             className="action__rmFavorite"/>
       );
       actions.push(
-        <div key={'move'} className="action__move" title={chrome.i18n.getMessage('move')}/>
+        <div key={'move'} title={chrome.i18n.getMessage('move')} className="action__move"/>
       );
       actions.push(
-        <div key={'edit'} onClick={this.handleEditFavorite} className="action__edit"
-             title={chrome.i18n.getMessage('edit')}/>
+        <div key={'edit'} onClick={this.handleEditFavorite} title={chrome.i18n.getMessage('edit')}
+             className="action__edit"/>
       );
     } else {
       actions.push(
-        <div key={'favorite'} onClick={this.handleAddFavorite} className="action__favorite"
-             title={chrome.i18n.getMessage('addInFavorite')}/>,
+        <div key={'favorite'} onClick={this.handleAddFavorite} title={chrome.i18n.getMessage('addInFavorite')}
+             className="action__favorite"/>,
       );
     }
 
@@ -133,18 +133,20 @@ class ExplorerSectionItem extends React.Component {
         <Dialog className={'dialog-poster_edit'} onClose={this.handleDialogClose}>
           <form onSubmit={this.handleDialogSave}>
             <span className="dialog__label">{chrome.i18n.getMessage('title')}</span>
-            <input ref={this.refTitle} className="input__input" name="title" type="text" defaultValue={itemStore.title}/>
+            <input ref={this.refTitle} defaultValue={itemStore.title} className="input__input" name="title"
+                   type="text"/>
             <span className="dialog__label">{chrome.i18n.getMessage('title')}</span>
-            <input ref={this.refTitleOriginal} className="input__input" name="titleOriginal" type="text"
-                   defaultValue={itemStore.titleOriginal}/>
+            <input ref={this.refTitleOriginal} defaultValue={itemStore.titleOriginal} className="input__input"
+                   name="titleOriginal" type="text"/>
             <span className="dialog__label">{chrome.i18n.getMessage('imageUrl')}</span>
-            <input ref={this.refPoster} className="input__input" name="poster" type="text" defaultValue={itemStore.poster}/>
+            <input ref={this.refPoster} defaultValue={itemStore.poster} className="input__input" name="poster"
+                   type="text"/>
             <span className="dialog__label">{chrome.i18n.getMessage('descUrl')}</span>
-            <input ref={this.refUrl} className="input__input" name="url" type="text" defaultValue={itemStore.url}/>
+            <input ref={this.refUrl} defaultValue={itemStore.url} className="input__input" name="url" type="text"/>
             <div className="dialog__button_box">
-              <input className="button button-save" type="submit" value={chrome.i18n.getMessage('save')}/>
-              <input className="button button-cancel" type="button" onClick={this.handleDialogCancel}
-                     value={chrome.i18n.getMessage('cancel')}/>
+              <input value={chrome.i18n.getMessage('save')} className="button button-save" type="submit"/>
+              <input onClick={this.handleDialogCancel} value={chrome.i18n.getMessage('cancel')}
+                     className="button button-cancel" type="button"/>
             </div>
           </form>
         </Dialog>
@@ -156,19 +158,20 @@ class ExplorerSectionItem extends React.Component {
     };
 
     return (
-      <li className="section__poster poster" style={itemStyle} data-index={this.props.index}>
+      <li data-index={this.props.index} style={itemStyle} className="section__poster poster">
         {dialog}
         <div className="poster__image">
           {actions}
-          <div className="action__quick_search" title={chrome.i18n.getMessage('quickSearch')}>{'?'}</div>
-          <a className="image__more_link" href={itemStore.url} target="_blank" title={chrome.i18n.getMessage('readMore')}/>
-          <a className="image__search_link" href="#" title={itemStore.title}>
-            <img className="image__image" src={posterUrl} onError={this.handlePosterError}/>
+          <div title={chrome.i18n.getMessage('quickSearch')} className="action__quick_search">{'?'}</div>
+          <a href={itemStore.url} title={chrome.i18n.getMessage('readMore')} className="image__more_link"
+             target="_blank"/>
+          <a title={itemStore.title} className="image__search_link" href="#">
+            <img src={posterUrl} className="image__image" onError={this.handlePosterError}/>
           </a>
         </div>
         <div className="poster__title">
           <span>
-            <a className="poster__search_link" href="#" title={itemStore.title}>{itemStore.title}</a>
+            <a title={itemStore.title} className="poster__search_link" href="#">{itemStore.title}</a>
           </span>
         </div>
       </li>

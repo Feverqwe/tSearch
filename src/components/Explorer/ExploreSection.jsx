@@ -168,8 +168,7 @@ class SectionHeader extends React.Component {
     if (!section.collapsed) {
       if (module.meta.siteURL) {
         openSite = (
-          <a className="action action__open" target="_blank" href={module.meta.siteURL}
-             title={chrome.i18n.getMessage('goToTheWebsite')}/>
+          <a href={module.meta.siteURL} title={chrome.i18n.getMessage('goToTheWebsite')} className="action action__open" target="_blank"/>
         );
       }
 
@@ -208,8 +207,7 @@ class SectionHeader extends React.Component {
           <div className={'section__setup'}>
             <input ref={this.refZoomRange} onChange={this.handleZoomRangeChange} defaultValue={section.zoom} type="range"
                    className="setup__size_range" min="1" max="150"/>
-            <a onClick={this.handleResetItemZoom} className="setup__size_default" href="#"
-               title={chrome.i18n.getMessage('default')}/>
+            <a onClick={this.handleResetItemZoom} title={chrome.i18n.getMessage('default')} className="setup__size_default" href="#"/>
             <select ref={this.refRowCount} onChange={this.handleRowCountChange} defaultValue={section.rowCount}
                     className="setup__lines">
               <option value="1">1</option>
@@ -227,14 +225,14 @@ class SectionHeader extends React.Component {
         <div className="section__actions">
           {openSite}
           {moduleActions}
-          <a href={"#"} onClick={this.handleOptionsClick} className="action action__setup" title={chrome.i18n.getMessage('setupView')}/>
+          <a href={"#"} onClick={this.handleOptionsClick} title={chrome.i18n.getMessage('setupView')} className="action action__setup"/>
           {options}
         </div>
       );
     }
 
     return (
-      <div className="section__head" onClick={this.handleCollapse}>
+      <div onClick={this.handleCollapse} className="section__head">
         <div className="section__move"/>
         <div className="section__title">{module.meta.getName()}</div>
         {actionsCtr}
@@ -335,7 +333,7 @@ class SectionBody extends React.Component {
       <>
         <ExplorerSectionPages page={pageNumber} count={items.length} displayCount={displayItemCount}
                              setPage={this.setPage}/>
-        <ul ref={this.refBody} className="section__body" style={bodyStyle}>{contentItems}</ul>
+        <ul ref={this.refBody} style={bodyStyle} className="section__body">{contentItems}</ul>
       </>
     );
   }
