@@ -238,7 +238,7 @@ class ExplorerAction extends React.Component {
 
   /**@return ExplorerCommandStore*/
   get commandStore() {
-    return this.sectionStore.getCommand(this.props.index)
+    return this.sectionStore.commands.get(this.props.index)
   }
 
   /**@return ExplorerModuleMetaActionStore*/

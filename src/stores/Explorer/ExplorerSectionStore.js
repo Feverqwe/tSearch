@@ -28,7 +28,6 @@ const logger = getLogger('ExplorerSectionStore');
  * @property {*} module
  * @property {function} getSnapshot
  * @property {*} page
- * @property {function} getCommand
  */
 const ExplorerSectionStore = types.model('ExplorerSectionStore', {
   id: types.identifier,
@@ -139,9 +138,6 @@ const ExplorerSectionStore = types.model('ExplorerSectionStore', {
       if (isAlive(self)) {
         return getParentOfType(self, RootStore).page;
       }
-    },
-    getCommand(index) {
-      return self.commands.get(index);
     },
   };
 });
