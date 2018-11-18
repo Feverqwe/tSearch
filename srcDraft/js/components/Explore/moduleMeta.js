@@ -1,6 +1,6 @@
-import getLocale from "../../tools/getLocale";
+import getLocale from "../../../../src/tools/getLocale";
 import {types} from "mobx-state-tree";
-import processLocale from "../../tools/processLocale";
+import processLocale from "../../../../src/tools/processLocale";
 import exploreModuleMetaActionModel from "./moduleMetaAction";
 
 /**

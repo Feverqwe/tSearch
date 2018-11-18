@@ -1,7 +1,7 @@
 import {getParent, resolveIdentifier, types} from "mobx-state-tree";
 import moduleModel from "./module";
 import favoriteModuleModel from "./favoriteModule";
-import getLogger from "../../tools/getLogger";
+import getLogger from "../../../../src/tools/getLogger";
 
 const debug = getLogger('section');
 

@@ -1,6 +1,6 @@
 import {getParent, types} from "mobx-state-tree";
-import processLocale from "../../tools/processLocale";
-import getLogger from "../../tools/getLogger";
+import processLocale from "../../../../src/tools/processLocale";
+import getLogger from "../../../../src/tools/getLogger";
 
 const debug = getLogger('moduleMeta');
 
