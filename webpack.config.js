@@ -35,6 +35,12 @@ const config = {
         commons: {
           name: "commons",
           chunks: chunk => ['bg', 'popup', 'index'].indexOf(chunk.name) !== -1,
+          minChunks: 3,
+          priority: 0
+        },
+        'commons_ui': {
+          name: "commons-ui",
+          chunks: chunk => ['popup', 'index'].indexOf(chunk.name) !== -1,
           minChunks: 2,
           priority: -10
         },
@@ -109,12 +115,12 @@ const config = {
     new HtmlWebpackPlugin({
       filename: 'popup.html',
       template: './src/templates/popup.html',
-      chunks: ['commons', 'popup']
+      chunks: ['commons', 'commons-ui', 'popup']
     }),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: './src/templates/index.html',
-      chunks: ['commons', 'index']
+      chunks: ['commons', 'commons-ui', 'index']
     }),
     /*new HtmlWebpackPlugin({
       filename: 'history.html',
