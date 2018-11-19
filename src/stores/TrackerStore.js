@@ -77,6 +77,9 @@ const TrackerStore = types.model('TrackerStore', {
   let attached = 0;
   let worker = null;
   return {
+    getSnapshot() {
+      return JSON.parse(JSON.stringify(self));
+    },
     getIconUrl() {
       if (self.meta.icon64) {
         return self.meta.icon64;

@@ -218,7 +218,7 @@ const updateTracker = (id) => {
           code: code,
           options: localTracker.options,
         });
-        const tracker = trackerStore.toJSON();
+        const tracker = trackerStore.getSnapshot();
         destroy(trackerStore);
 
         const isNewVersion = compareVersions(version, tracker.meta.version) > 0;
@@ -258,7 +258,7 @@ const updateExplorerModule = (id) => {
           code: code,
           options: localModule.options,
         });
-        const explorerModule = explorerModuleStore.toJSON();
+        const explorerModule = explorerModuleStore.getSnapshot();
         destroy(explorerModuleStore);
 
         const isNewVersion = compareVersions(version, explorerModule.meta.version) > 0;

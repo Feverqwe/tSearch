@@ -37,6 +37,9 @@ const ExplorerModuleStore = types.model('ExplorerModuleStore', {
   let attached = 0;
   let worker = null;
   return {
+    getSnapshot() {
+      return JSON.parse(JSON.stringify(self));
+    },
     get worker() {
       return worker;
     },
