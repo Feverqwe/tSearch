@@ -74,7 +74,7 @@ const ExplorerSectionStore = types.model('ExplorerSectionStore', {
           if (result.items) {
             self.setItems(result.items);
             if (!cacheItems) {
-              cache.set(id, result.items);
+              cache.set(id, self.items);
             }
           }
         }
