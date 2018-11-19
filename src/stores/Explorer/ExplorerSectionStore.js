@@ -4,12 +4,11 @@ import getLogger from "../../tools/getLogger";
 import ExplorerItemStore from "./ExplorerItemStore";
 import RootStore from "../RootStore";
 import ExplorerCommandStore from "./ExplorerCommandStore";
-import getNow from "../../tools/getNow";
-
-const promiseLimit = require('promise-limit');
+import ExplorerCache from "../../tools/explorerCache";
 
 const logger = getLogger('ExplorerSectionStore');
-const limitOne = promiseLimit(1);
+
+const cache = new ExplorerCache();
 
 /**
  * @typedef {{}} ExplorerSectionStore
@@ -62,7 +61,7 @@ const ExplorerSectionStore = types.model('ExplorerSectionStore', {
         }
         let cacheItems = null;
         if (useCache) {
-          cacheItems = yield fromCache(id, module.meta.cacheTTL);
+          cacheItems = yield cache.get(id, module.meta.cacheTTL);
         }
         let result = {items: cacheItems};
         if (!cacheItems) {
@@ -72,9 +71,7 @@ const ExplorerSectionStore = types.model('ExplorerSectionStore', {
           });
         }
         if (!cacheItems && result.items) {
-          limitOne(() => {
-            return inCache(id, result.items);
-          });
+          cache.set(id, result.items);
         }
         if (isAlive(self)) {
           if (result.items) {
@@ -151,26 +148,5 @@ const ExplorerSectionStore = types.model('ExplorerSectionStore', {
     },
   };
 });
-
-const inCache = async (key, value) => {
-  const storage = await new Promise(resolve => chrome.storage.local.get({
-    explorerCache: {}
-  }, resolve));
-  storage.explorerCache[key] = {
-    value,
-    createdAt: getNow(),
-  };
-  return await new Promise(resolve => chrome.storage.local.set(storage, resolve));
-};
-
-const fromCache = async (key, ttl) => {
-  const storage = await new Promise(resolve => chrome.storage.local.get({
-    explorerCache: {}
-  }, resolve));
-  const item = storage.explorerCache[key];
-  if (item && (!ttl || item.createdAt > getNow() - ttl)) {
-    return item.value;
-  }
-};
 
 export default ExplorerSectionStore;
