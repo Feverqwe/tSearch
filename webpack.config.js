@@ -2,26 +2,14 @@ require('./builder/defaultBuildEnv');
 const {DefinePlugin} = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const path = require('path');
 
-const isWatch = process.argv.some(function (arg) {
-  return arg === '--watch';
-});
-
-const outputPath = path.resolve('./dist/');
-
-const env = {
-  targets: {
-    browsers: ['Chrome >= 60']
-  }
-};
-
-if (isWatch) {
-  env.targets.browsers = ['Chrome >= 68'];
-} else {
-  BUILD_ENV.FLAG_ENABLE_LOGGER = false;
-}
+const outputPath = BUILD_ENV.outputPath;
+const mode = BUILD_ENV.mode;
+const devtool = BUILD_ENV.devtool;
+const babelEnvOptions = BUILD_ENV.babelEnvOptions;
 
 const config = {
   entry: {
@@ -39,7 +27,8 @@ const config = {
     filename: '[name].js',
     chunkFilename: 'chunk-[name].js',
   },
-  devtool: 'source-map',
+  mode: mode,
+  devtool: devtool,
   optimization: {
     splitChunks: {
       cacheGroups: {
@@ -67,7 +56,7 @@ const config = {
             ],
             presets: [
               '@babel/preset-react',
-              ['@babel/preset-env', env]
+              ['@babel/preset-env', babelEnvOptions]
             ]
           }
         }
@@ -75,7 +64,7 @@ const config = {
       {
         test: /\.(css|less)$/,
         use: [{
-          loader: "style-loader"
+          loader: MiniCssExtractPlugin.loader
         }, {
           loader: "css-loader"
         }, {
@@ -102,11 +91,16 @@ const config = {
     new CleanWebpackPlugin(outputPath),
     new CopyWebpackPlugin([
       {from: './src/manifest.json',},
-      {from: './src/assets', to: './assets'},
+      {from: './src/assets/img', to: './assets/img'},
+      {from: './src/assets/icons', to: './assets/icons'},
       {from: './src/_locales', to: './_locales'},
       {from: './src/trackers', to: './trackers'},
       {from: './src/explorerModules', to: './explorerModules'},
     ]),
+    new MiniCssExtractPlugin({
+      filename: '[name].css',
+      chunkFilename: "chunk-[id].css"
+    }),
     new HtmlWebpackPlugin({
       filename: 'sandbox.html',
       template: './src/templates/sandbox.html',
@@ -146,8 +140,21 @@ const config = {
   ]
 };
 
-/*if (!isWatch) {
-  Object.keys(config.entry).forEach(entryName => {
+if (mode === 'production') {
+  config.plugins.push(
+    new OptimizeCssAssetsPlugin({
+      assetNameRegExp: /\.css$/g,
+      cssProcessor: require('cssnano'),
+      cssProcessorPluginOptions: {
+        preset: [
+          'default',
+          {discardComments: {removeAll: true}}
+        ],
+      },
+      canPrint: true
+    }),
+  );
+  /*Object.keys(config.entry).forEach(entryName => {
     let value = config.entry[entryName];
     if (!Array.isArray(value)) {
       value = [value];
@@ -155,7 +162,7 @@ const config = {
     value.unshift('babel-polyfill');
 
     config.entry[entryName] = value;
-  });
-}*/
+  });*/
+}
 
 module.exports = config;

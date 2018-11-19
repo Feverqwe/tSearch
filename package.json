@@ -5,8 +5,8 @@
     "buildExplorersJson": "node ./builder/buildExplorersJson.js",
     "buildTrackersJson": "node ./builder/buildTrackersJson.js",
     "watch": "webpack --mode development --watch --config webpack.config.js",
-    "build": "webpack --mode production --config webpack.config.js",
-    "release": "webpack --mode production --devtool none --config webpack.config.js"
+    "build": "webpack --mode development --config webpack.config.js",
+    "release": "webpack --mode production --config webpack.config.js"
   },
   "dependencies": {
     "abortcontroller-polyfill": "^1.1.9",
@@ -62,10 +62,13 @@
     "clean-webpack-plugin": "^0.1.19",
     "copy-webpack-plugin": "^4.6.0",
     "css-loader": "^1.0.1",
+    "cssnano": "^4.1.7",
     "fs-extra": "^7.0.1",
     "html-webpack-plugin": "^3.2.0",
     "less": "^3.8.1",
     "less-loader": "^4.1.0",
+    "mini-css-extract-plugin": "^0.4.4",
+    "optimize-css-assets-webpack-plugin": "^5.0.1",
     "script-loader": "^0.7.2",
     "style-loader": "^0.23.1",
     "url-loader": "^1.1.2",
