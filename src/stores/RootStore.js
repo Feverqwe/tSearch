@@ -86,9 +86,7 @@ const RootStore = types.model('RootStore', {
     destroyCodeMaker() {
       self.codeMaker = null;
     },
-    afterCreate() {
-      self.page.init();
-
+    checkForUpdate() {
       checkForUpdate().then(() => {
         return new Promise((resolve, reject) => {
           chrome.runtime.sendMessage({action: 'update'}, (result) => {
@@ -107,6 +105,10 @@ const RootStore = types.model('RootStore', {
           logger.error('checkForUpdate error:', err);
         }
       });
+    },
+    afterCreate() {
+      self.page.init();
+      self.checkForUpdate();
     },
   };
 });
