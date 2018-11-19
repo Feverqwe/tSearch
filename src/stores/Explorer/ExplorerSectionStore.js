@@ -21,8 +21,8 @@ const limitOne = promiseLimit(1);
  * @property {{url:string}|undefined} authRequired
  * @property {ExplorerItemStore[]} items
  * @property {Map<*,ExplorerCommandStore>} commands
- * @property {function:Promise} fetchData
- * @property {function:Promise} fetchCommand
+ * @property {function} setState
+ * @property {function:Promise} fetch
  * @property {function} setZoom
  * @property {function} setRowCount
  * @property {function} toggleCollapse
@@ -32,6 +32,8 @@ const limitOne = promiseLimit(1);
  * @property {*} module
  * @property {function} getSnapshot
  * @property {*} page
+ * @property {function} fetchData
+ * @property {function} fetchCommand
  */
 const ExplorerSectionStore = types.model('ExplorerSectionStore', {
   id: types.identifier,

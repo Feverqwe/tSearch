@@ -17,13 +17,13 @@ import processLocale from "../../tools/processLocale";
  * @property {string|undefined} supportURL
  * @property {string[]} require
  * @property {string[]} connect
+ * @property {number} [cacheTTL]
  * @property {ExplorerModuleMetaActionStore[]} actions
  * @property {*} locales
  * @property {string|undefined} defaultLocale
  * @property {function} getLocale
  * @property {function} getName
  */
-
 const ExplorerModuleMetaStore = types.model('ExplorerModuleMetaStore', {
   name: types.string,
   version: types.string,

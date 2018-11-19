@@ -14,6 +14,9 @@ const logger = getLogger('ExplorerModuleStore');
  * @property {string} code
  * @property {function} setOptions
  * @property {*} worker
+ * @property {function} attach
+ * @property {function} deattach
+ * @property {function} handleAttachedChange
  * @property {function} createWorker
  * @property {function} destroyWorker
  * @property {function} reloadWorker
