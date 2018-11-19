@@ -19,7 +19,7 @@
         "keyword" : "tms"
     },
     "background": {
-        "scripts": ["bg.js"],
+        "scripts": ["chunk-commons.js", "bg.js"],
         "persistent": false
     },
     "sandbox": {

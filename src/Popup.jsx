@@ -9,12 +9,7 @@ const qs = require('querystring');
 const rootStore = window.rootStore = RootStore.create();
 
 class Popup extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
-  handleSubmit(query) {
+  handleSubmit = (query) => {
     let url = 'index.html';
     if (query) {
       url += '#/search?' + qs.stringify({
@@ -22,7 +17,8 @@ class Popup extends React.Component {
       });
     }
     chrome.tabs.create({url: url});
-  }
+  };
+
   render() {
     return (
       <div className="search">
