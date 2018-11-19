@@ -155,7 +155,6 @@ const update = () => {
     explorerModules: {},
   }).then(storage => {
     const trackerIds = [];
-    const explorerModuleIds = [];
     Object.entries(storage.trackers).forEach(([id, tracker]) => {
       try {
         const trackerMetaStore = TrackerOptionsStore.create(tracker.options || {});
@@ -166,6 +165,8 @@ const update = () => {
         logger.error(`Create TrackerMetaStore error`, tracker.id);
       }
     });
+
+    const explorerModuleIds = [];
     Object.entries(storage.explorerModules).forEach(([id, module]) => {
       try {
         const explorerModuleMetaStore = TrackerOptionsStore.create(module.options || {});
@@ -176,20 +177,23 @@ const update = () => {
         logger.error(`Create ExplorerModuleMetaStore error`, module.id);
       }
     });
-    return Promise.all([].concat(
-      trackerIds.map(id => updateTracker(id).then(result => {
+
+    return Promise.all([
+      Promise.all(trackerIds.map(id => updateTracker(id).then(result => {
         return {id, result};
       }, err => {
         logger.error(`updateTracker ${id} error`, err);
-        return {id, type: 'tracker', error: serializeError(err)};
-      })),
-      explorerModuleIds.map(id => updateExplorerModule(id).then(result => {
-        return {id, type: 'explorerModule', result};
+        return {id, error: serializeError(err)};
+      }))),
+      Promise.all(explorerModuleIds.map(id => updateExplorerModule(id).then(result => {
+        return {id, result};
       }, err => {
         logger.error(`updateExplorerModule ${id} error`, err);
         return {id, error: serializeError(err)};
-      })),
-    ));
+      })))
+    ]).then(([trackers, explorerModules]) => {
+      return {trackers, explorerModules};
+    });
   });
 };
 
