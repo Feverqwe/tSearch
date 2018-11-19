@@ -70,12 +70,12 @@ const ExplorerSectionStore = types.model('ExplorerSectionStore', {
             module.deattach();
           });
         }
-        if (!cacheItems && result.items) {
-          cache.set(id, result.items);
-        }
         if (isAlive(self)) {
           if (result.items) {
             self.setItems(result.items);
+            if (!cacheItems) {
+              cache.set(id, result.items);
+            }
           }
         }
         if (isAlive(stateStore)) {
