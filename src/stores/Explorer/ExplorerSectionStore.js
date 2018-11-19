@@ -74,7 +74,7 @@ const ExplorerSectionStore = types.model('ExplorerSectionStore', {
           if (result.items) {
             self.setItems(result.items);
             if (!cacheItems) {
-              cache.set(id, self.items);
+              cache.set(id, self.getItemsSnapshot());
             }
           }
         }
@@ -127,6 +127,11 @@ const ExplorerSectionStore = types.model('ExplorerSectionStore', {
         rowCount: self.rowCount,
         zoom: self.zoom,
       };
+    },
+    getItemsSnapshot() {
+      return self.items.map(item => {
+        return item.toJSON();
+      });
     },
     get page() {
       if (isAlive(self)) {
