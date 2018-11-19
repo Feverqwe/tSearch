@@ -196,8 +196,8 @@ const update = () => {
 const updateTracker = (id) => {
   return oneLimit(() => {
     return storageGet({trackers: {}}).then(storage => {
-      const localTrackerStore = TrackerStore.create(storage.trackers[id]);
-      const {downloadURL, version} = localTrackerStore.meta;
+      const localTracker = storage.trackers[id];
+      const {downloadURL, version} = localTracker.meta;
       if (!downloadURL) {
         throw new ErrorWithCode('downloadURL is empty', 'DOWNLOAD_URL_IS_EMPTY');
       }
@@ -212,7 +212,7 @@ const updateTracker = (id) => {
           id: id,
           meta: getTrackerCodeMeta(code),
           code: code,
-          options: localTrackerStore.options.toJSON(),
+          options: localTracker.options,
         });
         const tracker = trackerStore.toJSON();
         destroy(trackerStore);
@@ -236,8 +236,8 @@ const updateTracker = (id) => {
 const updateExplorerModule = (id) => {
   return oneLimit(() => {
     return storageGet({explorerModules: {}}).then(storage => {
-      const localExplorerModuleStore = ExplorerModuleStore.create(storage.explorerModules[id]);
-      const {downloadURL, version} = localExplorerModuleStore.meta;
+      const localModule = storage.explorerModules[id];
+      const {downloadURL, version} = localModule.meta;
       if (!downloadURL) {
         throw new ErrorWithCode('downloadURL is empty', 'DOWNLOAD_URL_IS_EMPTY');
       }
@@ -252,7 +252,7 @@ const updateExplorerModule = (id) => {
           id: id,
           meta: getExploreModuleCodeMeta(code),
           code: code,
-          options: localExplorerModuleStore.options.toJSON(),
+          options: localModule.options,
         });
         const explorerModule = explorerModuleStore.toJSON();
         destroy(explorerModuleStore);
