@@ -41,10 +41,6 @@ class ComponentLoader extends React.Component {
           result = await import('../pages/ProfileEditor');
           break;
         }
-        case 'search': {
-          result = await import('../pages/Search');
-          break;
-        }
         case 'history': {
           result = await import('../pages/History');
           break;

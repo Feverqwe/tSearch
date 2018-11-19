@@ -2,6 +2,7 @@ import React from 'react';
 import NotFound from "./pages/NotFound";
 import {Redirect} from "react-router-dom";
 import ComponentLoader from "./components/ComponentLoader";
+import Search from "./pages/Search";
 
 const qs = require('querystring');
 const uuid = require('uuid/v4');
