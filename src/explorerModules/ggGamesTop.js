@@ -2,6 +2,7 @@
 // @name __MSG_name__
 // @connect *://*.gameguru.ru/*
 // @version 1.0
+// @cacheTTL 86400
 // @locale ru {"name": "Игры: Лучшие"}
 // @locale en {"name": "Games: Best"}
 // @defaultLocale en

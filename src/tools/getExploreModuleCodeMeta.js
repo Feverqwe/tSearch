@@ -11,6 +11,7 @@ const fieldType = {
   siteURL: 'string',
   downloadURL: 'string',
   supportURL: 'string',
+  cacheTTL: 'number',
   require: 'array',
   connect: '*array!connect',
   action: 'array!action',

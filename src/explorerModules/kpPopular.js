@@ -2,6 +2,7 @@
 // @name __MSG_name__
 // @connect *://*.kinopoisk.ru/*
 // @version 1.0
+// @cacheTTL 86400
 // @locale ru {"name": "Фильмы"}
 // @locale en {"name": "Movies"}
 // @defaultLocale en

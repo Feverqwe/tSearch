@@ -66,16 +66,21 @@ const getCodeMeta = (code, fieldScheme) => {
 
     const validators = typeValidators.map(type => {
       switch (type) {
-        case 'version':
+        case 'version': {
           return processVersion;
-        case 'connect':
+        }
+        case 'connect': {
           return processConnect;
-        case 'action':
+        }
+        case 'action': {
           return processAction;
-        case 'locale':
+        }
+        case 'locale': {
           return processLocale;
-        default:
+        }
+        default: {
           throw new Error(`Validator is not found ${type}`);
+        }
       }
     });
 
@@ -105,16 +110,26 @@ const getCodeMeta = (code, fieldScheme) => {
           const value = m[2].trim();
           const type = keyType[key];
           switch (type) {
-            case 'string':
+            case 'string': {
               meta[key] = value;
               break;
-            case 'array':
+            }
+            case 'number': {
+              const int = parseInt(value, 10);
+              if (!Number.isFinite(int)) {
+                throw new Error(`Parse field ${key}: ${meta[key]} error!`);
+              }
+              meta[key] = int;
+              break;
+            }
+            case 'array': {
               if (!meta[key]) {
                 meta[key] = [];
               }
               meta[key].push(value);
               break;
-            case 'object':
+            }
+            case 'object': {
               if (!meta[key]) {
                 meta[key] = {};
               }
@@ -126,6 +141,7 @@ const getCodeMeta = (code, fieldScheme) => {
               const _value = m[2].trim();
               Object.assign(meta[key], {[_key]: _value});
               break;
+            }
             default: {
               debug(`Skip meta key ${key}: ${value}`);
             }

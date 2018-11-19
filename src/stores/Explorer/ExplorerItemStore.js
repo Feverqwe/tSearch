@@ -17,7 +17,7 @@ const ExplorerItemStore = types.model('ExplorerItemStore', {
   url: types.string,
   poster: types.maybe(types.string),
   extra: types.frozen(),
-}).actions(/**ExploreSectionItemM*/self => {
+}).actions(/**ExplorerItemStore*/self => {
   return {
     updateProps(props) {
       Object.assign(self, props);
@@ -26,7 +26,7 @@ const ExplorerItemStore = types.model('ExplorerItemStore', {
       return module.saveItems();
     }
   };
-}).views(/**ExploreSectionItemM*/self => {
+}).views(/**ExplorerItemStore*/self => {
   return {
     handleAddFavorite(e) {
       e.preventDefault();

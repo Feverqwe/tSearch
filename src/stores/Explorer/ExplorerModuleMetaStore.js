@@ -37,6 +37,7 @@ const ExplorerModuleMetaStore = types.model('ExplorerModuleMetaStore', {
   supportURL: types.maybe(types.string),
   require: types.array(types.string),
   connect: types.array(types.string),
+  cacheTTL: types.optional(types.number, 0),
   actions: types.array(ExplorerModuleMetaActionStore),
   locales: types.frozen(),
   defaultLocale: types.maybe(types.string),

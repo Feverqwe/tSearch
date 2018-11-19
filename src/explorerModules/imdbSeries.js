@@ -2,6 +2,7 @@
 // @name __MSG_name__
 // @connect *://*.imdb.com/*
 // @version 1.0
+// @cacheTTL 86400
 // @locale ru {"name": "IMDB: Сериалы"}
 // @locale en {"name": "IMDB: TV Series"}
 // @defaultLocale en

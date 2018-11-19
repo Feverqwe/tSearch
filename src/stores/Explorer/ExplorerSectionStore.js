@@ -4,8 +4,12 @@ import getLogger from "../../tools/getLogger";
 import ExplorerItemStore from "./ExplorerItemStore";
 import RootStore from "../RootStore";
 import ExplorerCommandStore from "./ExplorerCommandStore";
+import getNow from "../../tools/getNow";
+
+const promiseLimit = require('promise-limit');
 
 const logger = getLogger('ExplorerSectionStore');
+const limitOne = promiseLimit(1);
 
 /**
  * @typedef {{}} ExplorerSectionStore
@@ -42,21 +46,41 @@ const ExplorerSectionStore = types.model('ExplorerSectionStore', {
   commands: types.map(ExplorerCommandStore),
 }).actions(self => {
   return {
-    fetchData: flow(function* () {
+    setState(state) {
+      self.state = state;
+    },
+    fetch: flow(function* (stateStore, useCache, fn) {
       const id = self.id;
-      self.state = 'pending';
+      const module = self.module;
+      stateStore.setState('pending');
       self.setAuthRequired();
       try {
-        if (!self.module) {
+        if (!module) {
           throw new Error(`Module is not exists`);
         }
-        self.module.createWorker();
-        const result = yield self.module.worker.getItems();
+        let cacheItems = null;
+        if (useCache) {
+          cacheItems = yield fromCache(id, module.meta.cacheTTL);
+        }
+        let result = {items: cacheItems};
+        if (!cacheItems) {
+          module.attach();
+          result = yield fn().finally(() => {
+            module.deattach();
+          });
+        }
+        if (!cacheItems && result.items) {
+          limitOne(() => {
+            return inCache(id, result.items);
+          });
+        }
         if (isAlive(self)) {
           if (result.items) {
             self.setItems(result.items);
           }
-          self.state = 'done';
+        }
+        if (isAlive(stateStore)) {
+          stateStore.setState('done');
         }
       } catch (err) {
         if (err.code === 'AUTH_REQUIRED') {
@@ -64,39 +88,10 @@ const ExplorerSectionStore = types.model('ExplorerSectionStore', {
             self.setAuthRequired({url: err.url});
           }
         } else {
-          logger.error('fetchData error', id, err);
+          logger.error('fetch error', id, err);
         }
-        if (isAlive(self)) {
-          self.state = 'error';
-        }
-      }
-    }),
-    fetchCommand: flow(function* (commandStore, actionStore) {
-      const command = actionStore.command;
-      commandStore.setState('pending');
-      self.setAuthRequired();
-      try {
-        if (!self.module) {
-          throw new Error(`Module is not exists`);
-        }
-        self.module.createWorker();
-        const result = yield self.module.worker.sendCommand(command);
-        if (isAlive(self)) {
-          if (result.items) {
-            self.setItems(result.items);
-          }
-          commandStore.setState('done');
-        }
-      } catch (err) {
-        if (err.code === 'AUTH_REQUIRED') {
-          if (isAlive(self)) {
-            self.setAuthRequired({url: err.url});
-          }
-        } else {
-          logger.error('fetchCommand error', command, err);
-        }
-        if (isAlive(self)) {
-          commandStore.setState('error');
+        if (isAlive(stateStore)) {
+          stateStore.setState('error');
         }
       }
     }),
@@ -139,7 +134,41 @@ const ExplorerSectionStore = types.model('ExplorerSectionStore', {
         return getParentOfType(self, RootStore).page;
       }
     },
+    fetchData() {
+      const module = self.module;
+      return self.fetch(self, true, () => {
+        return module.worker.getItems();
+      });
+    },
+    fetchCommand(commandStore, actionStore) {
+      const module = self.module;
+      const command = actionStore.command;
+      return self.fetch(commandStore, false, () => {
+        return module.worker.sendCommand(command);
+      });
+    },
   };
 });
+
+const inCache = async (key, value) => {
+  const storage = await new Promise(resolve => chrome.storage.local.get({
+    explorerCache: {}
+  }, resolve));
+  storage.explorerCache[key] = {
+    value,
+    createdAt: getNow(),
+  };
+  return await new Promise(resolve => chrome.storage.local.set(storage, resolve));
+};
+
+const fromCache = async (key, ttl) => {
+  const storage = await new Promise(resolve => chrome.storage.local.get({
+    explorerCache: {}
+  }, resolve));
+  const item = storage.explorerCache[key];
+  if (item && (!ttl || item.createdAt > getNow() - ttl)) {
+    return item.value;
+  }
+};
 
 export default ExplorerSectionStore;

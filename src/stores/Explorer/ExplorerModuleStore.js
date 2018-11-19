@@ -31,10 +31,28 @@ const ExplorerModuleStore = types.model('ExplorerModuleStore', {
     }
   };
 }).views(/**ExplorerModuleStore*/self => {
+  let attached = 0;
   let worker = null;
   return {
     get worker() {
       return worker;
+    },
+    attach() {
+      attached++;
+      self.handleAttachedChange();
+    },
+    deattach() {
+      attached--;
+      setTimeout(() => {
+        self.handleAttachedChange();
+      }, 1);
+    },
+    handleAttachedChange() {
+      if (attached) {
+        self.createWorker();
+      } else {
+        self.destroyWorker();
+      }
     },
     createWorker() {
       if (!worker) {
