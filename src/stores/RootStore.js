@@ -11,6 +11,15 @@ import TrackersStore from "./TrackersStore";
 import EditorStore from "./EditorStore";
 import CodeMakerStore from "./CodeMakerStore";
 import PageStore from "./PageStore";
+import storageGet from "../tools/storageGet";
+import getNow from "../tools/getNow";
+import storageSet from "../tools/storageSet";
+import {ErrorWithCode} from "../tools/errors";
+import getLogger from "../tools/getLogger";
+
+const deserializeError = require('deserialize-error');
+
+const logger = getLogger('RootStore');
 
 /**
  * @typedef {{}} RootStore
@@ -79,8 +88,36 @@ const RootStore = types.model('RootStore', {
     },
     afterCreate() {
       self.page.init();
+
+      checkForUpdate().then(() => {
+        return new Promise((resolve, reject) => {
+          chrome.runtime.sendMessage({action: 'update'}, (result) => {
+            if (!result) {
+              reject(new Error('Result is empty'));
+            }
+            if (result.error) {
+              reject(deserializeError(result.error));
+            } else {
+              resolve(result.result);
+            }
+          });
+        });
+      }).catch(err => {
+        if (err.code === 'TIMEOUT') {
+          logger.error('checkForUpdate error:', err);
+        }
+      });
     },
   };
 });
+
+const checkForUpdate = () => {
+  return storageGet({lastCheckUpdateAt: 0}).then(storage => {
+    if (storage.lastCheckUpdateAt + 86400 > getNow()) {
+      throw new ErrorWithCode('Timeout', 'TIMEOUT');
+    }
+    return storageSet({lastCheckUpdateAt: getNow()}).then(() => true);
+  });
+};
 
 export default RootStore;

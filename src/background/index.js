@@ -60,6 +60,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, response) {
     }
     case 'update': {
       promise = update();
+      break;
     }
   }
 
