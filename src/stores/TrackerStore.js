@@ -132,4 +132,4 @@ const TrackerStore = types.model('TrackerStore', {
 });
 
 export default TrackerStore;
-export {TrackerOptionsStore};
+export {TrackerOptionsStore, TrackerMetaStore};
