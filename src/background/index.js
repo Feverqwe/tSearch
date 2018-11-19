@@ -176,7 +176,7 @@ const updateTracker = ({id}) => {
         return new Promise(resolve => chrome.storage.local.set(storage, resolve));
       });
     });
-  });
+  }).then(() => true);
 };
 
 const updateExplorerModule = ({id}) => {
@@ -214,5 +214,5 @@ const updateExplorerModule = ({id}) => {
         return new Promise(resolve => chrome.storage.local.set(storage, resolve));
       });
     });
-  });
+  }).then(() => true);
 };
