@@ -34,35 +34,35 @@ optionsStore.fetchOptions().then(() => {
     setPopupMenu(optionsStore.options.disablePopup, isResetSetPopupMenu);
     isResetSetPopupMenu = true;
   });
+});
 
-  chrome.omnibox.onInputEntered.addListener((query) => {
-    openSearchPage(query);
-  });
+chrome.omnibox.onInputEntered.addListener((query) => {
+  openSearchPage(query);
+});
 
-  chrome.runtime.onMessage.addListener(function (message, sender, response) {
-    if (!message) return;
+chrome.runtime.onMessage.addListener(function (message, sender, response) {
+  if (!message) return;
 
-    let promise = null;
-    switch (message.action) {
-      case 'updateTracker': {
-        promise = updateTracker(message);
-        break;
-      }
-      case 'updateExplorerModule': {
-        promise = updateExplorerModule(message);
-        break;
-      }
+  let promise = null;
+  switch (message.action) {
+    case 'updateTracker': {
+      promise = updateTracker(message);
+      break;
     }
-
-    if (promise) {
-      promise.then(result => {
-        response({result});
-      }, err => {
-        response({err: {name: err.name, message: err.message, code: message.code, stack: message.stack}});
-      });
-      return true;
+    case 'updateExplorerModule': {
+      promise = updateExplorerModule(message);
+      break;
     }
-  });
+  }
+
+  if (promise) {
+    promise.then(result => {
+      response({result});
+    }, err => {
+      response({err: {name: err.name, message: err.message, code: message.code, stack: message.stack}});
+    });
+    return true;
+  }
 });
 
 const updateIcon = (invertIcon, reset) => {
