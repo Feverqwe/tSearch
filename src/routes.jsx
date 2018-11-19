@@ -37,7 +37,7 @@ const routes = [{
       );
     }
     return (
-      <ComponentLoader key={query.query} {...props} load-page={'search'} query={query.query}/>
+      <Search key={query.query} {...props} query={query.query}/>
     );
   },
 }, {
