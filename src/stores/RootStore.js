@@ -101,7 +101,7 @@ const RootStore = types.model('RootStore', {
           });
         });
       }).catch(err => {
-        if (err.code === 'TIMEOUT') {
+        if (err.code !== 'TIMEOUT') {
           logger.error('checkForUpdate error:', err);
         }
       });
