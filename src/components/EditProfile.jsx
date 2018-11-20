@@ -341,7 +341,7 @@ class TrackerItem extends React.Component {
       );
     }
 
-    const editUrl = '/editor/tracker/' + tracker.id;
+    const editUrl = `/editor/tracker/${tracker.id}`;
 
     return (
       <div className={classList.join(' ')} data-id={tracker.id}>

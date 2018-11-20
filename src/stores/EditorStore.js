@@ -6,6 +6,8 @@ import getHash from "../tools/getHash";
 import TrackerStore from "./TrackerStore";
 import storageGet from "../tools/storageGet";
 import storageSet from "../tools/storageSet";
+import ExplorerModuleStore from "./Explorer/ExplorerModuleStore";
+import getExploreModuleCodeMeta from "../tools/getExploreModuleCodeMeta";
 
 const logger = getLogger('EditorStore');
 
@@ -40,7 +42,7 @@ const EditorStore = types.model('EditorStore', {
   saveState: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
   options: types.optional(EditorTrackerOptionsStore, {}),
   code: types.maybeNull(types.string),
-  hash: types.maybeNull(types.string),
+  savedHash: types.maybeNull(types.string),
 }).actions(self => {
   return {
     setCode(text) {
@@ -52,6 +54,9 @@ const EditorStore = types.model('EditorStore', {
         let module = null;
         if (self.type === 'tracker') {
           module = yield storageGet({trackers: {}}).then(storage => storage.trackers[self.id]);
+        } else
+        if (self.type === 'explorerModule') {
+          module = yield storageGet({explorerModules: {}}).then(storage => storage.explorerModules[self.id]);
         } else {
           throw new Error('Type is not supported');
         }
@@ -63,7 +68,7 @@ const EditorStore = types.model('EditorStore', {
             // todo: default code by type
             self.code = '';
           }
-          self.hash = self.getHash();
+          self.savedHash = self.hash;
           self.state = 'done';
         }
       } catch (err) {
@@ -90,13 +95,26 @@ const EditorStore = types.model('EditorStore', {
             storage.trackers[self.id] = tracker;
             return storageSet(storage);
           });
-          if (isAlive(self)) {
-            self.hash = self.getHash();
-          }
+        } else
+        if (self.type === 'explorerModule') {
+          const exploreModuleStore = ExplorerModuleStore.create({
+            id: self.id,
+            meta: getExploreModuleCodeMeta(self.code),
+            code: self.code,
+            options: self.options.toJSON(),
+          });
+          const exploreModule = exploreModuleStore.toJSON();
+          destroy(exploreModuleStore);
+
+          yield storageGet({explorerModules: {}}).then(storage => {
+            storage.explorerModules[self.id] = exploreModule;
+            return storageSet(storage);
+          });
         } else {
           throw new Error('Type is not supported');
         }
         if (isAlive(self)) {
+          self.savedHash = self.hash;
           self.saveState = 'done';
         }
       } catch (err) {
@@ -110,9 +128,9 @@ const EditorStore = types.model('EditorStore', {
 }).views(self => {
   return {
     hasChanges() {
-      return self.getHash() !== self.hash;
+      return self.hash !== self.savedHash;
     },
-    getHash() {
+    get hash() {
       return getHash(JSON.stringify([self.code, self.options]));
     }
   }

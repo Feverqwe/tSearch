@@ -7,6 +7,7 @@ import _isEqual from "lodash.isequal";
 import ExplorerFavoritesSectionStore from "./ExplorerFavoritesSectionStore";
 import storageSet from "../../tools/storageSet";
 import storageGet from "../../tools/storageGet";
+import getUnic from "../../tools/getUnic";
 
 const promiseLimit = require('promise-limit');
 
@@ -59,6 +60,12 @@ const ExplorerStore = types.model('ExplorerStore', {
         }
       }
     }),
+    setModule(id, module) {
+      self.modules.set(id, module);
+    },
+    deleteModule(id) {
+      self.modules.delete(id);
+    },
   };
 }).views(self => {
   const storageChangeListener = (changes, namespace) => {
@@ -72,6 +79,31 @@ const ExplorerStore = types.model('ExplorerStore', {
           self.setSections([]);
           self.setSections(explorerSections);
         }
+      }
+    }
+
+    if (namespace === 'local') {
+      const change = changes.explorerModules;
+      if (change) {
+        const {newValue = {}} = change;
+        const ids = getUnic([...Object.keys(newValue), ...self.modules.keys()]);
+        ids.forEach(id => {
+          const module = self.modules.get(id);
+          const newModule = newValue[id];
+          if (!newModule) {
+            self.deleteModule(id);
+          } else
+          if (!module) {
+            self.setModule(id, newModule);
+          } else
+          if (module.code !== newModule.code) {
+            self.setModule(id, newModule);
+            module.reloadWorker();
+          } else
+          if (!_isEqual(module.options.toJSON(), newModule.options)) {
+            module.setOptions(newModule.options);
+          }
+        });
       }
     }
   };

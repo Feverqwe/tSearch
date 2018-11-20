@@ -138,9 +138,10 @@ const ExplorerSectionStore = types.model('ExplorerSectionStore', {
         return getParentOfType(self, RootStore).page;
       }
     },
-    fetchData() {
+    fetchData(force) {
       const module = self.module;
-      return self.fetch(self, true, () => {
+      const useCache = !force;
+      return self.fetch(self, useCache, () => {
         return module.worker.getItems();
       });
     },

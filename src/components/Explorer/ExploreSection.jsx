@@ -3,6 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import ExplorerSectionItem from "./ExplorerSectionItem";
 import getLogger from "../../tools/getLogger";
+import {Link} from "react-router-dom";
 
 const Sortable = require('sortablejs');
 
@@ -143,6 +144,11 @@ class ExplorerSectionHeader extends React.Component {
     this.sectionStore.setRowCount(count);
   };
 
+  handleForceUpdate = (e) => {
+    e.preventDefault();
+    this.sectionStore.fetchData(true);
+  };
+
   render() {
     const sectionStore = this.sectionStore;
     const moduleStore = this.moduleStore;
@@ -172,6 +178,14 @@ class ExplorerSectionHeader extends React.Component {
         );
       }*/
 
+      let editBtn = null;
+      if (this.sectionStore.id !== 'favorites') {
+        const editUrl = `/editor/explorerModule/${this.sectionStore.id}`;
+        editBtn = (
+          <Link className="action action__edit" to={editUrl} target="_blank" title={chrome.i18n.getMessage('edit')}/>
+        );
+      }
+
       let options = null;
       if (this.state.showOptions) {
         options = (
@@ -188,6 +202,8 @@ class ExplorerSectionHeader extends React.Component {
               <option value="5">5</option>
               <option value="6">6</option>
             </select>
+            {editBtn}
+            <a onClick={this.handleForceUpdate} title={chrome.i18n.getMessage('update')} className="action action__update" href="#"/>
           </div>
         );
       }
