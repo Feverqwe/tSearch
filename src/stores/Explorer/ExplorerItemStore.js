@@ -1,4 +1,6 @@
-import {clone, getParent, getRoot, types} from "mobx-state-tree";
+import {clone, getParentOfType, types} from "mobx-state-tree";
+import ExplorerStore from "./ExplorerStore";
+import ExplorerFavoritesSectionStore from "./ExplorerFavoritesSectionStore";
 
 /**
  * @typedef {{}} ExplorerItemStore
@@ -22,21 +24,21 @@ const ExplorerItemStore = types.model('ExplorerItemStore', {
     updateProps(props) {
       Object.assign(self, props);
 
-      const module = getParent(self, 2);
-      return module.saveItems();
+      const favoritesSectionStore = /**ExplorerFavoritesSectionStore*/getParentOfType(self, ExplorerFavoritesSectionStore);
+      return favoritesSectionStore.saveItems();
     }
   };
 }).views(/**ExplorerItemStore*/self => {
   return {
-    handleAddFavorite(e) {
-      e.preventDefault();
-      const explore = /**ExploreM*/getRoot(self);
-      explore.favouriteModule.addItem(clone(self));
+    addFavorite() {
+      const explorerStore = /**ExplorerStore*/getParentOfType(self, ExplorerStore);
+      explorerStore.favoritesSection.addItem(clone(self));
+      explorerStore.favoritesSection.saveItems();
     },
-    handleRemoveFavorite(e) {
-      e.preventDefault();
-      const explore = /**ExploreM*/getRoot(self);
-      explore.favouriteModule.removeItem(self);
+    removeFavorite() {
+      const favoritesSectionStore = /**ExplorerFavoritesSectionStore*/getParentOfType(self, ExplorerFavoritesSectionStore);
+      favoritesSectionStore.removeItem(self);
+      favoritesSectionStore.saveItems();
     },
   };
 });

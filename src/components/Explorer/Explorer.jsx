@@ -30,8 +30,8 @@ class Explorer extends React.Component {
   }
 
   sortable = null;
-  refSections = (node) => {
-    if (!node) {
+  refSections = (element) => {
+    if (!element) {
       if (this.sortable) {
         this.sortable.destroy();
         this.sortable = null;
@@ -42,16 +42,16 @@ class Explorer extends React.Component {
       // debug('update');
     } else {
       // debug('create');
-      this.sortable = new Sortable(node, {
+      this.sortable = new Sortable(element, {
         group: 'sections',
         handle: '.section__move',
         draggable: '.section',
         animation: 150,
         onStart: () => {
-          node.classList.add('explore-sort');
+          element.classList.add('explore-sort');
         },
         onEnd: (e) => {
-          node.classList.remove('explore-sort');
+          element.classList.remove('explore-sort');
 
           const itemNode = e.item;
           const prevNode = itemNode.previousElementSibling;

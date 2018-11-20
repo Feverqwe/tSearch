@@ -57,12 +57,12 @@ class ExplorerSectionItem extends React.Component {
 
   handleRemoveFavorite = (e) => {
     e.preventDefault();
-    this.itemStore.handleRemoveFavorite();
+    this.itemStore.removeFavorite();
   };
 
   handleAddFavorite = (e) => {
     e.preventDefault();
-    this.itemStore.handleAddFavorite();
+    this.itemStore.addFavorite();
   };
 
   title = null;
@@ -108,7 +108,7 @@ class ExplorerSectionItem extends React.Component {
     }
 
     const actions = [];
-    if (sectionStore.id === 'favorite') {
+    if (sectionStore.id === 'favorites') {
       actions.push(
         <div key={'rmFavorite'} onClick={this.handleRemoveFavorite} title={chrome.i18n.getMessage('removeFromFavorite')}
              className="action__rmFavorite"/>

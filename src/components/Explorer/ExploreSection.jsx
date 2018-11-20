@@ -42,7 +42,7 @@ class ExploreSection extends React.Component {
       classList.push('section-error');
     }
 
-    if (this.sectionStore.id === 'favorite' && !this.sectionStore.items.length) {
+    if (this.sectionStore.id === 'favorites' && !this.sectionStore.items.length) {
       classList.push('section-empty');
     }
 
@@ -309,9 +309,40 @@ class ExplorerSectionBody extends React.Component {
     return itemCount * section.rowCount;
   }
 
+  sortable = null;
   body = null;
   refBody = (element) => {
     this.body = element;
+
+    if (this.sectionStore.id === 'favorites') {
+      if (!element) {
+        if (this.sortable) {
+          this.sortable.destroy();
+          this.sortable = null;
+          // debug('destroy');
+        }
+      } else if (this.sortable) {
+        // debug('update');
+      } else {
+        // debug('create');
+        this.sortable = new Sortable(element, {
+          group: 'favorites',
+          handle: '.action__move',
+          draggable: '.section__poster',
+          animation: 150,
+          onEnd: (e) => {
+            const itemNode = e.item;
+            const prevNode = itemNode.previousElementSibling;
+            const nextNode = itemNode.nextElementSibling;
+            const index = parseInt(itemNode.dataset.index, 10);
+            const prev = prevNode && parseInt(prevNode.dataset.index, 10);
+            const next = nextNode && parseInt(nextNode.dataset.index, 10);
+
+            this.sectionStore.moveItem(index, prev, next);
+          }
+        });
+      }
+    }
   };
 
   setPage = (page) => {

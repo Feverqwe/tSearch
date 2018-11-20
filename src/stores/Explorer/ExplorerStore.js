@@ -1,9 +1,10 @@
-import {flow, isAlive, types} from "mobx-state-tree";
+import {flow, isAlive, types, resolveIdentifier} from "mobx-state-tree";
 import getLogger from "../../tools/getLogger";
 import getExplorerModules from "../../tools/getExplorerModules";
 import ExplorerModuleStore from "./ExplorerModuleStore";
 import ExplorerSectionStore from "./ExplorerSectionStore";
 import _isEqual from "lodash.isequal";
+import ExplorerFavoritesSectionStore from "./ExplorerFavoritesSectionStore";
 
 const promiseLimit = require('promise-limit');
 
@@ -23,7 +24,11 @@ const limitOne = promiseLimit(1);
  */
 const ExplorerStore = types.model('ExplorerStore', {
   state: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
-  sections: types.array(ExplorerSectionStore),
+  sections: types.array(types.union({
+    dispatcher(snapshot) {
+      return snapshot.id === 'favorites' ? ExplorerFavoritesSectionStore : ExplorerSectionStore;
+    }
+  }, ExplorerSectionStore, ExplorerFavoritesSectionStore)),
   modules: types.maybe(types.map(ExplorerModuleStore)),
 }).actions(/**ExplorerStore*/self => {
   return {
@@ -104,6 +109,9 @@ const ExplorerStore = types.model('ExplorerStore', {
 
       self.setSections(sections);
       return self.saveSections();
+    },
+    get favoritesSection() {
+      return resolveIdentifier(ExplorerFavoritesSectionStore, self, 'favorites');
     },
     afterCreate() {
       chrome.storage.onChanged.addListener(storageChangeListener);
