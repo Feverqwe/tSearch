@@ -19,8 +19,8 @@ class Options extends React.Component {
   constructor(props) {
     super(props);
 
-    if (this.props.rootStore.options.state === 'idle') {
-      this.props.rootStore.options.fetchOptions();
+    if (this.optionsStore.state === 'idle') {
+      this.optionsStore.fetchOptions();
     }
   }
 
@@ -111,9 +111,9 @@ class Options extends React.Component {
 @inject('rootStore')
 @observer
 class OptionCheckbox extends React.Component {
-  static propTypes = null && {
-    rootStore: PropTypes.instanceOf(RootStore),
-    name: PropTypes.string,
+  static propTypes = {
+    rootStore: PropTypes.object,
+    name: PropTypes.string.isRequired,
     store: PropTypes.object,
   };
 
@@ -143,7 +143,7 @@ class OptionCheckbox extends React.Component {
     return (
       <div className="option">
         <label>
-          <input ref={this.refInput} defaultChecked={this.store[name]} onChange={this.handleOptionChange} type="checkbox"/>
+          <input ref={this.refInput} checked={this.store[name]} onChange={this.handleOptionChange} type="checkbox"/>
           <span>{chrome.i18n.getMessage(name)}</span>
         </label>
       </div>

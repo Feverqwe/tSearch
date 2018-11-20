@@ -1,12 +1,17 @@
-import {observer} from "mobx-react";
+import {inject, observer} from "mobx-react";
 import React from "react";
 import PropTypes from "prop-types";
 import Dialog from "../Dialog";
+import {Link} from "react-router-dom";
 
+const qs = require('querystring');
+
+@inject('rootStore')
 @observer
 class ExplorerItem extends React.Component {
   static propTypes = {
     index: PropTypes.number.isRequired,
+    rootStore: PropTypes.object,
     sectionStore: PropTypes.object.isRequired,
     itemStore: PropTypes.object.isRequired,
   };
@@ -18,6 +23,11 @@ class ExplorerItem extends React.Component {
       posterError: false,
       edit: false
     };
+  }
+
+  /**@return {RootStore}*/
+  get rootStore() {
+    return this.props.rootStore;
   }
 
   /**@return {ExplorerSectionStore}*/
@@ -157,6 +167,17 @@ class ExplorerItem extends React.Component {
       zoom: sectionStore.zoom / 100
     };
 
+    let title = null;
+    if (this.rootStore.options.options.originalPosterName) {
+      title = itemStore.titleOriginal || itemStore.title;
+    } else {
+      title = itemStore.title;
+    }
+
+    const searchUrl = '/search?' + qs.stringify({
+      query: title
+    });
+
     return (
       <li data-index={this.props.index} style={itemStyle} className="section__poster poster">
         {dialog}
@@ -165,13 +186,13 @@ class ExplorerItem extends React.Component {
           <div title={chrome.i18n.getMessage('quickSearch')} className="action__quick_search">{'?'}</div>
           <a href={itemStore.url} title={chrome.i18n.getMessage('readMore')} className="image__more_link"
              target="_blank"/>
-          <a title={itemStore.title} className="image__search_link" href="#">
-            <img src={posterUrl} className="image__image" onError={this.handlePosterError}/>
-          </a>
+          <Link to={searchUrl} title={title} className="image__search_link">
+            <img src={posterUrl} className="image__image" onError={this.handlePosterError} alt=""/>
+          </Link>
         </div>
         <div className="poster__title">
           <span>
-            <a title={itemStore.title} className="poster__search_link" href="#">{itemStore.title}</a>
+            <Link to={searchUrl} title={title} className="poster__search_link">{title}</Link>
           </span>
         </div>
       </li>
