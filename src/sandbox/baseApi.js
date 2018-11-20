@@ -20,9 +20,9 @@ class BaseApi {
   }
 
   event = (name, callback) => {
-    this.api.events[name] = function (query) {
+    this.api.events[name] = function (...args) {
       return Promise.resolve().then(function () {
-        return callback(query);
+        return callback(...args);
       });
     };
   };

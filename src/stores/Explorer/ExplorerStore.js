@@ -163,25 +163,35 @@ const fetchModules = async () => {
 const fetchSections = async () => {
   const storage = await storageGet({
     explorerSections: [{
-      id: 'favorites'
+      id: 'favorites',
     }, {
-      id: 'kpFavorites'
+      id: 'kpFavorites',
+      moduleId: 'kpFavorites',
+      moduleParams: 'categoryId=1',
     }, {
-      id: 'kpInCinema'
+      id: 'kpInCinema',
+      moduleId: 'kpInCinema',
     }, {
-      id: 'imdbInCinema'
+      id: 'imdbInCinema',
+      moduleId: 'imdbInCinema',
     }, {
-      id: 'kpPopular'
+      id: 'kpPopular',
+      moduleId: 'kpPopular',
     }, {
-      id: 'imdbPopular'
+      id: 'imdbPopular',
+      moduleId: 'imdbPopular',
     }, {
-      id: 'kpSeries'
+      id: 'kpSeries',
+      moduleId: 'kpSeries',
     }, {
-      id: 'imdbSeries'
+      id: 'imdbSeries',
+      moduleId: 'imdbSeries',
     }, {
-      id: 'ggGamesNew'
+      id: 'ggGamesNew',
+      moduleId: 'ggGamesNew',
     }, {
-      id: 'ggGamesTop'
+      id: 'ggGamesTop',
+      moduleId: 'ggGamesTop',
     }]
   }, 'sync');
   return storage.explorerSections;

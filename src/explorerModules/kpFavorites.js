@@ -124,10 +124,10 @@ const onPageLoad = response => {
   return results;
 };
 
-const getItems = () => {
+const getItems = (params) => {
   const urls = [];
   const items = [];
-  const category = 1;
+  const category = params.categoryId;
   const getPage = page => {
     if (page > 20) {
       console.warn('Favorite pages limit reached');
@@ -160,10 +160,10 @@ API_event('getItems', () => {
   };
 });
 
-API_event('command', command => {
+API_event('command', (command, params) => {
   switch (command) {
     case 'update': {
-      return getItems().then(items => {
+      return getItems(params).then(items => {
         return {
           success: true,
           items

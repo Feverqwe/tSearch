@@ -19,7 +19,9 @@ const oneLimit = promiseLimit(1);
  * @property {function} moveItem
  * @property {function} saveItems
  */
-const ExplorerFavoritesSectionStore = types.compose('ExplorerFavoritesSectionStore', ExplorerSectionStore).actions(self => {
+const ExplorerFavoritesSectionStore = types.compose('ExplorerFavoritesSectionStore', ExplorerSectionStore, types.model({
+  moduleId: types.undefined,
+})).actions(self => {
   return {
     setState(state) {
       self.state = state;

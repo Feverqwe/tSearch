@@ -5,6 +5,7 @@ import ExplorerItemStore from "./ExplorerItemStore";
 import RootStore from "../RootStore";
 import ExplorerCommandStore from "./ExplorerCommandStore";
 import ExplorerCache from "../../tools/explorerCache";
+import parseModuleParams from "../../tools/parseModuleParams";
 
 const logger = getLogger('ExplorerSectionStore');
 
@@ -45,6 +46,8 @@ const ExplorerSectionStore = types.model('ExplorerSectionStore', {
   })),
   items: types.array(ExplorerItemStore),
   commands: types.map(ExplorerCommandStore),
+  moduleId: types.string,
+  moduleParams: types.optional(types.string, ''),
 }).actions(self => {
   return {
     setState(state) {
@@ -116,8 +119,8 @@ const ExplorerSectionStore = types.model('ExplorerSectionStore', {
 }).views(self => {
   return {
     get module() {
-      if (isAlive(self)) {
-        return resolveIdentifier(ExplorerModuleStore, self, self.id);
+      if (isAlive(self) && self.moduleId) {
+        return resolveIdentifier(ExplorerModuleStore, self, self.moduleId);
       }
     },
     getSnapshot() {
@@ -142,16 +145,16 @@ const ExplorerSectionStore = types.model('ExplorerSectionStore', {
       const module = self.module;
       const useCache = !force;
       return self.fetch(self, useCache, () => {
-        return module.worker.getItems();
+        return module.worker.getItems(parseModuleParams(self.moduleParams));
       });
     },
     fetchCommand(commandStore, actionStore) {
       const module = self.module;
       const command = actionStore.command;
       return self.fetch(commandStore, false, () => {
-        return module.worker.sendCommand(command);
+        return module.worker.sendCommand(command, parseModuleParams(self.moduleParams));
       });
-    },
+    }
   };
 });
 
