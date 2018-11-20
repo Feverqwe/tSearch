@@ -1,4 +1,4 @@
-import {flow, isAlive, types, resolveIdentifier} from "mobx-state-tree";
+import {flow, isAlive, resolveIdentifier, types} from "mobx-state-tree";
 import getLogger from "../../tools/getLogger";
 import getExplorerModules from "../../tools/getExplorerModules";
 import ExplorerModuleStore from "./ExplorerModuleStore";
@@ -81,10 +81,19 @@ const ExplorerStore = types.model('ExplorerStore', {
       const change = changes.explorerSections;
       if (change) {
         const explorerSections = change.newValue || [];
-        if (!_isEqual(explorerSections, self.getSectionsSnapshot())) {
-          self.setSections([]);
-          self.setSections(explorerSections);
-        }
+        const sections = [];
+        explorerSections.forEach(sectionSnapshot => {
+          const section = self.getSectionById(sectionSnapshot.id);
+          if (!section) {
+            sections.push(sectionSnapshot);
+          } else {
+            if (!_isEqual(sectionSnapshot, section.getSnapshot())) {
+              section.assignSnapshot(sectionSnapshot);
+            }
+            sections.push(section);
+          }
+        });
+        self.setSections(sections);
       }
     }
 
@@ -151,6 +160,13 @@ const ExplorerStore = types.model('ExplorerStore', {
     },
     get favoritesSection() {
       return resolveIdentifier(ExplorerFavoritesSectionStore, self, 'favorites');
+    },
+    getSectionById(id) {
+      if (id === 'favorites') {
+        return self.favoritesSection;
+      } else {
+        return resolveIdentifier(ExplorerSectionStore, self, id);
+      }
     },
     afterCreate() {
       chrome.storage.onChanged.addListener(storageChangeListener);

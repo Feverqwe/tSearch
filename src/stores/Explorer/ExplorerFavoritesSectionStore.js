@@ -12,7 +12,7 @@ const oneLimit = promiseLimit(1);
 
 /**
  * @typedef {ExplorerSectionStore} ExplorerFavoritesSectionStore
- * @property {undefined} moduleId
+ * @property {null} moduleId
  * @property {function} setState
  * @property {function:Promise} fetchData
  * @property {function} addItem
@@ -23,7 +23,7 @@ const oneLimit = promiseLimit(1);
  * @property {function} beforeDestroy
  */
 const ExplorerFavoritesSectionStore = types.compose('ExplorerFavoritesSectionStore', ExplorerSectionStore, types.model({
-  moduleId: types.undefined,
+  moduleId: types.optional(types.null, null),
 })).actions(self => {
   return {
     setState(state) {
@@ -86,6 +86,7 @@ const ExplorerFavoritesSectionStore = types.compose('ExplorerFavoritesSectionSto
   };
 }).views(self => {
   const storageChangeListener = (changes, namespace) => {
+    if (!isAlive(self)) return;
     if (self.state !== 'done') return;
 
     if (namespace === 'sync') {

@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import ExplorerSectionItem from "./ExplorerSectionItem";
 import getLogger from "../../tools/getLogger";
 import {Link} from "react-router-dom";
+import _debounce from "lodash.debounce";
 
 const Sortable = require('sortablejs');
 
@@ -12,6 +13,7 @@ const logger = getLogger('ExploreSection');
 @observer
 class ExploreSection extends React.Component {
   static propTypes = {
+    explorerStore: PropTypes.object.isRequired,
     sectionStore: PropTypes.object.isRequired,
     index: PropTypes.number.isRequired,
   };
@@ -23,6 +25,11 @@ class ExploreSection extends React.Component {
       minHeight: 0,
       showOptions: false,
     };
+  }
+
+  /**@return {ExplorerStore}*/
+  get explorerStore() {
+    return this.props.explorerStore;
   }
 
   /**@return {ExplorerSectionStore}*/
@@ -65,7 +72,7 @@ class ExploreSection extends React.Component {
 
     return (
       <li data-index={this.props.index} className={classList.join(' ')}>
-        <ExplorerSectionHeader setMinHeight={this.setMinHeight} sectionStore={this.sectionStore}/>
+        <ExplorerSectionHeader setMinHeight={this.setMinHeight} explorerStore={this.explorerStore} sectionStore={this.sectionStore}/>
         {body}
       </li>
     );
@@ -75,6 +82,7 @@ class ExploreSection extends React.Component {
 @observer
 class ExplorerSectionHeader extends React.Component {
   static propTypes = {
+    explorerStore: PropTypes.object.isRequired,
     sectionStore: PropTypes.object.isRequired,
     setMinHeight: PropTypes.func.isRequired,
   };
@@ -87,6 +95,11 @@ class ExplorerSectionHeader extends React.Component {
     };
   }
 
+  /**@return {ExplorerStore}*/
+  get explorerStore() {
+    return this.props.explorerStore;
+  }
+
   /**@return {ExplorerSectionStore}*/
   get sectionStore() {
     return this.props.sectionStore;
@@ -97,6 +110,10 @@ class ExplorerSectionHeader extends React.Component {
     return this.sectionStore.module;
   }
 
+  saveSectionsDebounce = _debounce(() => {
+    this.explorerStore.saveSections();
+  } ,250);
+
   zoomRange = null;
   refZoomRange = (element) => {
     this.zoomRange = element;
@@ -106,6 +123,7 @@ class ExplorerSectionHeader extends React.Component {
     this.props.setMinHeight(0);
     const zoom = parseInt(this.zoomRange.value, 10);
     this.sectionStore.setZoom(zoom);
+    this.saveSectionsDebounce();
   };
 
   handleResetZoom = (e) => {
@@ -113,6 +131,7 @@ class ExplorerSectionHeader extends React.Component {
     this.props.setMinHeight(0);
     this.zoomRange.value = 100;
     this.sectionStore.setZoom(100);
+    this.explorerStore.saveSections();
   };
 
   handleOptionsClick = (e) => {
@@ -130,6 +149,7 @@ class ExplorerSectionHeader extends React.Component {
     ) {
       e.preventDefault();
       this.sectionStore.toggleCollapse();
+      this.explorerStore.saveSections();
     }
   };
 
@@ -142,6 +162,7 @@ class ExplorerSectionHeader extends React.Component {
     this.props.setMinHeight(0);
     const count = parseInt(this.rowCount.value, 10);
     this.sectionStore.setRowCount(count);
+    this.explorerStore.saveSections();
   };
 
   handleForceUpdate = (e) => {
