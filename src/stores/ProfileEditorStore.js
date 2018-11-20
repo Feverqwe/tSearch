@@ -2,6 +2,7 @@ import {flow, isAlive, types} from 'mobx-state-tree';
 import getLogger from "../tools/getLogger";
 import ProfileStore from "./ProfileStore";
 import EditProfileStore from "./EditProfileStore";
+import storageSet from "../tools/storageSet";
 
 const logger = getLogger('ProfileEditorStore');
 
@@ -33,7 +34,7 @@ const ProfileEditorStore = types.model('ProfileEditorStore', {
       self.saveState = 'pending';
       try {
         const profiles = JSON.parse(JSON.stringify(self.profiles));
-        yield new Promise(resolve => chrome.storage.sync.set({profiles}, resolve));
+        yield storageSet({profiles}, 'sync');
         if (isAlive(self)) {
           self.saveState = 'done';
         }

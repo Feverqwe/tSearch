@@ -3,6 +3,8 @@ import loadLocalTrackerModule from "./loadLocalTrackerModule";
 import getLogger from "./getLogger";
 import TrackerStore from "../stores/TrackerStore";
 import {destroy} from "mobx-state-tree";
+import storageGet from "./storageGet";
+import storageSet from "./storageSet";
 
 const compareVersions = require('compare-versions');
 
@@ -11,7 +13,7 @@ const logger = getLogger('getTrackers');
 const getTrackers = () => {
   return Promise.all([
     getTrackersJson(),
-    new Promise(resolve => chrome.storage.local.get({trackers: {}}, resolve)).then(storage => storage.trackers)
+    storageGet({trackers: {}}).then(storage => storage.trackers)
   ]).then(([idLocalVersion, idTracker]) => {
     let storageChanged = false;
     const ids = Object.keys(idLocalVersion).concat(Object.keys(idTracker));
@@ -47,7 +49,7 @@ const getTrackers = () => {
       }
     })).then(() => {
       if (storageChanged) {
-        return new Promise(resolve => chrome.storage.local.set({trackers: idTracker}, resolve)).then(() => idTracker);
+        return storageSet({trackers: idTracker}).then(() => idTracker);
       } else {
         return idTracker;
       }

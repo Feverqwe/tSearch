@@ -3,6 +3,8 @@ import {destroy} from "mobx-state-tree";
 import getExplorerModulesJson from "./getExplorerModulesJson";
 import loadLocalExplorerModule from "./loadLocalExplorerModule";
 import {ExplorerModuleStore} from "../stores/Explorer/ExplorerStore";
+import storageGet from "./storageGet";
+import storageSet from "./storageSet";
 
 const compareVersions = require('compare-versions');
 
@@ -11,7 +13,7 @@ const logger = getLogger('getExplorerModules');
 const getExplorerModules = () => {
   return Promise.all([
     getExplorerModulesJson(),
-    new Promise(resolve => chrome.storage.local.get({explorerModules: {}}, resolve)).then(storage => storage.explorerModules)
+    storageGet({explorerModules: {}}).then(storage => storage.explorerModules)
   ]).then(([idLocalVersion, idModule]) => {
     let storageChanged = false;
     const ids = Object.keys(idLocalVersion).concat(Object.keys(idModule));
@@ -47,7 +49,7 @@ const getExplorerModules = () => {
       }
     })).then(() => {
       if (storageChanged) {
-        return new Promise(resolve => chrome.storage.local.set({explorerModules: idModule}, resolve)).then(() => idModule);
+        return storageSet({explorerModules: idModule}).then(() => idModule);
       } else {
         return idModule;
       }

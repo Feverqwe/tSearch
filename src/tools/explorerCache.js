@@ -1,4 +1,6 @@
 import getNow from "./getNow";
+import storageGet from "./storageGet";
+import storageSet from "./storageSet";
 
 const promiseLimit = require('promise-limit');
 
@@ -30,9 +32,7 @@ class ExplorerCache {
         return this.getCache();
       }
 
-      return new Promise(resolve => chrome.storage.local.get({
-        explorerCache: {}
-      }, resolve)).then(result => {
+      return storageGet({explorerCache: {}}).then(result => {
         this.setCache(result);
         return result;
       });
@@ -41,7 +41,7 @@ class ExplorerCache {
   setStorage(storage) {
     this.setCache(storage);
     return limitOne(() => {
-      return new Promise(resolve => chrome.storage.local.set(storage, resolve));
+      return storageSet(storage);
     });
   }
   set(key, value) {

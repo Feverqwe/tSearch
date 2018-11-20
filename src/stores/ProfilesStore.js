@@ -2,6 +2,8 @@ import {flow, getSnapshot, isAlive, resolveIdentifier, types} from 'mobx-state-t
 import ProfileStore from "./ProfileStore";
 import getLogger from "../tools/getLogger";
 import _isEqual from "lodash.isequal";
+import storageGet from "../tools/storageGet";
+import storageSet from "../tools/storageSet";
 
 const uuid = require('uuid/v4');
 
@@ -49,8 +51,8 @@ const ProfilesStore = types.model('ProfilesStore', {
       self.state = 'pending';
       try {
         const [syncStorage, storage] = yield Promise.all([
-          new Promise(resolve => chrome.storage.sync.get({profiles: []}, resolve)),
-          new Promise(resolve => chrome.storage.local.get({profileId: null}, resolve)),
+          storageGet({profiles: []}, 'sync'),
+          storageGet({profileId: null}),
         ]);
         if (isAlive(self)) {
           self.setProfiles(syncStorage.profiles);
@@ -113,10 +115,10 @@ const ProfilesStore = types.model('ProfilesStore', {
       return result;
     },
     saveProfile() {
-      return new Promise(resolve => chrome.storage.local.set({profileId: self.profileId}, resolve));
+      return storageSet({profileId: self.profileId});
     },
     saveProfiles() {
-      return new Promise(resolve => chrome.storage.sync.set({profiles: self.profiles.toJSON()}, resolve));
+      return storageSet({profiles: self.profiles.toJSON()}, 'sync');
     },
     afterCreate() {
       chrome.storage.onChanged.addListener(storageChangeListener);

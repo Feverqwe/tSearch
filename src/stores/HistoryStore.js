@@ -4,6 +4,8 @@ import _isEqual from "lodash.isequal";
 import getLogger from "../tools/getLogger";
 import getNow from "../tools/getNow";
 import {unixTimeToString} from "../tools/unixTimeTo";
+import storageGet from "../tools/storageGet";
+import storageSet from "../tools/storageSet";
 
 const promiseLimit = require('promise-limit');
 
@@ -130,7 +132,7 @@ const HistoryStore = types.model('HistoryStore', {
     fetchHistory: flow(function* () {
       self.state = 'pending';
       try {
-        const storage = yield new Promise(resolve => chrome.storage.local.get({history: {}}, resolve));
+        const storage = yield storageGet({history: {}});
         if (isAlive(self)) {
           self.history = storage.history;
           self.state = 'done';
@@ -170,9 +172,9 @@ const HistoryStore = types.model('HistoryStore', {
   return {
     save() {
       return oneLimit(() => {
-        return new Promise(resolve => chrome.storage.local.set({
+        return storageSet({
           history: getSnapshot(self.history)
-        }, resolve));
+        });
       });
     },
     getHistory() {

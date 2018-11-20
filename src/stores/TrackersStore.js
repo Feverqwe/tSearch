@@ -4,6 +4,7 @@ import getLogger from "../tools/getLogger";
 import getTrackers from "../tools/getTrackers";
 import _isEqual from "lodash.isequal";
 import getUnic from "../tools/getUnic";
+import storageSet from "../tools/storageSet";
 
 const logger = getLogger('TrackersStore');
 
@@ -85,7 +86,7 @@ const TrackersStore = types.model('TrackersStore', {
       return resolveIdentifier(TrackerStore, self, id);
     },
     saveTrackers() {
-      return new Promise(resolve => chrome.storage.local.set({trackers: self.trackers.toJSON()}, resolve));
+      return storageSet({trackers: self.trackers.toJSON()});
     },
     afterCreate() {
       chrome.storage.onChanged.addListener(storageChangeListener);

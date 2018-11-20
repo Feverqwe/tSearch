@@ -1,6 +1,8 @@
 import {flow, getSnapshot, isAlive, types} from 'mobx-state-tree';
 import _isEqual from "lodash.isequal";
 import getLogger from "../tools/getLogger";
+import storageGet from "../tools/storageGet";
+import storageSet from "../tools/storageSet";
 
 const promiseLimit = require('promise-limit');
 
@@ -107,7 +109,7 @@ const OptionsStore = types.model('OptionsStore', {
     fetchOptions: flow(function* () {
       self.state = 'pending';
       try {
-        const storage = yield new Promise(resolve => chrome.storage.sync.get({options: {}}, resolve));
+        const storage = yield storageGet({options: {}}, 'sync');
         if (isAlive(self)) {
           self.options = storage.options;
           self.state = 'done';
@@ -138,9 +140,9 @@ const OptionsStore = types.model('OptionsStore', {
   return {
     save() {
       return oneLimit(() => {
-        return new Promise(resolve => chrome.storage.sync.set({
+        return storageSet({
           options: getSnapshot(self.options),
-        }, resolve));
+        }, 'sync');
       });
     },
     afterCreate() {

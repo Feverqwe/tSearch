@@ -5,6 +5,8 @@ import ExplorerModuleStore from "./ExplorerModuleStore";
 import ExplorerSectionStore from "./ExplorerSectionStore";
 import _isEqual from "lodash.isequal";
 import ExplorerFavoritesSectionStore from "./ExplorerFavoritesSectionStore";
+import storageSet from "../../tools/storageSet";
+import storageGet from "../../tools/storageGet";
 
 const promiseLimit = require('promise-limit');
 
@@ -81,7 +83,7 @@ const ExplorerStore = types.model('ExplorerStore', {
     saveSections() {
       return limitOne(() => {
         const sections = self.getSectionsSnapshot();
-        return new Promise(resolve => chrome.storage.sync.set({explorerSections: sections}, resolve));
+        return storageSet({explorerSections: sections}, 'sync');
       });
     },
     moveSection(index, prevIndex, nextIndex) {
@@ -127,7 +129,7 @@ const fetchModules = async () => {
 };
 
 const fetchSections = async () => {
-  const storage = await new Promise(resolve => chrome.storage.sync.get({
+  const storage = await storageGet({
     explorerSections: [{
       id: 'favorites'
     }, {
@@ -149,7 +151,7 @@ const fetchSections = async () => {
     }, {
       id: 'ggGamesTop'
     }]
-  }, resolve));
+  }, 'sync');
   return storage.explorerSections;
 };
 

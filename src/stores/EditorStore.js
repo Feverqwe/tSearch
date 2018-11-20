@@ -4,6 +4,8 @@ import getTrackerCodeMeta from "../tools/getTrackerCodeMeta";
 import getLogger from "../tools/getLogger";
 import getHash from "../tools/getHash";
 import TrackerStore from "./TrackerStore";
+import storageGet from "../tools/storageGet";
+import storageSet from "../tools/storageSet";
 
 const logger = getLogger('EditorStore');
 
@@ -49,7 +51,7 @@ const EditorStore = types.model('EditorStore', {
       try {
         let module = null;
         if (self.type === 'tracker') {
-          module = yield new Promise(resolve => chrome.storage.local.get({trackers: {}}, resolve)).then(storage => storage.trackers[self.id]);
+          module = yield storageGet({trackers: {}}).then(storage => storage.trackers[self.id]);
         } else {
           throw new Error('Type is not supported');
         }
@@ -84,9 +86,9 @@ const EditorStore = types.model('EditorStore', {
           const tracker = trackerStore.toJSON();
           destroy(trackerStore);
 
-          yield new Promise(resolve => chrome.storage.local.get({trackers: {}}, resolve)).then(storage => {
+          yield storageGet({trackers: {}}).then(storage => {
             storage.trackers[self.id] = tracker;
-            return new Promise(resolve => chrome.storage.local.set(storage, resolve));
+            return storageSet(storage);
           });
           if (isAlive(self)) {
             self.hash = self.getHash();
