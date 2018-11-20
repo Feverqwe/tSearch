@@ -53,7 +53,7 @@ const prop = (node, prop) => {
 const parseItem = item => {
   const poster = imdbGetImgFilename(prop(item.querySelector('div.image img[src]'), 'src') || '');
 
-  const linkNode = item.querySelector('*[itemprop="name"] a');
+  const linkNode = item.querySelector('.overview-top a');
   const url = rmRef(prop(linkNode, 'href'));
 
   let title = null;
@@ -110,7 +110,7 @@ const onPageLoad = response => {
 const getItems = () => {
   return API_request({
     method: 'GET',
-    url: `http://www.imdb.com/movies-in-theaters/`
+    url: `https://www.imdb.com/movies-in-theaters/`
   }).then(response => {
     return onPageLoad(response);
   });

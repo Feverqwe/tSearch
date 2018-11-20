@@ -83,7 +83,7 @@ const getItems = () => {
     promise = promise.then(() => {
       return API_request({
         method: 'GET',
-        url: `http://gameguru.ru/pc/games/released/page${page}/list.html`
+        url: `https://gameguru.ru/pc/games/released/page${page}/list.html`
       }).then(response => {
         return onPageLoad(response);
       }).then(_items => {

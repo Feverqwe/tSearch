@@ -122,7 +122,7 @@ const onPageLoad = response => {
 const getItems = () => {
   return API_request({
     method: 'GET',
-    url: 'http://www.kinopoisk.ru/top/lists/45/perpage/100/'
+    url: 'https://www.kinopoisk.ru/top/lists/45/perpage/100/'
   }).then(response => {
     return onPageLoad(response);
   });

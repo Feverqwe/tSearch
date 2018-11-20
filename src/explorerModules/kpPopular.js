@@ -55,7 +55,7 @@ const parseItem = item => {
   }
 
   let poster = null;
-  const m = /-(\d+)\/$/.exec(url);
+  const m = /[-\/](\d+)\/$/.exec(url);
   if (m) {
     const tmpNode = linkNode.cloneNode();
     tmpNode.href = `/images/film/${m[1]}.jpg`;
@@ -118,7 +118,7 @@ const onPageLoad = response => {
 const getItems = () => {
   return API_request({
     method: 'GET',
-    url: 'http://www.kinopoisk.ru/popular/day/now/perpage/200/'
+    url: 'https://www.kinopoisk.ru/popular/day/now/perpage/200/'
   }).then(response => {
     return onPageLoad(response);
   });

@@ -106,7 +106,7 @@ const onPageLoad = response => {
 const getItems = () => {
   return API_request({
     method: 'GET',
-    url: `http://www.imdb.com/search/title?count=100&title_type=feature`
+    url: `https://www.imdb.com/search/title?count=100&title_type=feature`
   }).then(response => {
     return onPageLoad(response);
   });
