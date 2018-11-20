@@ -28,6 +28,7 @@ const limitOne = promiseLimit(1);
  * @property {function} saveSections
  * @property {function} moveSection
  * @property {*} favoritesSection
+ * @property {function} getSectionById
  * @property {function} afterCreate
  * @property {function} beforeDestroy
  */
