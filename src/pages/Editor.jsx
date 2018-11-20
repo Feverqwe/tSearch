@@ -176,6 +176,13 @@ class Editor extends React.Component {
       );
     }
 
+    let addCodeBtn = null;
+    if (editorStore.type === 'tracker') {
+      addCodeBtn = (
+        <a onClick={this.handleAddCode} href="#code" className="button head__action head__action-add-code">{chrome.i18n.getMessage('addTrackerCode')}</a>
+      );
+    }
+
     let dialog = null;
     if (this.state.showAddCodeDialog) {
       dialog = (
@@ -202,7 +209,7 @@ class Editor extends React.Component {
             </label>
           </div>
           <div className="head__action">
-            <a onClick={this.handleAddCode} href="#code" className="button head__action head__action-add-code">{chrome.i18n.getMessage('addTrackerCode')}</a>
+            {addCodeBtn}
             {saveBtn}
             <a onClick={this.handleCloseWindow} href="#close" className="button head__action head__action-close">{chrome.i18n.getMessage('close')}</a>
           </div>
