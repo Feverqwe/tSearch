@@ -36,7 +36,14 @@ const ExplorerStore = types.model('ExplorerStore', {
   state: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
   sections: types.array(types.union({
     dispatcher(snapshot) {
-      return snapshot.id === 'favorites' ? ExplorerFavoritesSectionStore : ExplorerSectionStore;
+      switch (snapshot.id) {
+        case 'favorites': {
+          return ExplorerFavoritesSectionStore;
+        }
+        default: {
+          return ExplorerSectionStore;
+        }
+      }
     }
   }, ExplorerSectionStore, ExplorerFavoritesSectionStore)),
   modules: types.maybe(types.map(ExplorerModuleStore)),
