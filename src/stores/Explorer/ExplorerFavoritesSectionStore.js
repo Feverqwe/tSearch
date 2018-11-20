@@ -1,10 +1,9 @@
 import {flow, isAlive, types} from "mobx-state-tree";
 import getLogger from "../../tools/getLogger";
-import ExplorerItemStore from "./ExplorerItemStore";
-import ExplorerCommandStore from "./ExplorerCommandStore";
 import ExplorerSectionStore from "./ExplorerSectionStore";
 import storageGet from "../../tools/storageGet";
 import storageSet from "../../tools/storageSet";
+import _isEqual from "lodash.isequal";
 
 const promiseLimit = require('promise-limit');
 
@@ -12,51 +11,34 @@ const logger = getLogger('ExplorerFavoritesSectionStore');
 const oneLimit = promiseLimit(1);
 
 /**
- * @typedef {{}} ExplorerFavoritesSectionStore
- * @property {string} id
- * @property {string} [state]
- * @property {boolean} [collapsed]
- * @property {number} [rowCount]
- * @property {number} [zoom]
- * @property {{url:string}|undefined} authRequired
- * @property {ExplorerItemStore[]} items
- * @property {Map<*,ExplorerCommandStore>} commands
+ * @typedef {ExplorerSectionStore} ExplorerFavoritesSectionStore
  * @property {function} setState
- * @property {function:Promise} fetch
- * @property {function} setZoom
- * @property {function} setRowCount
- * @property {function} toggleCollapse
- * @property {function} setAuthRequired
- * @property {function} setItems
- * @property {function} createCommand
- * @property {*} module
- * @property {function} getSnapshot
- * @property {*} page
- * @property {function} fetchData
- * @property {function} fetchCommand
+ * @property {function:Promise} fetchData
+ * @property {function} addItem
+ * @property {function} removeItem
+ * @property {function} moveItem
+ * @property {function} saveItems
  */
 const ExplorerFavoritesSectionStore = types.compose('ExplorerFavoritesSectionStore', ExplorerSectionStore).actions(self => {
   return {
     setState(state) {
       self.state = state;
     },
-    fetchData: flow(function* (stateStore) {
+    fetchData: flow(function* () {
       const id = self.id;
-      stateStore.setState('pending');
+      self.setState('pending');
       try {
         const storage = yield storageGet({
           explorerFavorites: [],
-        });
+        }, 'sync');
         if (isAlive(self)) {
           self.setItems(storage.explorerFavorites);
-        }
-        if (isAlive(stateStore)) {
-          stateStore.setState('done');
+          self.setState('done');
         }
       } catch (err) {
         logger.error('fetch error', id, err);
-        if (isAlive(stateStore)) {
-          stateStore.setState('error');
+        if (isAlive(self)) {
+          self.setState('self');
         }
       }
     }),
@@ -100,14 +82,34 @@ const ExplorerFavoritesSectionStore = types.compose('ExplorerFavoritesSectionSto
     },
   };
 }).views(self => {
+  const storageChangeListener = (changes, namespace) => {
+    if (self.state !== 'done') return;
+
+    if (namespace === 'sync') {
+      const change = changes.explorerFavorites;
+      if (change) {
+        const explorerFavorites = change.newValue || [];
+        if (!_isEqual(explorerFavorites, self.getItemsSnapshot())) {
+          self.setItems(explorerFavorites);
+        }
+      }
+    }
+  };
+
   return {
     saveItems() {
       return oneLimit(() => {
         return storageSet({
           explorerFavorites: self.getItemsSnapshot()
-        });
+        }, 'sync');
       });
-    }
+    },
+    afterCreate() {
+      chrome.storage.onChanged.addListener(storageChangeListener);
+    },
+    beforeDestroy() {
+      chrome.storage.onChanged.removeListener(storageChangeListener);
+    },
   };
 });
 

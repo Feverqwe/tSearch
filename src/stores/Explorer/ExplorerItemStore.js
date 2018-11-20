@@ -1,6 +1,5 @@
-import {clone, getParentOfType, types} from "mobx-state-tree";
+import {clone, getParent, getParentOfType, types} from "mobx-state-tree";
 import ExplorerStore from "./ExplorerStore";
-import ExplorerFavoritesSectionStore from "./ExplorerFavoritesSectionStore";
 
 /**
  * @typedef {{}} ExplorerItemStore
@@ -24,7 +23,7 @@ const ExplorerItemStore = types.model('ExplorerItemStore', {
     updateProps(props) {
       Object.assign(self, props);
 
-      const favoritesSectionStore = /**ExplorerFavoritesSectionStore*/getParentOfType(self, ExplorerFavoritesSectionStore);
+      const favoritesSectionStore = /**ExplorerFavoritesSectionStore*/getParent(self, 2);
       return favoritesSectionStore.saveItems();
     }
   };
@@ -36,7 +35,7 @@ const ExplorerItemStore = types.model('ExplorerItemStore', {
       explorerStore.favoritesSection.saveItems();
     },
     removeFavorite() {
-      const favoritesSectionStore = /**ExplorerFavoritesSectionStore*/getParentOfType(self, ExplorerFavoritesSectionStore);
+      const favoritesSectionStore = /**ExplorerFavoritesSectionStore*/getParent(self, 2);
       favoritesSectionStore.removeItem(self);
       favoritesSectionStore.saveItems();
     },

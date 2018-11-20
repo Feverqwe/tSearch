@@ -129,7 +129,7 @@ const fetchModules = async () => {
 const fetchSections = async () => {
   const storage = await new Promise(resolve => chrome.storage.sync.get({
     explorerSections: [{
-      id: 'favorite'
+      id: 'favorites'
     }, {
       id: 'kpFavorites'
     }, {
