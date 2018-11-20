@@ -348,6 +348,7 @@ class ExplorerSectionBody extends React.Component {
           const next = nextNode && parseInt(nextNode.dataset.index, 10);
 
           this.sectionStore.moveItem(index, prev, next);
+          this.sectionStore.saveItems();
         }
       });
     }

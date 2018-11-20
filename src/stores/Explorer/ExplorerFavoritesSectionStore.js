@@ -77,8 +77,6 @@ const ExplorerFavoritesSectionStore = types.compose('ExplorerFavoritesSectionSto
       }
 
       self.items = items;
-
-      return self.saveItems();
     },
   };
 }).views(self => {
