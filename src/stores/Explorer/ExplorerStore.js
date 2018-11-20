@@ -142,7 +142,6 @@ const ExplorerStore = types.model('ExplorerStore', {
       }
 
       self.setSections(sections);
-      return self.saveSections();
     },
     get favoritesSection() {
       return resolveIdentifier(ExplorerFavoritesSectionStore, self, 'favorites');

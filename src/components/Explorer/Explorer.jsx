@@ -61,6 +61,7 @@ class Explorer extends React.Component {
           const next = nextNode && parseInt(nextNode.dataset.index, 10);
 
           this.explorerStore.moveSection(index, prev, next);
+          this.explorerStore.saveSections();
         }
       });
     }
