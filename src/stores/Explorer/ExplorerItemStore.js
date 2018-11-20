@@ -9,8 +9,8 @@ import ExplorerStore from "./ExplorerStore";
  * @property {string|undefined} poster
  * @property {*} extra
  * @property {function} updateProps
- * @property {function} handleAddFavorite
- * @property {function} handleRemoveFavorite
+ * @property {function} addFavorite
+ * @property {function} removeFavorite
  */
 const ExplorerItemStore = types.model('ExplorerItemStore', {
   title: types.string,

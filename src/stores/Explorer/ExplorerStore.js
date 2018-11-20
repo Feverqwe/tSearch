@@ -17,13 +17,19 @@ const limitOne = promiseLimit(1);
 /**
  * @typedef {{}} ExplorerStore
  * @property {string} [state]
- * @property {ExplorerSectionStore[]} sections
+ * @property {*[]} sections
  * @property {Map<*,ExplorerModuleStore>|undefined} modules
  * @property {function} setSections
  * @property {function} setState
  * @property {function:Promise} fetch
+ * @property {function} setModule
+ * @property {function} deleteModule
+ * @property {function} getSectionsSnapshot
  * @property {function} saveSections
  * @property {function} moveSection
+ * @property {*} favoritesSection
+ * @property {function} afterCreate
+ * @property {function} beforeDestroy
  */
 const ExplorerStore = types.model('ExplorerStore', {
   state: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),

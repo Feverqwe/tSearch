@@ -13,6 +13,7 @@ const logger = getLogger('ExplorerModuleStore');
  * @property {ExplorerModuleMetaStore} meta
  * @property {string} code
  * @property {function} setOptions
+ * @property {function} getSnapshot
  * @property {*} worker
  * @property {function} attach
  * @property {function} deattach

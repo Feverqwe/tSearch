@@ -21,6 +21,8 @@ const cache = new ExplorerCache();
  * @property {{url:string}|undefined} authRequired
  * @property {ExplorerItemStore[]} items
  * @property {Map<*,ExplorerCommandStore>} commands
+ * @property {string} moduleId
+ * @property {string} [moduleParams]
  * @property {function} setState
  * @property {function:Promise} fetch
  * @property {function} setZoom
@@ -31,6 +33,7 @@ const cache = new ExplorerCache();
  * @property {function} createCommand
  * @property {*} module
  * @property {function} getSnapshot
+ * @property {function} getItemsSnapshot
  * @property {*} page
  * @property {function} fetchData
  * @property {function} fetchCommand

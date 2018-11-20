@@ -12,12 +12,15 @@ const oneLimit = promiseLimit(1);
 
 /**
  * @typedef {ExplorerSectionStore} ExplorerFavoritesSectionStore
+ * @property {undefined} moduleId
  * @property {function} setState
  * @property {function:Promise} fetchData
  * @property {function} addItem
  * @property {function} removeItem
  * @property {function} moveItem
  * @property {function} saveItems
+ * @property {function} afterCreate
+ * @property {function} beforeDestroy
  */
 const ExplorerFavoritesSectionStore = types.compose('ExplorerFavoritesSectionStore', ExplorerSectionStore, types.model({
   moduleId: types.undefined,
