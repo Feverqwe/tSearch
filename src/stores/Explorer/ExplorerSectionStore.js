@@ -132,6 +132,8 @@ const ExplorerSectionStore = types.model('ExplorerSectionStore', {
         collapsed: self.collapsed,
         rowCount: self.rowCount,
         zoom: self.zoom,
+        moduleId: self.moduleId,
+        moduleParams: self.moduleParams,
       };
     },
     getItemsSnapshot() {
