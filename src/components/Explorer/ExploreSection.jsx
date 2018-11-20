@@ -1,7 +1,7 @@
 import {observer} from "mobx-react";
 import React from "react";
 import PropTypes from "prop-types";
-import ExplorerSectionItem from "./ExplorerSectionItem";
+import ExplorerItem from "./ExplorerItem";
 import getLogger from "../../tools/getLogger";
 import {Link} from "react-router-dom";
 import _debounce from "lodash.debounce";
@@ -419,7 +419,7 @@ class ExplorerSectionBody extends React.Component {
 
     const contentItems = pageItems.map((item, i) => {
       return (
-        <ExplorerSectionItem key={[from + i, item.url].join(':')} index={from + i} sectionStore={this.sectionStore} itemStore={item}/>
+        <ExplorerItem key={[from + i, item.url].join(':')} index={from + i} sectionStore={this.sectionStore} itemStore={item}/>
       );
     });
 

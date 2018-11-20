@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import Dialog from "../Dialog";
 
 @observer
-class ExplorerSectionItem extends React.Component {
+class ExplorerItem extends React.Component {
   static propTypes = {
     index: PropTypes.number.isRequired,
     sectionStore: PropTypes.object.isRequired,
@@ -179,4 +179,4 @@ class ExplorerSectionItem extends React.Component {
   }
 }
 
-export default ExplorerSectionItem;
+export default ExplorerItem;
