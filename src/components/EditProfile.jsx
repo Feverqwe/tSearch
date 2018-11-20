@@ -263,6 +263,10 @@ class TrackerItem extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      update: false
+    };
+
     this.checkbox = null;
   }
 
@@ -295,6 +299,21 @@ class TrackerItem extends React.Component {
     this.checkbox = element;
   };
 
+  handleUpdate = (e) => {
+    e.preventDefault();
+    if (this.state.update) return;
+
+    this.setState({update: true}, () => {
+      chrome.runtime.sendMessage({
+        action: 'updateTracker',
+        id: this.props.id,
+      }, response => {
+        logger('update response', response);
+        this.setState({update: false});
+      });
+    });
+  };
+
   render() {
     const tracker = this.props.editorTracker;
 
@@ -321,7 +340,7 @@ class TrackerItem extends React.Component {
     }
     if (tracker.meta.downloadURL) {
       updateBtn = (
-        <a className="item__cell item__button button-update" href="#update" title={chrome.i18n.getMessage('update')}/>
+        <a onClick={this.handleUpdate} className="item__cell item__button button-update" href="#update" title={chrome.i18n.getMessage('update')}/>
       );
     }
     if (tracker.meta.homepageURL) {
