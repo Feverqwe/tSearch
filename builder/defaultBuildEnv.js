@@ -12,5 +12,5 @@ global.BUILD_ENV = {
       chrome: mode === 'development' ? '68' : '60'
     }
   },
-  FLAG_ENABLE_LOGGER: mode === 'development',
+  FLAG_ENABLE_LOGGER: true,// mode === 'development',
 };
