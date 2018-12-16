@@ -317,6 +317,9 @@
   "kitBaseUrl": {
     "message": "Основной URL"
   },
+  "kitOriginUrl": {
+    "message": "Origin URL"
+  },
   "kitLoginUrl": {
     "message": "URL страницы авторизации"
   },

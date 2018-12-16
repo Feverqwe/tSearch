@@ -326,6 +326,9 @@
     "kitBaseUrl": {
         "message": "Base URL"
     },
+    "kitOriginUrl": {
+        "message": "Origin URL"
+    },
     "kitTrackerUrl": {
         "message": "URL"
     },

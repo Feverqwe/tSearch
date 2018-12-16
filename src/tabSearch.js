@@ -1,6 +1,6 @@
 import {fetch} from 'whatwg-fetch';
 import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only';
-import {ErrorWithCode, StatusCodeError} from "./tools/errors";
+import {StatusCodeError} from "./tools/errors";
 import arrayBufferToBase64 from "./tools/arrayBufferToBase64";
 
 const serializeError = require('serialize-error');

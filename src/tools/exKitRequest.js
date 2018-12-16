@@ -26,7 +26,7 @@ const exKitRequest = (tracker, options) => {
     throw new ErrorWithCode('Options is not set', 'OPTIONS_IS_EMPTY');
   }
 
-  const {url, charset, ...fetchOptions} = options;
+  const {url, charset, originUrl, ...fetchOptions} = options;
 
   if (typeof url !== 'string') {
     throw new ErrorWithCode('Incorrect request, url is not string', 'INCORRECT_REQUEST');
@@ -48,7 +48,7 @@ const exKitRequest = (tracker, options) => {
   const request = new Promise((resolve) => {
     chrome.runtime.sendMessage({
       action: 'search',
-      origin: url,
+      origin: originUrl || origin,
       fetchUrl: url,
       fetchOptions: {
         method: fetchOptions.method,

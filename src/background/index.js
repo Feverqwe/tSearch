@@ -327,8 +327,14 @@ class Searcher {
       if (!this.urlPromise.has(originUrl)) {
         const promise = this.createPopupWindow(originUrl).then((tabId) => {
           this.loadingTabIds.push(tabId);
-          return new Promise(resolve => {
-            chrome.tabs.executeScript(tabId, {file: 'tabSearch.js'}, resolve)
+          return new Promise((resolve, reject) => {
+            chrome.tabs.executeScript(tabId, {
+              file: 'tabSearch.js',
+              runAt: 'document_end',
+            }, (results) => {
+              const err = chrome.runtime.lastError;
+              err ? reject(err) : resolve(results);
+            });
           }).then(() => {
             this.urlTabId.set(originUrl, tabId);
             this.loadingTabIds.splice(this.loadingTabIds.indexOf(tabId), 1);
@@ -347,7 +353,8 @@ class Searcher {
     const request = {
       id: ++this.requestId,
       tabId: tabId,
-      fired: false
+      fired: false,
+      done: false,
     };
 
     this.idRequest.set(request.id, request);
@@ -357,6 +364,7 @@ class Searcher {
       request.handleReject = reject;
     }).then(...promiseFinally(() => {
       this.idRequest.delete(request.id);
+      request.done = true;
       this.closeTabIfIdle();
     }));
 
@@ -364,7 +372,7 @@ class Searcher {
       if (request.fired) return request.promise;
       request.fired = true;
 
-      new Promise(resolve => chrome.tabs.executeScript(tabId, {
+      new Promise((resolve, reject) => chrome.tabs.executeScript(tabId, {
         code: `(${function (id, url, options) {
           try {
             window.tabSearch(id, url, options);
@@ -373,16 +381,21 @@ class Searcher {
             console.error('tabSearch error', err);
           }
         }})(${[request.id, fetchUrl, fetchOptions].map(JSON.stringify).join(',')})`,
-      }, resolve)).then(results => results[0]).then(result => {
+        runAt: 'document_end',
+      }, (results) => {
+        const err = chrome.runtime.lastError;
+        err ? reject(err) : resolve(results);
+      })).then(results => results[0]).then(result => {
         if (!result) {
           request.handleReject(new ErrorWithCode('tabSearch error', 'TAB_SEARCH_ERROR'));
         }
       });
+
       return request.promise;
     };
 
     request.abort = () => {
-      new Promise(resolve => chrome.tabs.executeScript(tabId, {
+      new Promise((resolve, reject) => chrome.tabs.executeScript(tabId, {
         code: `(${function (id) {
           try {
             window.tabSearchAbort(id);
@@ -390,7 +403,11 @@ class Searcher {
             console.error('tabSearchAbort error', err);
           }
         }})(${[request.id].map(JSON.stringify).join(',')})`,
-      }, resolve));
+        runAt: 'document_end',
+      }, (results) => {
+        const err = chrome.runtime.lastError;
+        err ? reject(err) : resolve(results);
+      }));
     };
 
     return request.id;
@@ -419,8 +436,35 @@ class Searcher {
     }
     if (this.tabIds.length === 1) {
       chrome.tabs.onRemoved.addListener(this.tabRemovedListener);
+      chrome.tabs.onUpdated.addListener(this.tabUpdatedListener);
     }
   }
+  tabUpdatedListener = (tabId, changeInfo) => {
+    if (!changeInfo.url) return;
+
+    let url = null;
+    this.urlTabId.forEach((id, _url) => {
+      if (tabId === id) {
+        url = _url;
+      }
+    });
+
+    if (url) {
+      chrome.tabs.executeScript(tabId, {
+        file: 'tabSearch.js',
+        runAt: 'document_end',
+      }, () => {
+        if (!chrome.runtime.lastError) {
+          this.idRequest.forEach((request) => {
+            if (request.tabId === tabId && !request.done) {
+              request.fired = false;
+              request.init();
+            }
+          });
+        }
+      });
+    }
+  };
   tabRemovedListener = (tabId) => {
     let url = null;
     this.urlTabId.forEach((id, _url) => {
@@ -463,7 +507,7 @@ class Searcher {
   closeTabIfIdle() {
     this.urlTabId.forEach((tabId) => {
       const hasRequest = Array.from(this.idRequest.values()).some((request) => {
-        return request.tabId === tabId;
+        return !request.done && request.tabId === tabId;
       });
       if (!hasRequest) {
         chrome.tabs.remove(tabId);
@@ -477,6 +521,7 @@ class Searcher {
     this.loadingTabIds.forEach(id => {
       chrome.tabs.remove(id);
     });
+    chrome.tabs.onUpdated.removeListener(this.tabUpdatedListener);
     chrome.tabs.onRemoved.removeListener(this.tabRemovedListener);
   }
 }

@@ -218,6 +218,10 @@ class CodeMakerSearchPage extends React.Component {
           </select>
         </div>
         <div className="field">
+          <span className="field-name">{chrome.i18n.getMessage('kitOriginUrl')}</span>
+          <BindInput store={this.codeSearchStore} id={'originUrl'} type="text" placeholder="auto"/>
+        </div>
+        <div className="field">
           <span className="field-name">{chrome.i18n.getMessage('kitPageCharset')}</span>
           <BindInput store={this.codeSearchStore} id={'charset'} type="text" placeholder="auto"/>
         </div>

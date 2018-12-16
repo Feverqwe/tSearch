@@ -33,6 +33,7 @@ class ExKitTracker {
     const options = {
       method: searchStore.method,
       url: searchStore.url.replace('%search%', encodedQuery),
+      originUrl: searchStore.originUrl,
       query: (searchStore.query || '').replace('%search%', encodedQuery),
       body: (searchStore.body || '').replace('%search%', encodedQuery),
       charset: searchStore.charset,
@@ -49,6 +50,7 @@ class ExKitTracker {
     const options = {
       method: 'GET',
       url: url,
+      originUrl: searchStore.originUrl,
       charset: searchStore.charset,
     };
 
