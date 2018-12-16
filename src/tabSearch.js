@@ -57,4 +57,6 @@ const serializeError = require('serialize-error');
       }
     });
   };
+
+  window.stop();
 })();
