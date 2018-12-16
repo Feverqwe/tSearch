@@ -1,8 +1,8 @@
-import {ErrorWithCode, StatusCodeError} from './errors';
-import {fetch} from 'whatwg-fetch';
-import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only';
+import {ErrorWithCode} from './errors';
 import getLogger from "./getLogger";
+import base64ToArrayBuffer from "./base64ToArrayBuffer";
 
+const deserializeError = require('deserialize-error');
 const contentType = require('content-type');
 
 const logger = getLogger('exKitRequest');
@@ -37,30 +37,49 @@ const exKitRequest = (tracker, options) => {
     throw new ErrorWithCode(`Connection is not allowed! ${origin} Add url patter in @connect!`, 'ORIGIN_IS_NOT_AVAILABLE');
   }
 
-  const controller = new AbortController();
+  const deserializeResult = (result) => {
+    if (result.error) {
+      throw deserializeError(result.error);
+    } else {
+      return result.result;
+    }
+  };
 
-  const request = fetch(url, {
-    method: fetchOptions.method,
-    headers: fetchOptions.headers,
-    body: fetchOptions.body,
-    signal: controller.signal
+  const request = new Promise((resolve) => {
+    chrome.runtime.sendMessage({
+      action: 'search',
+      origin: url,
+      fetchUrl: url,
+      fetchOptions: {
+        method: fetchOptions.method,
+        headers: fetchOptions.headers,
+        body: fetchOptions.body,
+      },
+    }, resolve);
+  }).then(deserializeResult).then((id) => {
+    request.id = id;
+    return new Promise((resolve) => {
+      chrome.runtime.sendMessage({
+        action: 'initSearch',
+        id: request.id,
+      }, resolve);
+    }).then(deserializeResult);
   });
 
   request.abort = () => {
-    controller.abort();
+    chrome.runtime.sendMessage({
+      action: 'abortSearch',
+      id: request.id,
+    });
   };
 
   tracker.requests.push(request);
 
-  return request.then(response => {
-    if (!response.ok) {
-      throw new StatusCodeError(response.status, null, null, response);
-    }
+  return request.then(({response, base64}) => {
+    const arrayBuffer = base64ToArrayBuffer(base64);
 
-    return response.arrayBuffer().then(arrayBuffer => {
-      return {response, arrayBuffer};
-    });
-  }).then(({response, arrayBuffer}) => {
+    response.headers = new Headers(response.headers);
+
     let responseCharset = null;
     if (response.headers.has('Content-Type')) {
       try {

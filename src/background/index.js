@@ -11,14 +11,18 @@ import ExplorerModuleStore from "../stores/Explorer/ExplorerModuleStore";
 import getExploreModuleCodeMeta from "../tools/getExploreModuleCodeMeta";
 import storageGet from "../tools/storageGet";
 import storageSet from "../tools/storageSet";
+import promiseFinally from "../tools/promiseFinally";
 
 const promiseLimit = require('promise-limit');
 const qs = require('querystring');
 const compareVersions = require('compare-versions');
 const serializeError = require('serialize-error');
+const deserializeError = require('deserialize-error');
 
 const logger = getLogger('background');
 const oneLimit = promiseLimit(1);
+
+let searcher = null;
 
 /**@type OptionsStore*/
 const optionsStore = OptionsStore.create();
@@ -60,6 +64,35 @@ chrome.runtime.onMessage.addListener(function (message, sender, response) {
     }
     case 'update': {
       promise = update();
+      break;
+    }
+    case 'search': {
+      if (!searcher) {
+        searcher = new Searcher();
+      }
+      promise = searcher.search(sender.url, message.origin, message.fetchUrl, message.fetchOptions);
+      break;
+    }
+    case 'initSearch': {
+      promise = Promise.resolve().then(() => {
+        if (searcher) {
+          return searcher.initRequestById(message.id);
+        } else {
+          throw new Error('Searcher is not exists');
+        }
+      });
+      break;
+    }
+    case 'abortSearch': {
+      if (searcher) {
+        searcher.abortRequestById(message.id);
+      }
+      break;
+    }
+    case 'searchResponse': {
+      if (searcher) {
+        searcher.handleResponse(message.id, message.result);
+      }
       break;
     }
   }
@@ -277,3 +310,180 @@ const updateExplorerModule = (id) => {
     }).then(() => true);
   });
 };
+
+class Searcher {
+  constructor() {
+    this.tabIds = [];
+    this.windowId = null;
+    this.urlTabId = new Map();
+    this.requestId = 0;
+    this.idRequest = new Map();
+
+    const oneLimit = promiseLimit(1);
+    this.createTabOneLimit = (url) => {
+      return oneLimit(() => this.createTab(url));
+    };
+  }
+  async search(senderUrl, originUrl, fetchUrl, fetchOptions) {
+    const tabIds = await this.getUrlTabIds(senderUrl);
+
+    tabIds.forEach(id => this.addTab(id));
+
+    let tabId = this.urlTabId.get(originUrl);
+    if (!tabId) {
+      tabId = await this.createTabOneLimit(originUrl);
+    }
+
+    await new Promise(resolve => chrome.tabs.executeScript(tabId, {
+      file: 'tabSearch.js',
+    }, resolve));
+
+    const request = {
+      id: ++this.requestId,
+      tabId: tabId,
+      fired: false
+    };
+
+    this.idRequest.set(request.id, request);
+
+    request.promise = new Promise((resolve, reject) => {
+      request.handleResolve = resolve;
+      request.handleReject = reject;
+    }).then(...promiseFinally(() => {
+      this.idRequest.delete(request.id);
+    }));
+
+    request.init = () => {
+      if (request.fired) return request.promise;
+      request.fired = true;
+
+      new Promise(resolve => chrome.tabs.executeScript(tabId, {
+        code: `(${function (id, url, options) {
+          try {
+            window.tabSearch(id, url, options);
+            return true;
+          } catch (err) {
+            console.error('tabSearch error', err);
+          }
+        }})(${[request.id, fetchUrl, fetchOptions].map(JSON.stringify).join(',')})`,
+      }, resolve)).then(results => results[0]).then(result => {
+        if (!result) {
+          request.handleReject(new ErrorWithCode('tabSearch error', 'TAB_SEARCH_ERROR'));
+        }
+      });
+      return request.promise;
+    };
+
+    request.abort = () => {
+      new Promise(resolve => chrome.tabs.executeScript(tabId, {
+        code: `(${function (id) {
+          try {
+            window.tabSearchAbort(id);
+          } catch (err) {
+            console.error('tabSearchAbort error', err);
+          }
+        }})(${[request.id].map(JSON.stringify).join(',')})`,
+      }, resolve));
+    };
+
+    return request.id;
+  }
+  handleResponse(id, result) {
+    const request = this.idRequest.get(id);
+    if (request) {
+      if (result.error) {
+        request.handleReject(deserializeError(result.error));
+      } else {
+        request.handleResolve(result.result);
+      }
+    }
+  }
+  initRequestById(id) {
+    const request = this.idRequest.get(id);
+    return request.init();
+  }
+  abortRequestById(id) {
+    const request = this.idRequest.get(id);
+    return request.abort();
+  }
+  getUrlTabIds(url) {
+    return new Promise(resolve => chrome.tabs.query({url: url}, resolve)).then((tabs) => {
+      if (!tabs.length) {
+        throw new ErrorWithCode('Tab is not found by url', 'TAB_IS_NOT_FOUND');
+      }
+      return tabs.map(tab => tab.id);
+    });
+  }
+  addTab(id) {
+    if (this.tabIds.indexOf(id) === -1) {
+      this.tabIds.push(id);
+    }
+    if (this.tabIds.length === 1) {
+      chrome.tabs.onRemoved.addListener(this.tabRemovedListener);
+    }
+  }
+  tabRemovedListener = (tabId) => {
+    let url = null;
+    this.urlTabId.forEach((_url, id) => {
+      if (tabId === id) {
+        url = _url;
+      }
+    });
+    if (url) {
+      this.urlTabId.delete(url);
+    }
+
+    this.idRequest.forEach((request) => {
+      if (request.tabId === tabId) {
+        request.handleReject(new ErrorWithCode('Tab is closed', 'TAB_IS_CLOSED'));
+      }
+    });
+
+    const pos = this.tabIds.indexOf(tabId);
+    if (pos !== -1) {
+      this.tabIds.splice(pos, 1);
+    }
+
+    if (!this.tabIds.length) {
+      this.destroy();
+    }
+  };
+  async createTab(url) {
+    if (!this.windowId) {
+      this.windowId = await this.createWindow();
+    }
+
+    const tabId = new Promise(resolve => chrome.tabs.create({
+      windowId: this.windowId,
+      url: url,
+    }, resolve)).then((tab) => tab.id);
+
+    this.urlTabId.set(url, tabId);
+
+    return tabId;
+  }
+  createWindow() {
+    return new Promise(resolve => chrome.windows.create({
+      focused: false,
+      state: 'minimized',
+    }, resolve)).then((window) => {
+      chrome.windows.onRemoved.addListener(this.windowRemovedListener);
+      return window.id;
+    });
+  }
+  windowRemovedListener = (windowId) => {
+    if (this.windowId === windowId) {
+      this.urlTabId.forEach((url, tabId) => {
+        this.tabRemovedListener(tabId);
+      });
+      this.windowId = null;
+    }
+  };
+  async destroy() {
+    chrome.windows.onRemoved.removeListener(this.windowRemovedListener);
+    chrome.tabs.onRemoved.removeListener(this.tabRemovedListener);
+    if (this.windowId) {
+      await new Promise(resolve => chrome.windows.remove(this.windowId, resolve));
+    }
+  }
+}
