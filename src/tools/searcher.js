@@ -219,8 +219,8 @@ const createPopup = (originUrl) => {
     focused: false,
     width: 120,
     height: 60,
-    left: screen.availWidth - 120,
-    top: screen.availHeight - 60,
+    left: screen.availWidth,
+    top: screen.availHeight,
     type: 'popup',
   }, resolve)).then((window) => {
     const tabId = window.tabs[0].id;
