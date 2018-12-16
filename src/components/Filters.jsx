@@ -372,8 +372,8 @@ class TimeFilter extends React.Component {
     const isExtra = value === -1;
     if (this.state.showRange !== isExtra) {
       const {minDate, maxDate} = this.state;
-      const min = minDate && minDate.unix() || 0;
-      const max = maxDate && maxDate.unix() || 0;
+      const min = minDate && parseInt(minDate.getTime(), 10) || 0;
+      const max = maxDate && parseInt(maxDate.getTime(), 10) || 0;
       if (min || max) {
         this.state.min = min;
         this.state.max = max;
@@ -417,7 +417,7 @@ class TimeFilter extends React.Component {
   }
 
   handleMinDateChange = (date) => {
-    this.state.min = date && date.unix() || 0;
+    this.state.min = date && parseInt(date.getTime(), 10) || 0;
     this.onChange();
     this.setState({
       minDate: date
@@ -425,7 +425,7 @@ class TimeFilter extends React.Component {
   };
 
   handleMaxDateChange = (date) => {
-    this.state.max = date && date.unix() || 0;
+    this.state.max = date && parseInt(date.getTime(), 10) || 0;
     this.onChange();
     this.setState({
       maxDate: date
