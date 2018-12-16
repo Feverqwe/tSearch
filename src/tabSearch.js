@@ -59,4 +59,9 @@ const serializeError = require('serialize-error');
   };
 
   window.stop();
+
+  const element = (document.body || document.head);
+  if (element) {
+    element.parentNode.textContent = '';
+  }
 })();
