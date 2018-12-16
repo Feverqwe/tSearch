@@ -330,7 +330,7 @@ class Searcher {
           return new Promise((resolve, reject) => {
             chrome.tabs.executeScript(tabId, {
               file: 'tabSearch.js',
-              runAt: 'document_end',
+              runAt: 'document_start',
             }, (results) => {
               const err = chrome.runtime.lastError;
               err ? reject(err) : resolve(results);
@@ -381,7 +381,7 @@ class Searcher {
             console.error('tabSearch error', err);
           }
         }})(${[request.id, fetchUrl, fetchOptions].map(JSON.stringify).join(',')})`,
-        runAt: 'document_end',
+        runAt: 'document_start',
       }, (results) => {
         const err = chrome.runtime.lastError;
         err ? reject(err) : resolve(results);
@@ -403,7 +403,7 @@ class Searcher {
             console.error('tabSearchAbort error', err);
           }
         }})(${[request.id].map(JSON.stringify).join(',')})`,
-        runAt: 'document_end',
+        runAt: 'document_start',
       }, (results) => {
         const err = chrome.runtime.lastError;
         err ? reject(err) : resolve(results);
@@ -452,7 +452,7 @@ class Searcher {
     if (url) {
       chrome.tabs.executeScript(tabId, {
         file: 'tabSearch.js',
-        runAt: 'document_end',
+        runAt: 'document_start',
       }, () => {
         if (!chrome.runtime.lastError) {
           this.idRequest.forEach((request) => {
