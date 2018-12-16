@@ -23,41 +23,11 @@ class Searcher {
 
     this.addTab(senderTabId);
 
-    if (!this.urlTabId.has(originUrl)) {
-      if (!this.urlPromise.has(originUrl)) {
-        const promise = this.createPopupWindow(originUrl).then((tabId) => {
-          this.loadingTabIds.push(tabId);
-          chrome.tabs.update(tabId, {
-            muted: true
-          });
-          return new Promise((resolve, reject) => {
-            chrome.tabs.executeScript(tabId, {
-              file: 'tabSearch.js',
-              runAt: 'document_start',
-            }, (results) => {
-              const err = chrome.runtime.lastError;
-              err ? reject(err) : resolve(results);
-            });
-          }).then(() => {
-            this.urlTabId.set(originUrl, tabId);
-            this.loadingTabIds.splice(this.loadingTabIds.indexOf(tabId), 1);
-            return tabId;
-          });
-        }).then(...promiseFinally(() => {
-          this.urlPromise.delete(originUrl);
-        }));
-        this.urlPromise.set(originUrl, promise);
-      }
-      await this.urlPromise.get(originUrl);
-    }
-
-    const tabId = this.urlTabId.get(originUrl);
-
     const request = {
       id: ++this.requestId,
-      tabId: tabId,
-      fired: false,
-      done: false,
+      tabId: null,
+      inited: false,
+      sessionId: 0,
     };
 
     this.idRequest.set(request.id, request);
@@ -67,30 +37,46 @@ class Searcher {
       request.handleReject = reject;
     }).then(...promiseFinally(() => {
       this.idRequest.delete(request.id);
-      request.done = true;
-      this.closeTabIdIdleDebounce();
+      this.closeTabIfIdleDebounce();
     }));
 
     request.init = () => {
-      if (request.fired) return request.promise;
-      request.fired = true;
+      if (request.inited) return request.promise;
+      request.inited = true;
 
-      new Promise((resolve, reject) => chrome.tabs.executeScript(tabId, {
-        code: `(${function (id, url, options) {
-          try {
-            window.tabSearch(id, url, options);
-            return true;
-          } catch (err) {
-            logger.error('tabSearch error', err);
-          }
-        }})(${[request.id, fetchUrl, fetchOptions].map(JSON.stringify).join(',')})`,
-        runAt: 'document_start',
-      }, (results) => {
-        const err = chrome.runtime.lastError;
-        err ? reject(err) : resolve(results);
-      })).then(results => results[0]).then(result => {
-        if (!result) {
-          request.handleReject(new ErrorWithCode('tabSearch error', 'TAB_SEARCH_ERROR'));
+      const sessionId = ++request.sessionId;
+      Promise.resolve().then(async () => {
+        let tabId = this.urlTabId.get(originUrl);
+        if (!tabId) {
+          tabId = await this.createPopupWindow(originUrl);
+          this.urlTabId.set(originUrl, tabId);
+        }
+
+        request.tabId = tabId;
+
+        await executeScriptPromise(request.tabId, {
+          file: 'tabSearch.js',
+          runAt: 'document_start',
+        });
+
+        if (sessionId !== request.sessionId) return;
+
+        const result = await executeScriptPromise(request.tabId, {
+          code: `(${function (id, url, options) {
+            try {
+              window.tabSearch(id, url, options);
+              return {result: true};
+            } catch (err) {
+              return {error: {message: err.message, stack: err.stack}};
+            }
+          }})(${strArgs(request.id, fetchUrl, fetchOptions)})`,
+          runAt: 'document_start',
+        }).then(results => results[0]);
+
+        if (sessionId !== request.sessionId) return;
+
+        if (!result || result.error) {
+          request.handleReject(!result ? new Error('tabSearch error') : deserializeError(result.error));
         }
       });
 
@@ -98,19 +84,16 @@ class Searcher {
     };
 
     request.abort = () => {
-      new Promise((resolve, reject) => chrome.tabs.executeScript(tabId, {
+      executeScriptPromise(request.tabId, {
         code: `(${function (id) {
           try {
             window.tabSearchAbort(id);
           } catch (err) {
             logger.error('tabSearchAbort error', err);
           }
-        }})(${[request.id].map(JSON.stringify).join(',')})`,
+        }})(${strArgs(request.id)})`,
         runAt: 'document_start',
-      }, (results) => {
-        const err = chrome.runtime.lastError;
-        err ? reject(err) : resolve(results);
-      }));
+      });
     };
 
     return request.id;
@@ -158,17 +141,10 @@ class Searcher {
     });
 
     if (url) {
-      chrome.tabs.executeScript(tabId, {
-        file: 'tabSearch.js',
-        runAt: 'document_start',
-      }, () => {
-        if (!chrome.runtime.lastError) {
-          this.idRequest.forEach((request) => {
-            if (request.tabId === tabId && !request.done) {
-              request.fired = false;
-              request.init();
-            }
-          });
+      this.idRequest.forEach((request) => {
+        if (request.tabId === tabId) {
+          request.inited = false;
+          request.init();
         }
       });
     }
@@ -200,27 +176,23 @@ class Searcher {
       this.destroy();
     }
   };
-  createPopupWindow(url) {
-    DEBUG && logger.log('createPopupWindow', url);
-    return new Promise(resolve => chrome.windows.create({
-      url: url,
-      focused: false,
-      width: 120,
-      height: 60,
-      left: screen.availWidth - 120,
-      top: screen.availHeight - 60,
-      type: 'popup',
-    }, resolve)).then((window) => {
-      const tabId = window.tabs[0].id;
-      return tabId;
-    });
+  createPopupWindow(originUrl) {
+    DEBUG && logger.log('createPopupWindow', originUrl);
+    let promise = this.urlPromise.get(originUrl);
+    if (!promise) {
+      promise = createPopup(originUrl).then(...promiseFinally(() => {
+        this.urlPromise.delete(originUrl);
+      }));
+      this.urlPromise.set(originUrl, promise);
+    }
+    return promise;
   }
-  closeTabIdIdleDebounce = debounce(this.closeTabIfIdle.bind(this), 250);
+  closeTabIfIdleDebounce = debounce(this.closeTabIfIdle.bind(this), 250);
   closeTabIfIdle() {
     DEBUG && logger.log('closeTabIfIdle');
     this.urlTabId.forEach((tabId) => {
       const hasRequest = Array.from(this.idRequest.values()).some((request) => {
-        return !request.done && request.tabId === tabId;
+        return request.tabId === tabId;
       });
       if (!hasRequest) {
         DEBUG && logger.log('closeTabIfIdle remove tab', tabId);
@@ -240,5 +212,35 @@ class Searcher {
     chrome.tabs.onRemoved.removeListener(this.tabRemovedListener);
   }
 }
+
+const createPopup = (originUrl) => {
+  return new Promise(resolve => chrome.windows.create({
+    url: originUrl,
+    focused: false,
+    width: 120,
+    height: 60,
+    left: screen.availWidth - 120,
+    top: screen.availHeight - 60,
+    type: 'popup',
+  }, resolve)).then((window) => {
+    const tabId = window.tabs[0].id;
+    chrome.tabs.update(tabId, {muted: true});
+    return tabId;
+  });
+};
+
+const executeScriptPromise = (tabId, options) => {
+  DEBUG && logger('executeScriptPromise', tabId, options.file);
+  return new Promise((resolve, reject) => {
+    chrome.tabs.executeScript(tabId, options, (results) => {
+      const err = chrome.runtime.lastError;
+      err ? reject(err) : resolve(results);
+    });
+  });
+};
+
+const strArgs = (...args) => {
+  return args.map(JSON.stringify).join(',');
+};
 
 export default Searcher;
