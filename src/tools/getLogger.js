@@ -39,13 +39,18 @@ function selectColor(namespace) {
 const getLogger = name => {
   let fn = null;
   if (typeof BUILD_ENV !== 'undefined' && BUILD_ENV.FLAG_ENABLE_LOGGER) {
-    const color = selectColor(name);
-    fn = console.log.bind(console, `%c${name}`, `color: ${color}`);
+    const colorArgs = [];
+    if (BUILD_ENV.mode === 'development') {
+      colorArgs.push(`%c${name}`, `color: ${selectColor(name)}`);
+    } else {
+      colorArgs.push(name);
+    }
+    fn = console.log.bind(console, ...colorArgs);
     fn.log = fn;
-    fn.info = console.info.bind(console, `%c${name}`, `color: ${color}`);
-    fn.warn = console.warn.bind(console, `%c${name}`, `color: ${color}`);
-    fn.error = console.error.bind(console, `%c${name}`, `color: ${color}`);
-    fn.debug = console.debug.bind(console, `%c${name}`, `color: ${color}`);
+    fn.info = console.info.bind(console, ...colorArgs);
+    fn.warn = console.warn.bind(console, ...colorArgs);
+    fn.error = console.error.bind(console, ...colorArgs);
+    fn.debug = console.debug.bind(console, ...colorArgs);
   } else {
     fn = () => {};
     fn.log = fn.info = fn.warn = fn.error = fn.debug = fn;
