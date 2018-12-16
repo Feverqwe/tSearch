@@ -66,6 +66,11 @@ const HistoryQueryStore = types.model('HistoryQueryStore', {
         trackerId: trackerId,
         time: getNow()
       });
+      if (self.clicks.size > 100) {
+        self.getClicksSortByTime().slice(100).forEach((click) => {
+          self.removeClick(click.url);
+        });
+      }
     },
     removeClick(url) {
       self.clicks.delete(url);
@@ -150,6 +155,11 @@ const HistoryStore = types.model('HistoryStore', {
         q = self.history.put({
           query: query
         });
+        if (self.history.size > 100) {
+          self.getHistorySortByTime().slice(100).forEach((query) => {
+            self.removeQuery(query.query);
+          });
+        }
       }
       return q;
     },
