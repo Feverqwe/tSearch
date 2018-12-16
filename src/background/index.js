@@ -424,7 +424,7 @@ class Searcher {
   }
   tabRemovedListener = (tabId) => {
     let url = null;
-    this.urlTabId.forEach((_url, id) => {
+    this.urlTabId.forEach((id, _url) => {
       if (tabId === id) {
         url = _url;
       }
@@ -453,7 +453,7 @@ class Searcher {
       this.windowId = await this.createWindow();
     }
 
-    const tabId = new Promise(resolve => chrome.tabs.create({
+    const tabId = await new Promise(resolve => chrome.tabs.create({
       windowId: this.windowId,
       url: url,
     }, resolve)).then((tab) => tab.id);
