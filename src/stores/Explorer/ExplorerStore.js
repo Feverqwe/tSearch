@@ -8,6 +8,7 @@ import ExplorerFavoritesSectionStore from "./ExplorerFavoritesSectionStore";
 import storageSet from "../../tools/storageSet";
 import storageGet from "../../tools/storageGet";
 import getUnic from "../../tools/getUnic";
+import ExploreQuickSearchStore from "./ExploreQuickSearchStore";
 
 const promiseLimit = require('promise-limit');
 
@@ -47,6 +48,7 @@ const ExplorerStore = types.model('ExplorerStore', {
     }
   }, ExplorerSectionStore, ExplorerFavoritesSectionStore)),
   modules: types.maybe(types.map(ExplorerModuleStore)),
+  quickSearch: types.optional(ExploreQuickSearchStore, {}),
 }).actions(/**ExplorerStore*/self => {
   return {
     setSections(sections) {
@@ -60,7 +62,8 @@ const ExplorerStore = types.model('ExplorerStore', {
       try {
         const [modules, sections] = yield Promise.all([
           fetchModules(),
-          fetchSections()
+          fetchSections(),
+          self.quickSearch.fetch(),
         ]);
         if (isAlive(self)) {
           self.sections = sections;
