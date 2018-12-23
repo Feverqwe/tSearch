@@ -17,7 +17,7 @@ const config = {
     sandbox: './src/sandbox',
     popup: './src/Popup',
     index: './src/App',
-    tabSearch: './src/tabSearch',
+    tabFetch: './src/tabFetch',
     /*options: './src/Options',
     history: './src/js/history',
     editor: './src/js/editor',

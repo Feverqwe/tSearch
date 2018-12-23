@@ -1,15 +1,15 @@
-import promiseFinally from "./promiseFinally";
-import {ErrorWithCode} from "./errors";
+import promiseFinally from "../tools/promiseFinally";
+import {ErrorWithCode} from "../tools/errors";
 import debounce from "lodash.debounce";
-import getLogger from "./getLogger";
+import getLogger from "../tools/getLogger";
 
 const deserializeError = require('deserialize-error');
 
-const logger = getLogger('Searcher');
+const logger = getLogger('TabFetchBg');
 
 const DEBUG = false;
 
-class Searcher {
+class TabFetchBg {
   constructor() {
     this.tabIds = [];
     this.urlTabId = new Map();
@@ -18,7 +18,7 @@ class Searcher {
     this.urlPromise = new Map();
     this.loadingTabIds = [];
   }
-  async search(senderTabId, originUrl, fetchUrl, fetchOptions) {
+  async request(senderTabId, originUrl, fetchUrl, fetchOptions) {
     DEBUG && logger.log('search', originUrl);
 
     this.addTab(senderTabId);
@@ -55,7 +55,7 @@ class Searcher {
         request.tabId = tabId;
 
         await executeScriptPromise(request.tabId, {
-          file: 'tabSearch.js',
+          file: 'tabFetch.js',
           runAt: 'document_start',
         });
 
@@ -64,7 +64,7 @@ class Searcher {
         const result = await executeScriptPromise(request.tabId, {
           code: `(${function (id, url, options) {
             try {
-              window.tabSearch(id, url, options);
+              window.tabFetch(id, url, options);
               return {result: true};
             } catch (err) {
               return {error: {message: err.message, stack: err.stack}};
@@ -76,7 +76,7 @@ class Searcher {
         if (sessionId !== request.sessionId) return;
 
         if (!result || result.error) {
-          request.handleReject(!result ? new Error('tabSearch error') : deserializeError(result.error));
+          request.handleReject(!result ? new Error('tabFetch error') : deserializeError(result.error));
         }
       });
 
@@ -87,9 +87,9 @@ class Searcher {
       executeScriptPromise(request.tabId, {
         code: `(${function (id) {
           try {
-            window.tabSearchAbort(id);
+            window.tabFetchAbort(id);
           } catch (err) {
-            logger.error('tabSearchAbort error', err);
+            logger.error('tabFetchAbort error', err);
           }
         }})(${strArgs(request.id)})`,
         runAt: 'document_start',
@@ -109,13 +109,13 @@ class Searcher {
       }
     }
   }
-  initRequestById(id) {
-    DEBUG && logger.log('initRequestById', id);
+  initRequest(id) {
+    DEBUG && logger.log('initRequest', id);
     const request = this.idRequest.get(id);
     return request.init();
   }
-  abortRequestById(id) {
-    DEBUG && logger.log('abortRequestById', id);
+  abortRequest(id) {
+    DEBUG && logger.log('abortRequest', id);
     const request = this.idRequest.get(id);
     return request.abort();
   }
@@ -243,4 +243,4 @@ const strArgs = (...args) => {
   return args.map(JSON.stringify).join(',');
 };
 
-export default Searcher;
+export default TabFetchBg;

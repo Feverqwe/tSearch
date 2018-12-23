@@ -11,7 +11,7 @@ import ExplorerModuleStore from "../stores/Explorer/ExplorerModuleStore";
 import getExploreModuleCodeMeta from "../tools/getExploreModuleCodeMeta";
 import storageGet from "../tools/storageGet";
 import storageSet from "../tools/storageSet";
-import Searcher from "../tools/searcher";
+import TabFetchBg from "./tabFetchBg";
 
 const promiseLimit = require('promise-limit');
 const qs = require('querystring');
@@ -21,7 +21,7 @@ const serializeError = require('serialize-error');
 const logger = getLogger('background');
 const oneLimit = promiseLimit(1);
 
-let searcher = null;
+let tabFetchBg = null;
 
 /**@type OptionsStore*/
 const optionsStore = OptionsStore.create();
@@ -66,31 +66,31 @@ chrome.runtime.onMessage.addListener(function (message, sender, response) {
       break;
     }
     case 'search': {
-      if (!searcher) {
-        searcher = new Searcher();
+      if (!tabFetchBg) {
+        tabFetchBg = new TabFetchBg();
       }
-      promise = searcher.search(sender.tab.id, message.origin, message.fetchUrl, message.fetchOptions);
+      promise = tabFetchBg.request(sender.tab.id, message.origin, message.fetchUrl, message.fetchOptions);
       break;
     }
     case 'initSearch': {
       promise = Promise.resolve().then(() => {
-        if (searcher) {
-          return searcher.initRequestById(message.id);
+        if (tabFetchBg) {
+          return tabFetchBg.initRequest(message.id);
         } else {
-          throw new Error('Searcher is not exists');
+          throw new Error('TabFetchBg is not exists');
         }
       });
       break;
     }
     case 'abortSearch': {
-      if (searcher) {
-        searcher.abortRequestById(message.id);
+      if (tabFetchBg) {
+        tabFetchBg.abortRequest(message.id);
       }
       break;
     }
-    case 'searchResponse': {
-      if (searcher) {
-        searcher.handleResponse(message.id, message.result);
+    case 'tabFetchResponse': {
+      if (tabFetchBg) {
+        tabFetchBg.handleResponse(message.id, message.result);
       }
       break;
     }

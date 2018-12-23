@@ -5,17 +5,17 @@ import arrayBufferToBase64 from "./tools/arrayBufferToBase64";
 
 const serializeError = require('serialize-error');
 
-!window.tabSearch && (() => {
+!window.tabFetch && (() => {
   const idController = new Map();
 
-  const safeResponse = () => {
+  const serializeResult = () => {
     return [
-      (result) => ({result}),
-      (err) => ({error: serializeError(err)})
+      result => ({result}),
+      err => ({error: serializeError(err)})
     ];
   };
 
-  window.tabSearch = (id, url, fetchOptions) => {
+  window.tabFetch = (id, url, fetchOptions) => {
     return Promise.resolve().then(() => {
       const controller = new AbortController();
 
@@ -40,16 +40,16 @@ const serializeError = require('serialize-error');
           return {response: safeResponse, base64: arrayBufferToBase64(arrayBuffer)};
         });
       });
-    }).then(...safeResponse()).then((result) => {
+    }).then(...serializeResult()).then((result) => {
       chrome.runtime.sendMessage({
         id: id,
-        action: 'searchResponse',
+        action: 'tabFetchResponse',
         result,
       });
     });
   };
 
-  window.tabSearchAbort = (id) => {
+  window.tabFetchAbort = (id) => {
     return Promise.resolve().then(() => {
       const controller = idController.get(id);
       if (controller) {
