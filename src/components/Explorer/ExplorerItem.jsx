@@ -3,6 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import Dialog from "../Dialog";
 import {Link} from "react-router-dom";
+import highlight from "../../tools/highlight";
 
 const qs = require('querystring');
 
@@ -21,7 +22,8 @@ class ExplorerItem extends React.Component {
 
     this.state = {
       posterError: false,
-      edit: false
+      edit: false,
+      showQuickSearch: false,
     };
   }
 
@@ -108,6 +110,23 @@ class ExplorerItem extends React.Component {
     });
   };
 
+  handleQuickSearch = (e) => {
+    e.preventDefault();
+    this.itemStore.quickSearch();
+  };
+
+  handleQuickSearchMouseEnter = (e) => {
+    this.setState({
+      showQuickSearch: true,
+    });
+  };
+
+  handleQuickSearchMouseLeave = (e) => {
+    this.setState({
+      showQuickSearch: false,
+    });
+  };
+
   render() {
     const sectionStore = this.sectionStore;
     const itemStore = this.itemStore;
@@ -167,23 +186,38 @@ class ExplorerItem extends React.Component {
       zoom: sectionStore.zoom / 100
     };
 
-    let title = null;
-    if (this.rootStore.options.options.originalPosterName) {
-      title = itemStore.titleOriginal || itemStore.title;
-    } else {
-      title = itemStore.title;
-    }
+    const title = itemStore.localTitle;
 
     const searchUrl = '/search?' + qs.stringify({
       query: title
     });
+
+    let quickSearchResults = null;
+    let quickSearchLabel = '?';
+    const quickSearchItem = itemStore.quickSearchItem;
+    if (quickSearchItem) {
+      if (quickSearchItem.state === 'pending') {
+        quickSearchLabel = '...';
+      } else {
+        quickSearchLabel = itemStore.quickSearchItem.label;
+      }
+      if (this.state.showQuickSearch && quickSearchItem.results.length) {
+        quickSearchResults = (
+          <QuickSearchResults quickSearchItemStore={quickSearchItem}/>
+        );
+      }
+    }
 
     return (
       <li data-index={this.props.index} style={itemStyle} className="section__poster poster">
         {dialog}
         <div className="poster__image">
           {actions}
-          <div title={chrome.i18n.getMessage('quickSearch')} className="action__quick_search">{'?'}</div>
+          <div onClick={this.handleQuickSearch}
+               onMouseEnter={this.handleQuickSearchMouseEnter}
+               onMouseLeave={this.handleQuickSearchMouseLeave}
+               title={chrome.i18n.getMessage('quickSearch')}
+               className="action__quick_search">{quickSearchLabel}{quickSearchResults}</div>
           <a href={itemStore.url} title={chrome.i18n.getMessage('readMore')} className="image__more_link"
              target="_blank"/>
           <Link to={searchUrl} title={title} className="image__search_link">
@@ -199,5 +233,117 @@ class ExplorerItem extends React.Component {
     );
   }
 }
+
+class QuickSearchResults extends React.Component {
+  static propTypes = {
+    quickSearchItemStore: PropTypes.object.isRequired
+  };
+
+  constructor(props) {
+    super(props);
+  }
+
+  /**@return ExplorerQuickSearchItemStore*/
+  get quickSearchItemStore() {
+    return this.props.quickSearchItemStore;
+  }
+
+  componentDidMount() {
+    setPosition(this.popupNode.parentNode, this.popupNode, this.angleNode);
+  }
+
+  popupNode = null;
+  refPopupNode = (element) => {
+    this.popupNode = element;
+  };
+
+  angleNode = null;
+  refAngleNode = (element) => {
+    this.angleNode = element;
+  };
+
+  render() {
+    const results = this.quickSearchItemStore.results.map((result) => {
+      return (
+        <li key={result.url} className="torrent__title">
+          {highlight.getReactComponent('a', {
+            className: 'title',
+            target: '_blank',
+            href: result.url
+          }, result.title, result.titleHighlightMap)}
+          , {result.sizeText}
+        </li>
+      );
+    });
+    return (
+      <div ref={this.refPopupNode} className="quick_search quick_search__visible">
+        <div className="popup">
+          <div ref={this.refAngleNode} className="popup__angle_shadow">
+            <div className="popup__angle"/>
+          </div>
+          <div className="popup__body">
+            <ul>
+              {results}
+            </ul>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+
+const getPosition = function(node) {
+  const box = node.getBoundingClientRect();
+  return {
+    top: Math.round(box.top + window.pageYOffset),
+    left: Math.round(box.left + window.pageXOffset),
+    width: box.width,
+    height: box.height
+  }
+};
+
+const getSize = function(node) {
+  return {width: node.offsetWidth, height: node.offsetHeight};
+};
+
+const setPosition = function (labelNode, popupNode, angleNode) {
+  const width = 300;
+
+  const labelPos = {
+    left: 0,
+    top: 0
+  };
+
+  let parent = labelNode;
+  while (parent.offsetParent !== null) {
+    labelPos.left += parent.offsetLeft;
+    labelPos.top += parent.offsetTop;
+    parent = parent.offsetParent;
+  }
+
+  const rLabelPos = getPosition(labelNode);
+
+  const labelSize = getSize(labelNode);
+
+  const docWidth = document.body.clientWidth;
+  const anglePos = labelPos.left + labelSize.width / 2;
+  const rightPos = anglePos + width / 2;
+  let leftPos = anglePos - width / 2;
+  if (rightPos > docWidth) {
+    leftPos = docWidth - width;
+  }
+  if (leftPos < 0) {
+    leftPos = 0;
+  }
+
+  const angleLeftPercent = 100 * (anglePos - leftPos) / width;
+
+  leftPos -= rLabelPos.left;
+  labelPos.top -= rLabelPos.top;
+
+  angleNode.style.left = angleLeftPercent + '%';
+  popupNode.style.left = leftPos + 'px';
+  popupNode.style.top = (labelPos.top + labelSize.height - 5) + 'px';
+};
 
 export default ExplorerItem;

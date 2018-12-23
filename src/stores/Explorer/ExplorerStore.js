@@ -8,7 +8,7 @@ import ExplorerFavoritesSectionStore from "./ExplorerFavoritesSectionStore";
 import storageSet from "../../tools/storageSet";
 import storageGet from "../../tools/storageGet";
 import getUnic from "../../tools/getUnic";
-import ExploreQuickSearchStore from "./ExploreQuickSearchStore";
+import ExplorerQuickSearchStore from "./ExplorerQuickSearchStore";
 
 const promiseLimit = require('promise-limit');
 
@@ -20,6 +20,7 @@ const limitOne = promiseLimit(1);
  * @property {string} [state]
  * @property {*[]} sections
  * @property {Map<*,ExplorerModuleStore>|undefined} modules
+ * @property {ExplorerQuickSearchStore} [quickSearch]
  * @property {function} setSections
  * @property {function} setState
  * @property {function:Promise} fetch
@@ -48,7 +49,7 @@ const ExplorerStore = types.model('ExplorerStore', {
     }
   }, ExplorerSectionStore, ExplorerFavoritesSectionStore)),
   modules: types.maybe(types.map(ExplorerModuleStore)),
-  quickSearch: types.optional(ExploreQuickSearchStore, {}),
+  quickSearch: types.optional(ExplorerQuickSearchStore, {}),
 }).actions(/**ExplorerStore*/self => {
   return {
     setSections(sections) {

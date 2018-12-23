@@ -1,5 +1,6 @@
 import {clone, getParent, getParentOfType, types} from "mobx-state-tree";
 import ExplorerStore from "./ExplorerStore";
+import RootStore from "../RootStore";
 
 /**
  * @typedef {{}} ExplorerItemStore
@@ -11,6 +12,10 @@ import ExplorerStore from "./ExplorerStore";
  * @property {function} updateProps
  * @property {function} addFavorite
  * @property {function} removeFavorite
+ * @property {*} localTitle
+ * @property {*} query
+ * @property {*} quickSearchItem
+ * @property {function} quickSearch
  */
 const ExplorerItemStore = types.model('ExplorerItemStore', {
   title: types.string,
@@ -39,6 +44,36 @@ const ExplorerItemStore = types.model('ExplorerItemStore', {
       favoritesSectionStore.removeItem(self);
       favoritesSectionStore.saveItems();
     },
+    get localTitle() {
+      /**@type RootStore*/
+      const rootStore = getParentOfType(self, RootStore);
+      let title = null;
+      if (rootStore.options.options.originalPosterName) {
+        title = self.titleOriginal || self.title;
+      } else {
+        title = self.title;
+      }
+      return title;
+    },
+    get query() {
+      return this.localTitle;
+    },
+    get quickSearchItem() {
+      /**@type ExplorerStore*/
+      const explorerStore = getParentOfType(self, ExplorerStore);
+      /**@type ExploreQuickSearchItemStore*/
+      return explorerStore.quickSearch.getItem(self.query);
+    },
+    quickSearch() {
+      if (!self.quickSearchItem) {
+        /**@type ExplorerStore*/
+        const explorerStore = getParentOfType(self, ExplorerStore);
+        explorerStore.quickSearch.addItem({
+          query: self.query
+        });
+      }
+      self.quickSearchItem.search();
+    }
   };
 });
 
