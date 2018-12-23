@@ -155,7 +155,7 @@ const HistoryStore = types.model('HistoryStore', {
         q = self.history.put({
           query: query
         });
-        if (self.history.size > 100) {
+        if (self.history.size > 150) {
           self.getHistorySortByTime().slice(100).forEach((query) => {
             self.removeQuery(query.query);
           });
