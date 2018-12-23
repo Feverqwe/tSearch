@@ -66,7 +66,7 @@ const HistoryQueryStore = types.model('HistoryQueryStore', {
         trackerId: trackerId,
         time: getNow()
       });
-      if (self.clicks.size > 100) {
+      if (self.clicks.size > 150) {
         self.getClicksSortByTime().slice(100).forEach((click) => {
           self.removeClick(click.url);
         });
