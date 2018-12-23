@@ -16,7 +16,6 @@ class TabFetchBg {
     this.requestId = 0;
     this.idRequest = new Map();
     this.urlPromise = new Map();
-    this.loadingTabIds = [];
   }
   async request(senderTabId, originUrl, fetchUrl, fetchOptions) {
     DEBUG && logger.log('search', originUrl);
@@ -203,9 +202,6 @@ class TabFetchBg {
   destroy() {
     DEBUG && logger.log('destroy');
     this.urlTabId.forEach((id) => {
-      chrome.tabs.remove(id);
-    });
-    this.loadingTabIds.forEach(id => {
       chrome.tabs.remove(id);
     });
     chrome.tabs.onUpdated.removeListener(this.tabUpdatedListener);
