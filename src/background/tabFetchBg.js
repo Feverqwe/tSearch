@@ -23,13 +23,11 @@ class TabFetchBg {
     DEBUG && logger.debug('request', senderTabId, originUrl, fetchUrl, fetchOptions);
     if (!this.senderTabMap.has(senderTabId)) {
       this.senderTabMap.set(senderTabId, new SenderTab(this, senderTabId));
-      this.addRemoveTabListener();
     }
     const senderTab = this.senderTabMap.get(senderTabId);
 
     if (!this.originTabMap.has(originUrl)) {
       this.originTabMap.set(originUrl, new OriginTab(this, originUrl));
-      this.addRemoveTabListener();
     }
     const originTab = this.originTabMap.get(originUrl);
 
@@ -42,6 +40,8 @@ class TabFetchBg {
     originTab.addRequest(request);
     senderTab.addRequest(request);
 
+    this.addRemovedTabListener();
+
     return request.id;
   }
 
@@ -49,16 +49,16 @@ class TabFetchBg {
     this.originTabMap.delete(originUrl);
   }
 
-  addRemoveTabListener() {
+  addRemovedTabListener() {
     if (!chrome.tabs.onRemoved.hasListener(this.tabRemoveListener)) {
-      DEBUG && logger.debug('addRemoveTabListener');
+      DEBUG && logger.debug('addRemovedTabListener');
       chrome.tabs.onRemoved.addListener(this.tabRemoveListener);
     }
   }
 
-  removeRemoveTabListener() {
+  removeRemovedTabListener() {
     if (chrome.tabs.onRemoved.hasListener(this.tabRemoveListener)) {
-      DEBUG && logger.debug('removeRemoveTabListener');
+      DEBUG && logger.debug('removeRemovedTabListener');
       chrome.tabs.onRemoved.removeListener(this.tabRemoveListener);
     }
   }
@@ -78,8 +78,8 @@ class TabFetchBg {
       }
     });
 
-    if (!this.senderTabMap.size && !this.originTabMap.size) {
-      this.removeRemoveTabListener();
+    if (!this.originTabMap.size && !this.idRequestMap.size) {
+      this.removeRemovedTabListener();
     }
   };
 
