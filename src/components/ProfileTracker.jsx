@@ -3,18 +3,15 @@ import React from "react";
 import getTrackerIconClassName from "../tools/getTrackerIconClassName";
 import blankSvg from "../assets/img/blank.svg";
 import PropTypes from "prop-types";
-import RootStore from "../stores/RootStore";
-import {ProfileTrackerStore} from "../stores/ProfileStore";
-import {TrackerSessionStore} from '../stores/SearchStore';
 
 @inject('rootStore')
 @observer
 class ProfileTracker extends React.Component {
-  static propTypes = null && {
-    rootStore: PropTypes.instanceOf(RootStore),
+  static propTypes = {
+    rootStore: PropTypes.object,
     id: PropTypes.string,
-    profileTrackerStore: PropTypes.instanceOf(ProfileTrackerStore),
-    trackerSearchSession: PropTypes.instanceOf(TrackerSessionStore),
+    profileTrackerStore: PropTypes.object,
+    trackerSearchSession: PropTypes.object,
   };
 
   componentDidMount() {

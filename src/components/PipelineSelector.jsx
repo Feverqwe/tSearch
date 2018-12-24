@@ -3,8 +3,6 @@ import {_ElementSelector} from "./ElementSelector";
 import React from "react";
 import exKitPipelineMethods from "../tools/exKitPipelineMethods";
 import PropTypes from "prop-types";
-import RootStore from "../stores/RootStore";
-import {MethodStore} from "../stores/CodeStore";
 import AddMethodDialog from "./AddMethodDialog";
 import EditMethodDialog from "./EditMethodDialog";
 import getLogger from "../tools/getLogger";
@@ -16,13 +14,13 @@ const logger = getLogger('PipelineSelector');
 @inject('rootStore')
 @observer
 class PipelineSelector extends _ElementSelector {
-  static propTypes = null && {
+  static propTypes = {
     id: PropTypes.string,
     optional: PropTypes.bool,
     container: PropTypes.string,
     title: PropTypes.string,
     store: PropTypes.any,
-    rootStore: PropTypes.instanceOf(RootStore),
+    rootStore: PropTypes.object,
     onResolvePath: PropTypes.func,
     onHighlightPath: PropTypes.func,
   };
@@ -269,9 +267,9 @@ class PipelineSelector extends _ElementSelector {
 
 @observer
 class Method extends React.Component {
-  static propTypes = null && {
-    rootStore: PropTypes.instanceOf(RootStore),
-    method: PropTypes.instanceOf(MethodStore),
+  static propTypes = {
+    rootStore: PropTypes.object,
+    method: PropTypes.object,
     onRemove: PropTypes.func,
   };
 

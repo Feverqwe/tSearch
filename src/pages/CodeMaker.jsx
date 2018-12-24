@@ -4,10 +4,7 @@ import PropTypes from "prop-types";
 import {Link} from "react-router-dom";
 import getRandomColor from "../tools/getRandomColor";
 import {inject, observer} from "mobx-react";
-import RootStore from "../stores/RootStore";
-import CodeStore from "../stores/CodeStore";
 import getLogger from "../tools/getLogger";
-import CodeMakerStore from "../stores/CodeMakerStore";
 import convertCodeV1toV2 from "../tools/convertCodeV1toV2";
 import convertCodeV2toV3 from "../tools/convertCodeV2toV3";
 import BindInput from "../components/BindInput";
@@ -22,8 +19,8 @@ const logger = getLogger('codeMaker');
 @inject('rootStore')
 @observer
 class CodeMaker extends React.Component {
-  static propTypes = null && {
-    rootStore: PropTypes.instanceOf(RootStore),
+  static propTypes = {
+    rootStore: PropTypes.object,
     page: PropTypes.string,
   };
 
@@ -146,9 +143,9 @@ class CodeMaker extends React.Component {
 @inject('rootStore')
 @observer
 class CodeMakerSearchPage extends React.Component {
-  static propTypes = null && {
-    rootStore: PropTypes.instanceOf(RootStore),
-    codeStore: PropTypes.instanceOf(CodeStore),
+  static propTypes = {
+    rootStore: PropTypes.object,
+    codeStore: PropTypes.object,
   };
 
   get frameStore() {
@@ -237,9 +234,9 @@ class CodeMakerSearchPage extends React.Component {
 @inject('rootStore')
 @observer
 class CodeMakerAuthPage extends React.Component {
-  static propTypes = null && {
-    rootStore: PropTypes.instanceOf(RootStore),
-    codeStore: PropTypes.instanceOf(CodeStore),
+  static propTypes = {
+    rootStore: PropTypes.object,
+    codeStore: PropTypes.object,
     onResolvePath: PropTypes.func,
     onHighlightPath: PropTypes.func,
   };
@@ -290,9 +287,9 @@ class CodeMakerAuthPage extends React.Component {
 @inject('rootStore')
 @observer
 class CodeMakerSelectorsPage extends React.Component {
-  static propTypes = null && {
-    rootStore: PropTypes.instanceOf(RootStore),
-    codeStore: PropTypes.instanceOf(CodeStore),
+  static propTypes = {
+    rootStore: PropTypes.object,
+    codeStore: PropTypes.object,
     onResolvePath: PropTypes.func,
     onHighlightPath: PropTypes.func,
   };
@@ -356,9 +353,9 @@ class CodeMakerSelectorsPage extends React.Component {
 @inject('rootStore')
 @observer
 class CodeMakerDescriptionPage extends React.Component {
-  static propTypes = null && {
-    rootStore: PropTypes.instanceOf(RootStore),
-    codeStore: PropTypes.instanceOf(CodeStore),
+  static propTypes = {
+    rootStore: PropTypes.object,
+    codeStore: PropTypes.object,
   };
 
   get codeStoreDescription() {
@@ -471,9 +468,9 @@ class CodeMakerDescriptionPage extends React.Component {
 @inject('rootStore')
 @observer
 class CodeMakerSavePage extends React.Component {
-  static propTypes = null && {
-    rootStore: PropTypes.instanceOf(RootStore),
-    codeMaker: PropTypes.instanceOf(CodeMakerStore),
+  static propTypes = {
+    rootStore: PropTypes.object,
+    codeMaker: PropTypes.object,
   };
 
   handleSetCode = e => {

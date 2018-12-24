@@ -2,7 +2,6 @@ import "codemirror/lib/codemirror.css";
 import "../assets/css/editor.less";
 import React from 'react';
 import PropTypes from "prop-types";
-import RootStore from "../stores/RootStore";
 import {inject, observer} from "mobx-react";
 import Dialog from "../components/Dialog";
 import jsonToUserscript from "../tools/jsonToUserscript";
@@ -22,8 +21,8 @@ const logger = getLogger('Editor');
 @inject('rootStore')
 @observer
 class Editor extends React.Component {
-  static propTypes = null && {
-    rootStore: PropTypes.instanceOf(RootStore),
+  static propTypes = {
+    rootStore: PropTypes.object,
     type: PropTypes.string,
     id: PropTypes.string,
   };

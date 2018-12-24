@@ -3,12 +3,11 @@ import React from "react";
 import PropTypes from "prop-types";
 import getLogger from "../tools/getLogger";
 import {autorun} from "mobx";
-import RootStore from "../stores/RootStore";
 
 const logger = getLogger('ElementSelector');
 
 class _ElementSelector extends React.Component {
-  static propTypes = null && {
+  static propTypes = {
     id: PropTypes.string,
     optional: PropTypes.bool,
     container: PropTypes.string,
@@ -16,7 +15,7 @@ class _ElementSelector extends React.Component {
     title: PropTypes.string,
     type: PropTypes.string,
     store: PropTypes.any,
-    rootStore: PropTypes.instanceOf(RootStore),
+    rootStore: PropTypes.object,
     onResolvePath: PropTypes.func,
     onHighlightPath: PropTypes.func,
   };

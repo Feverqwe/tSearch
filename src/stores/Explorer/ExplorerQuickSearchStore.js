@@ -63,8 +63,8 @@ const ExplorerQuickSearchItemStore = types.model('ExplorerQuickSearchItemStore',
       self.state = 'pending';
       try {
         const /**RootStore*/rootStore = getParentOfType(self, RootStore);
-        rootStore.createSearch(self.query);
-        const searchStore = rootStore.searches.get(self.query);
+        const searchId = rootStore.createSearch(self.query);
+        const searchStore = rootStore.getSearch(searchId);
         const joinedResults = [];
         yield Promise.all(searchStore.getTrackerSessions().map((trackerSession) => {
           return trackerSession.fetchResult().then(results => {
@@ -94,7 +94,7 @@ const ExplorerQuickSearchItemStore = types.model('ExplorerQuickSearchItemStore',
           });
         }));
         if (isAlive(self)) {
-          rootStore.destroySearch(self.query);
+          rootStore.destroySearch(searchId);
           self.state = 'done';
           if (self.results.length > 0) {
             self.save();

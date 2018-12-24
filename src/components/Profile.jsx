@@ -1,20 +1,17 @@
 import React from "react";
 import {inject, observer} from "mobx-react";
 import PropTypes from "prop-types";
-import RootStore from "../stores/RootStore";
-import ProfileStore from "../stores/ProfileStore";
 import ProfileTracker from "./ProfileTracker";
-import SearchStore from "../stores/SearchStore";
 
 
 @inject('rootStore')
 @observer
 class Profile extends React.Component {
-  static propTypes = null && {
+  static propTypes = {
     id: PropTypes.string,
-    rootStore: PropTypes.instanceOf(RootStore),
-    profileStore: PropTypes.instanceOf(ProfileStore),
-    searchStore: PropTypes.instanceOf(SearchStore),
+    rootStore: PropTypes.object,
+    profileStore: PropTypes.object,
+    searchStore: PropTypes.object,
   };
 
   constructor(props) {

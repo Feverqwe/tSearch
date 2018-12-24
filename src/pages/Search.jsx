@@ -12,45 +12,58 @@ import SearchPage from "../components/SearchPage";
 @inject('rootStore')
 @observer
 class Search extends React.Component {
-  static propTypes = null && {
-    rootStore: PropTypes.instanceOf(RootStore),
-    query: PropTypes.string,
+  static propTypes = {
+    rootStore: PropTypes.object,
+    query: PropTypes.string.isRequired,
   };
 
   constructor(props) {
     super(props);
 
-    if (this.props.rootStore.options.state === 'idle') {
-      this.props.rootStore.options.fetchOptions();
+    this.state = {
+      searchId: this.rootStore.createSearch(this.props.query),
+    };
+
+    if (this.rootStore.options.state === 'idle') {
+      this.rootStore.options.fetchOptions();
     }
-    if (this.props.rootStore.history.state === 'idle') {
-      this.props.rootStore.history.fetchHistory();
+    if (this.rootStore.history.state === 'idle') {
+      this.rootStore.history.fetchHistory();
     }
-    if (this.props.rootStore.profiles.state === 'idle') {
-      this.props.rootStore.profiles.fetchProfiles();
+    if (this.rootStore.profiles.state === 'idle') {
+      this.rootStore.profiles.fetchProfiles();
     }
-    if (this.props.rootStore.trackers.state === 'idle') {
-      this.props.rootStore.trackers.fetchTrackers();
+    if (this.rootStore.trackers.state === 'idle') {
+      this.rootStore.trackers.fetchTrackers();
     }
 
-    this.props.rootStore.searchForm.setQuery(this.props.query);
+    this.rootStore.searchForm.setQuery(this.props.query);
+  }
+
+  componentWillUnmount() {
+    this.rootStore.destroySearch(this.state.searchId);
+  }
+
+  /**@return RootStore*/
+  get rootStore() {
+    return this.props.rootStore;
   }
 
   get searchStore() {
-    return this.props.rootStore.searches.get(this.props.query);
+    return this.rootStore.getSearch(this.state.searchId);
   }
 
   render() {
     let searchSession = null;
     if (
-      this.props.rootStore.options.state === 'done' &&
-      this.props.rootStore.history.state === 'done' &&
-      this.props.rootStore.profiles.state === 'done' &&
-      this.props.rootStore.trackers.state === 'done' &&
-      this.props.rootStore.profiles.profile
+      this.rootStore.options.state === 'done' &&
+      this.rootStore.history.state === 'done' &&
+      this.rootStore.profiles.state === 'done' &&
+      this.rootStore.trackers.state === 'done' &&
+      this.rootStore.profiles.profile
     ) {
       searchSession = (
-        <SearchSession key={`query-${this.props.query}`} query={this.props.query}/>
+        <SearchSession key={`query-${this.props.query}`} query={this.props.query} searchStore={this.searchStore}/>
       )
     }
 
@@ -75,23 +88,25 @@ class Search extends React.Component {
 @inject('rootStore')
 @observer
 class SearchSession extends React.Component {
-  static propTypes = null && {
-    rootStore: PropTypes.instanceOf(RootStore),
+  static propTypes = {
+    rootStore: PropTypes.object,
     query: PropTypes.string,
+    searchStore: PropTypes.object.isRequired,
   };
 
   componentDidMount() {
-    this.props.rootStore.createSearch(this.props.query);
     this.searchStore.fetchResults();
-    this.props.rootStore.history.addQuery(this.searchStore.query);
+    this.rootStore.history.addQuery(this.searchStore.query);
   }
 
-  componentWillUnmount() {
-    this.props.rootStore.destroySearch(this.props.query);
+  /**@return RootStore*/
+  get rootStore() {
+    return this.props.rootStore;
   }
 
+  /**@return SearchStore*/
   get searchStore() {
-    return this.props.rootStore.searches.get(this.props.query);
+    return this.props.searchStore;
   }
 
   handleSearchNext = (e) => {

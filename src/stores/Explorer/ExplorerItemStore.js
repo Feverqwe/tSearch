@@ -1,4 +1,4 @@
-import {clone, getParent, getParentOfType, types, resolveIdentifier} from "mobx-state-tree";
+import {clone, getParent, getParentOfType, resolveIdentifier, types} from "mobx-state-tree";
 import ExplorerStore from "./ExplorerStore";
 import RootStore from "../RootStore";
 import {ExplorerQuickSearchItemStore} from "./ExplorerQuickSearchStore";

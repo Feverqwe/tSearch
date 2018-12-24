@@ -1,11 +1,8 @@
 import {inject, observer} from "mobx-react";
 import React from "react";
 import PropTypes from "prop-types";
-import RootStore from "../stores/RootStore";
-import EditProfileStore, {EditorProfileTrackerStore} from '../stores/EditProfileStore';
 import getLogger from "../tools/getLogger";
 import blankSvg from "../assets/img/blank.svg";
-import TrackerStore from "../stores/TrackerStore";
 import {Link} from "react-router-dom";
 
 const Sortable = require('sortablejs');
@@ -16,8 +13,8 @@ const logger = getLogger('EditProfile');
 @inject('rootStore')
 @observer
 class EditProfile extends React.Component {
-  static propTypes = null && {
-    rootStore: PropTypes.instanceOf(RootStore),
+  static propTypes = {
+    rootStore: PropTypes.object,
     id: PropTypes.string,
   };
 
@@ -211,10 +208,10 @@ class EditProfile extends React.Component {
 
 @observer
 class FilterButton extends React.Component {
-  static propTypes = null && {
+  static propTypes = {
     type: PropTypes.string,
     isActive: PropTypes.bool,
-    profile: PropTypes.instanceOf(EditProfileStore),
+    profile: PropTypes.object,
     onClick: PropTypes.func,
   };
 
@@ -250,14 +247,11 @@ class FilterButton extends React.Component {
 @inject('rootStore')
 @observer
 class TrackerItem extends React.Component {
-  static propTypes = null && {
-    rootStore: PropTypes.instanceOf(RootStore),
+  static propTypes = {
+    rootStore: PropTypes.object,
     id: PropTypes.string,
-    profile: PropTypes.instanceOf(EditProfileStore),
-    editorTracker: PropTypes.oneOfType([
-      PropTypes.instanceOf(EditorProfileTrackerStore),
-      PropTypes.instanceOf(TrackerStore)
-    ]),
+    profile: PropTypes.object,
+    editorTracker: PropTypes.object,
   };
 
   constructor(props) {

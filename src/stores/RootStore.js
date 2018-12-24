@@ -1,4 +1,4 @@
-import {types} from 'mobx-state-tree';
+import {resolveIdentifier, types} from 'mobx-state-tree';
 import SearchForm from "./SearchFormStore";
 import HistoryStore from "./HistoryStore";
 import FiltersStore from "./FiltersStore";
@@ -20,6 +20,8 @@ import getLogger from "../tools/getLogger";
 const deserializeError = require('deserialize-error');
 
 const logger = getLogger('RootStore');
+
+let searchId = 0;
 
 /**
  * @typedef {{}} RootStore
@@ -51,7 +53,7 @@ const RootStore = types.model('RootStore', {
   filters: types.optional(FiltersStore, {}),
   profiles: types.optional(ProfilesStore, {}),
   trackers: types.optional(TrackersStore, {}),
-  searches: types.map(SearchStore),
+  searches: types.array(SearchStore),
   options: types.optional(OptionsStore, {}),
   explorer: types.optional(ExplorerStore, {}),
   profileEditor: types.maybeNull(ProfileEditorStore),
@@ -61,10 +63,18 @@ const RootStore = types.model('RootStore', {
 }).actions(/**RootStore*/self => {
   return {
     createSearch(query) {
-      self.searches.set(query, SearchStore.create({query}));
+      const id = ++searchId;
+      self.searches.push(SearchStore.create({id, query}));
+      return id;
     },
-    destroySearch(query) {
-      self.searches.delete(query);
+    destroySearch(id) {
+      const searchStore = self.getSearch(id);
+      if (searchStore) {
+        const pos = self.searches.indexOf(searchStore);
+        if (pos !== -1) {
+          self.searches.splice(pos, 1);
+        }
+      }
     },
     createProfileEditor() {
       self.profileEditor = {
@@ -109,6 +119,12 @@ const RootStore = types.model('RootStore', {
     afterCreate() {
       self.page.init();
       self.checkForUpdate();
+    },
+  };
+}).views((self) => {
+  return {
+    getSearch(id) {
+      return resolveIdentifier(SearchStore, self, id);
     },
   };
 });

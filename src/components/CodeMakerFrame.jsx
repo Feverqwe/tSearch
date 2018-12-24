@@ -7,15 +7,14 @@ import getLogger from "../tools/getLogger";
 import getNodePath from "../tools/getNodePath";
 import {sizzleQuerySelector, sizzleQuerySelectorAll} from "../tools/sizzleQuery";
 import {inject, observer} from "mobx-react";
-import RootStore from "../stores/RootStore";
 
 const logger = getLogger('CodeMakerFrame');
 
 @inject('rootStore')
 @observer
 class CodeMakerFrame extends React.Component {
-  static propTypes = null && {
-    rootStore: PropTypes.instanceOf(RootStore),
+  static propTypes = {
+    rootStore: PropTypes.object,
   };
 
   constructor(props) {
@@ -169,8 +168,8 @@ const getContainer = (doc, options) => {
 @inject('rootStore')
 @observer
 class CodeMakerFrameSelectMode extends React.Component {
-  static propTypes = null && {
-    rootStore: PropTypes.instanceOf(RootStore),
+  static propTypes = {
+    rootStore: PropTypes.object,
     frameDoc: PropTypes.instanceOf(HTMLDocument),
     selectClassName: PropTypes.string,
     hideSelect: PropTypes.func,

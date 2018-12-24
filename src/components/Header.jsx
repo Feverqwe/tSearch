@@ -2,18 +2,16 @@ import SearchForm from "./SearchForm/SearchForm";
 import {Link} from "react-router-dom";
 import React from "react";
 import PropTypes from "prop-types";
-import SearchStore from "../stores/SearchStore";
 import {inject, observer} from "mobx-react";
-import RootStore from "../stores/RootStore";
 
 const qs = require('querystring');
 
 @inject('rootStore')
 @observer
 class Header extends React.Component {
-  static propTypes = null && {
-    rootStore: PropTypes.instanceOf(RootStore),
-    searchStore: PropTypes.instanceOf(SearchStore),
+  static propTypes = {
+    rootStore: PropTypes.object,
+    searchStore: PropTypes.object,
   };
 
   handleSubmit = (query) => {

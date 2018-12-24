@@ -1,9 +1,7 @@
 import {inject, observer} from "mobx-react";
 import React from "react";
 import PropTypes from "prop-types";
-import RootStore from "../stores/RootStore";
 import {Link} from "react-router-dom";
-import ProfileStore from "../stores/ProfileStore";
 import getLogger from "../tools/getLogger";
 
 const uuid = require('uuid/v4');
@@ -15,8 +13,8 @@ const logger = getLogger('EditProfiles');
 @inject('rootStore')
 @observer
 class EditProfiles extends React.Component {
-  static propTypes = null && {
-    rootStore: PropTypes.instanceOf(RootStore),
+  static propTypes = {
+    rootStore: PropTypes.object,
     history: PropTypes.object,
   };
 
@@ -102,10 +100,10 @@ class EditProfiles extends React.Component {
 @inject('rootStore')
 @observer
 class ProfileItem extends React.Component {
-  static propTypes = null && {
-    rootStore: PropTypes.instanceOf(RootStore),
+  static propTypes = {
+    rootStore: PropTypes.object,
     index: PropTypes.number,
-    profileStore: PropTypes.instanceOf(ProfileStore),
+    profileStore: PropTypes.object,
     history: PropTypes.object,
   };
 

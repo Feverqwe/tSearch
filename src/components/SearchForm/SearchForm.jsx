@@ -3,7 +3,6 @@ import React from 'react';
 import Autosuggest from 'react-autosuggest';
 import {inject, observer} from 'mobx-react';
 import getLogger from "../../tools/getLogger";
-import RootStore from "../../stores/RootStore";
 import PropTypes from 'prop-types';
 
 const debug = getLogger('SearchForm');
@@ -11,8 +10,8 @@ const debug = getLogger('SearchForm');
 @inject('rootStore')
 @observer
 class SearchForm extends React.Component {
-  static propTypes = null && {
-    rootStore: PropTypes.instanceOf(RootStore)
+  static propTypes = {
+    rootStore: PropTypes.object,
   };
 
   constructor(props) {

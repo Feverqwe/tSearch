@@ -6,7 +6,7 @@ const logger = getLogger('ComponentLoader');
 
 
 class ComponentLoader extends React.Component {
-  static propTypes = null && {
+  static propTypes = {
     'load-page': PropTypes.string,
   };
 

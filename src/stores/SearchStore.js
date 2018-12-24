@@ -156,6 +156,7 @@ const TrackerSessionStore = types.model('TrackerSessionStore', {
  * @property {function} getNextQuery
  */
 const SearchStore = types.model('SearchStore', {
+  id: types.identifierNumber,
   state: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
   query: types.string,
   trackerSessions: types.map(TrackerSessionStore),

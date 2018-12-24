@@ -4,9 +4,7 @@ import Header from "../components/Header";
 import ScrollTop from "../components/ScrollTop";
 import {inject, observer} from "mobx-react";
 import PropTypes from "prop-types";
-import RootStore from "../stores/RootStore";
 import highlight from "../tools/highlight";
-import {HistoryClickStore, HistoryQueryStore} from '../stores/HistoryStore';
 import {Link} from "react-router-dom";
 
 const qs = require('querystring');
@@ -14,8 +12,8 @@ const qs = require('querystring');
 @inject('rootStore')
 @observer
 class History extends React.Component {
-  static propTypes = null && {
-    rootStore: PropTypes.instanceOf(RootStore)
+  static propTypes = {
+    rootStore: PropTypes.object,
   };
 
   constructor(props) {
@@ -66,9 +64,9 @@ class History extends React.Component {
 @inject('rootStore')
 @observer
 class HistoryQuery extends React.Component {
-  static propTypes = null && {
-    rootStore: PropTypes.instanceOf(RootStore),
-    query: PropTypes.instanceOf(HistoryQueryStore),
+  static propTypes = {
+    rootStore: PropTypes.object,
+    query: PropTypes.object,
   };
 
   handleRemove = (e) => {
@@ -112,10 +110,10 @@ class HistoryQuery extends React.Component {
 @inject('rootStore')
 @observer
 class HistoryQueryLink extends React.Component {
-  static propTypes = null && {
-    rootStore: PropTypes.instanceOf(RootStore),
-    query: PropTypes.instanceOf(HistoryQueryStore),
-    link: PropTypes.instanceOf(HistoryClickStore),
+  static propTypes = {
+    rootStore: PropTypes.object,
+    query: PropTypes.object,
+    link: PropTypes.object,
   };
 
   handleRemove = (e) => {

@@ -1,22 +1,18 @@
 import React from "react";
 import PropTypes from "prop-types";
-import RootStore from "../stores/RootStore";
-import SearchStore from "../stores/SearchStore";
 import {inject, observer} from "mobx-react";
 import {typeSortMap} from "../tools/sortResults";
-import SearchPageStore from "../stores/SearchPageStore";
 import highlight from "../tools/highlight";
-import ResultPageItemStore from "../stores/ResultPageItemStore";
 import getTrackerIconClassName from "../tools/getTrackerIconClassName";
 
 
 @inject('rootStore')
 @observer
 class SearchPage extends React.Component {
-  static propTypes = null && {
-    rootStore: PropTypes.instanceOf(RootStore),
-    searchStore: PropTypes.instanceOf(SearchStore),
-    searchPageStore: PropTypes.instanceOf(SearchPageStore),
+  static propTypes = {
+    rootStore: PropTypes.object,
+    searchStore: PropTypes.object,
+    searchPageStore: PropTypes.object,
   };
 
   render() {
@@ -58,9 +54,9 @@ class SearchPage extends React.Component {
 
 @observer
 class SearchPageColumn extends React.Component {
-  static propTypes = null && {
-    searchStore: PropTypes.instanceOf(SearchStore),
-    searchPageStore: PropTypes.instanceOf(SearchPageStore),
+  static propTypes = {
+    searchStore: PropTypes.object,
+    searchPageStore: PropTypes.object,
     type: PropTypes.string,
   };
 
@@ -104,11 +100,11 @@ class SearchPageColumn extends React.Component {
 @inject('rootStore')
 @observer
 class SearchPageRow extends React.Component {
-  static propTypes = null && {
-    rootStore: PropTypes.instanceOf(RootStore),
-    searchStore: PropTypes.instanceOf(SearchStore),
-    searchPageStore: PropTypes.instanceOf(SearchPageStore),
-    row: PropTypes.instanceOf(ResultPageItemStore),
+  static propTypes = {
+    rootStore: PropTypes.object,
+    searchStore: PropTypes.object,
+    searchPageStore: PropTypes.object,
+    row: PropTypes.object,
     columns: PropTypes.arrayOf(PropTypes.string)
   };
 

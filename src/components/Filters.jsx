@@ -4,16 +4,14 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.min.css';
 import getLogger from "../tools/getLogger";
 import PropTypes from "prop-types";
-import RootStore from "../stores/RootStore";
-import FiltersStore from "../stores/FiltersStore";
 
 const logger = getLogger('Filters');
 
 @inject('rootStore')
 @observer
 class Filters extends React.Component {
-  static propTypes = null && {
-    rootStore: PropTypes.instanceOf(RootStore)
+  static propTypes = {
+    rootStore: PropTypes.object,
   };
 
   constructor(props) {
@@ -56,8 +54,8 @@ class Filters extends React.Component {
 
 @observer
 class TextFilter extends React.Component {
-  static propTypes = null && {
-    filtersStore: PropTypes.instanceOf(FiltersStore),
+  static propTypes = {
+    filtersStore: PropTypes.object,
   };
 
   onChange = () => {
@@ -102,8 +100,8 @@ class TextFilter extends React.Component {
 
 @observer
 class SizeFilter extends React.Component {
-  static propTypes = null && {
-    filtersStore: PropTypes.instanceOf(FiltersStore),
+  static propTypes = {
+    filtersStore: PropTypes.object,
   };
 
   constructor(props) {
@@ -168,9 +166,9 @@ class SizeFilter extends React.Component {
 @inject('rootStore')
 @observer
 class SeedFilter extends React.Component {
-  static propTypes = null && {
-    rootStore: PropTypes.instanceOf(RootStore),
-    filtersStore: PropTypes.instanceOf(FiltersStore),
+  static propTypes = {
+    rootStore: PropTypes.object,
+    filtersStore: PropTypes.object,
   };
 
   constructor(props) {
@@ -241,9 +239,9 @@ class SeedFilter extends React.Component {
 @inject('rootStore')
 @observer
 class PeerFilter extends React.Component {
-  static propTypes = null && {
-    rootStore: PropTypes.instanceOf(RootStore),
-    filtersStore: PropTypes.instanceOf(FiltersStore),
+  static propTypes = {
+    rootStore: PropTypes.object,
+    filtersStore: PropTypes.object,
   };
 
   constructor(props) {
@@ -313,8 +311,8 @@ class PeerFilter extends React.Component {
 
 @observer
 class TimeFilter extends React.Component {
-  static propTypes = null && {
-    filtersStore: PropTypes.instanceOf(FiltersStore),
+  static propTypes = {
+    filtersStore: PropTypes.object,
   };
 
   constructor(props) {

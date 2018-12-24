@@ -3,7 +3,6 @@ import React from 'react';
 import Header from "../components/Header";
 import ScrollTop from "../components/ScrollTop";
 import PropTypes from "prop-types";
-import RootStore from "../stores/RootStore";
 import {Link} from "react-router-dom";
 import {inject, observer} from "mobx-react";
 
@@ -11,8 +10,8 @@ import {inject, observer} from "mobx-react";
 @inject('rootStore')
 @observer
 class Options extends React.Component {
-  static propTypes = null && {
-    rootStore: PropTypes.instanceOf(RootStore),
+  static propTypes = {
+    rootStore: PropTypes.object,
     page: PropTypes.string,
   };
 
@@ -155,8 +154,8 @@ class OptionCheckbox extends React.Component {
 @inject('rootStore')
 @observer
 class OptionText extends React.Component {
-  static propTypes = null && {
-    rootStore: PropTypes.instanceOf(RootStore),
+  static propTypes = {
+    rootStore: PropTypes.object,
     name: PropTypes.string,
   };
 

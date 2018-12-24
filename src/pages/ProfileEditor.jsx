@@ -5,7 +5,6 @@ import ScrollTop from "../components/ScrollTop";
 import Filters from "../components/Filters";
 import {inject, observer} from "mobx-react";
 import PropTypes from "prop-types";
-import RootStore from "../stores/RootStore";
 import EditProfiles from "../components/EditProfiles";
 import EditProfile from "../components/EditProfile";
 import getLogger from "../tools/getLogger";
@@ -16,8 +15,8 @@ const logger = getLogger('ProfileEditor');
 @inject('rootStore')
 @observer
 class ProfileEditor extends React.Component {
-  static propTypes = null && {
-    rootStore: PropTypes.instanceOf(RootStore),
+  static propTypes = {
+    rootStore: PropTypes.object,
     id: PropTypes.string,
   };
 
@@ -66,8 +65,8 @@ class ProfileEditor extends React.Component {
 @inject('rootStore')
 @observer
 class ProfileEditorPage extends React.Component {
-  static propTypes = null && {
-    rootStore: PropTypes.instanceOf(RootStore),
+  static propTypes = {
+    rootStore: PropTypes.object,
     id: PropTypes.string,
   };
 

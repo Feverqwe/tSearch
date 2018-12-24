@@ -1,17 +1,15 @@
 import React from "react";
 import {inject, observer} from "mobx-react/index";
 import PropTypes from "prop-types";
-import RootStore from "../stores/RootStore";
 import Profile from "./Profile";
-import SearchStore from "../stores/SearchStore";
 import {Link} from "react-router-dom";
 
 @inject('rootStore')
 @observer
 class Profiles extends React.Component {
-  static propTypes = null && {
-    rootStore: PropTypes.instanceOf(RootStore),
-    searchStore: PropTypes.instanceOf(SearchStore),
+  static propTypes = {
+    rootStore: PropTypes.object,
+    searchStore: PropTypes.object,
   };
 
   constructor(props) {
