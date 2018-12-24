@@ -340,7 +340,7 @@ const createPopup = (originUrl) => {
     url: originUrl,
     focused: false,
     width: 120,
-    height: 28,
+    height: 25,
     left: screen.availWidth,
     top: screen.availHeight,
     type: 'popup',
