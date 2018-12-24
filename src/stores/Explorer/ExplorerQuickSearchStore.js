@@ -96,6 +96,9 @@ const ExplorerQuickSearchItemStore = types.model('ExplorerQuickSearchItemStore',
         if (isAlive(self)) {
           rootStore.destroySearch(self.query);
           self.state = 'done';
+          if (self.results.length > 0) {
+            self.save();
+          }
         }
       } catch (err) {
         logger.error('search error', err);
@@ -107,16 +110,19 @@ const ExplorerQuickSearchItemStore = types.model('ExplorerQuickSearchItemStore',
   };
 }).views((self) => {
   return {
+    save() {
+      const quickSearchStore = getParentOfType(self, ExplorerQuickSearchStore);
+      return quickSearchStore.save();
+    },
     get queryHighlightMap() {
       return highlight.getMap(self.query);
     },
     get label() {
-      let label = '';
-      const result = self.results[0];
-      if (result) {
-        label = result.label;
+      let label = '-';
+      if (self.results.length) {
+        label = self.results[0].label || '+';
       }
-      return label || '?';
+      return label;
     }
   };
 });
@@ -167,8 +173,6 @@ const ExplorerQuickSearchStore = types.model('ExplorerQuickSearchStore', {
           self.removeItem(query.query);
         });
       }
-
-      self.save();
     },
     removeItem(query) {
       self.quickSearch.delete(query);
@@ -203,9 +207,6 @@ const ExplorerQuickSearchStore = types.model('ExplorerQuickSearchStore', {
         });
       });
     },
-    getItem(query) {
-      return self.quickSearch.get(query);
-    },
 
     getQuickSearch() {
       return Array.from(self.quickSearch.values());
@@ -225,3 +226,4 @@ const ExplorerQuickSearchStore = types.model('ExplorerQuickSearchStore', {
 });
 
 export default ExplorerQuickSearchStore;
+export {ExplorerQuickSearchItemStore};

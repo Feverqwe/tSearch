@@ -199,7 +199,7 @@ class ExplorerItem extends React.Component {
       if (quickSearchItem.state === 'pending') {
         quickSearchLabel = '...';
       } else {
-        quickSearchLabel = itemStore.quickSearchItem.label;
+        quickSearchLabel = quickSearchItem.label;
       }
       if (this.state.showQuickSearch && quickSearchItem.results.length) {
         quickSearchResults = (
@@ -276,7 +276,7 @@ class QuickSearchResults extends React.Component {
       );
     });
     return (
-      <div ref={this.refPopupNode} className="quick_search quick_search__visible">
+      <div ref={this.refPopupNode} title="" className="quick_search quick_search__visible">
         <div className="popup">
           <div ref={this.refAngleNode} className="popup__angle_shadow">
             <div className="popup__angle"/>

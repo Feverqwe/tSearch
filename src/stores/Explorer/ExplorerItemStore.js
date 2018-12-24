@@ -1,6 +1,7 @@
-import {clone, getParent, getParentOfType, types} from "mobx-state-tree";
+import {clone, getParent, getParentOfType, types, resolveIdentifier} from "mobx-state-tree";
 import ExplorerStore from "./ExplorerStore";
 import RootStore from "../RootStore";
+import {ExplorerQuickSearchItemStore} from "./ExplorerQuickSearchStore";
 
 /**
  * @typedef {{}} ExplorerItemStore
@@ -59,10 +60,7 @@ const ExplorerItemStore = types.model('ExplorerItemStore', {
       return this.localTitle;
     },
     get quickSearchItem() {
-      /**@type ExplorerStore*/
-      const explorerStore = getParentOfType(self, ExplorerStore);
-      /**@type ExploreQuickSearchItemStore*/
-      return explorerStore.quickSearch.getItem(self.query);
+      return resolveIdentifier(ExplorerQuickSearchItemStore, self, self.query);
     },
     quickSearch() {
       if (!self.quickSearchItem) {
