@@ -23,6 +23,7 @@ const cache = new ExplorerCache();
  * @property {Map<*,ExplorerCommandStore>} commands
  * @property {string} moduleId
  * @property {string} [moduleParams]
+ * @property {function} assignSnapshot
  * @property {function} setState
  * @property {function:Promise} fetch
  * @property {function} setZoom
@@ -35,6 +36,7 @@ const cache = new ExplorerCache();
  * @property {function} getSnapshot
  * @property {function} getItemsSnapshot
  * @property {*} page
+ * @property {*} prepModuleParams
  * @property {function} fetchData
  * @property {function} fetchCommand
  */
@@ -149,18 +151,26 @@ const ExplorerSectionStore = types.model('ExplorerSectionStore', {
         return getParentOfType(self, RootStore).page;
       }
     },
+    get prepModuleParams() {
+      let moduleParams = self.moduleParams;
+      if (/%kpFolderId%/.test(moduleParams)) {
+        const rootStore = getParentOfType(self, RootStore);
+        moduleParams = moduleParams.replace('%kpFolderId%', rootStore.options.options.kpFolderId);
+      }
+      return moduleParams;
+    },
     fetchData(force) {
       const module = self.module;
       const useCache = !force;
       return self.fetch(self, useCache, () => {
-        return module.worker.getItems(parseModuleParams(self.moduleParams));
+        return module.worker.getItems(parseModuleParams(self.prepModuleParams));
       });
     },
     fetchCommand(commandStore, actionStore) {
       const module = self.module;
       const command = actionStore.command;
       return self.fetch(commandStore, false, () => {
-        return module.worker.sendCommand(command, parseModuleParams(self.moduleParams));
+        return module.worker.sendCommand(command, parseModuleParams(self.prepModuleParams));
       });
     }
   };

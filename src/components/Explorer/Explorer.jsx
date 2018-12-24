@@ -19,9 +19,17 @@ class Explorer extends React.Component {
   constructor(props) {
     super(props);
 
+    if (this.optionsStore.state === 'idle') {
+      this.optionsStore.fetchOptions();
+    }
     if (this.explorerStore.state === 'idle') {
       this.explorerStore.fetch();
     }
+  }
+
+  /**@return {ExplorerStore}*/
+  get optionsStore() {
+    return this.props.rootStore.options;
   }
 
   /**@return {ExplorerStore}*/
@@ -68,6 +76,9 @@ class Explorer extends React.Component {
   };
 
   render() {
+    if (this.optionsStore.state !== 'done') {
+      return (`Loading options: ${this.optionsStore.state}`);
+    }
     if (this.explorerStore.state !== 'done') {
       return (`Loading explorer: ${this.explorerStore.state}`);
     }

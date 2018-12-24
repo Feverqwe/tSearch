@@ -200,7 +200,7 @@ const fetchSections = async () => {
     }, {
       id: 'kpFavorites',
       moduleId: 'kpFavorites',
-      moduleParams: 'categoryId=1',
+      moduleParams: 'categoryId=%kpFolderId%',
     }, {
       id: 'kpInCinema',
       moduleId: 'kpInCinema',

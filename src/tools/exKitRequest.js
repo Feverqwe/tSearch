@@ -46,8 +46,7 @@ const exKitRequest = (tracker, options) => {
   };
 
   const request = new Promise((resolve) => {
-    chrome.runtime.sendMessage({
-      action: 'search',
+    const params = {
       origin: originUrl || origin,
       fetchUrl: url,
       fetchOptions: {
@@ -55,7 +54,11 @@ const exKitRequest = (tracker, options) => {
         headers: fetchOptions.headers,
         body: fetchOptions.body,
       },
-    }, resolve);
+    };
+    logger.debug('request', params.fetchUrl, params);
+    chrome.runtime.sendMessage(Object.assign({
+      action: 'search',
+    }, params), resolve);
   }).then(deserializeResult).then((id) => {
     request.id = id;
     return new Promise((resolve) => {
