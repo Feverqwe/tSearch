@@ -8,6 +8,7 @@ import PropTypes from "prop-types";
 import EditProfiles from "../components/EditProfiles";
 import EditProfile from "../components/EditProfile";
 import getLogger from "../tools/getLogger";
+import getTitle from "../tools/getTitle";
 
 const logger = getLogger('ProfileEditor');
 
@@ -29,6 +30,10 @@ class ProfileEditor extends React.Component {
     if (this.props.rootStore.trackers.state === 'idle') {
       this.props.rootStore.trackers.fetchTrackers();
     }
+  }
+
+  componentDidMount() {
+    document.title = getTitle('Profile editor');
   }
 
   render() {

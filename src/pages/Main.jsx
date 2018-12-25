@@ -4,8 +4,13 @@ import Profiles from "../components/Profiles";
 import ScrollTop from "../components/ScrollTop";
 import Filters from "../components/Filters";
 import Explorer from "../components/Explorer/Explorer";
+import getTitle from "../tools/getTitle";
 
 class Main extends React.Component {
+  componentDidMount() {
+    document.title = getTitle('Main');
+  }
+
   render() {
     return (
       <div className="page-ctr">

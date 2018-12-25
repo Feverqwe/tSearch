@@ -13,6 +13,7 @@ import PipelineSelector from "../components/PipelineSelector";
 import ExKitTracker from "../sandbox/exKitTracker";
 import exKitRequestOptionsNormalize from "../tools/exKitRequestOptionsNormalize";
 import CodeMakerFrame from "../components/CodeMakerFrame";
+import getTitle from "../tools/getTitle";
 
 const logger = getLogger('codeMaker');
 
@@ -28,6 +29,10 @@ class CodeMaker extends React.Component {
     super(props);
 
     this.props.rootStore.createCodeMaker();
+  }
+
+  componentDidMount() {
+    document.title = getTitle('Code maker');
   }
 
   get codeMakerStore() {

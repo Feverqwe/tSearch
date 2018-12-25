@@ -6,6 +6,7 @@ import {inject, observer} from "mobx-react";
 import PropTypes from "prop-types";
 import highlight from "../tools/highlight";
 import {Link} from "react-router-dom";
+import getTitle from "../tools/getTitle";
 
 const qs = require('querystring');
 
@@ -22,6 +23,10 @@ class History extends React.Component {
     if (this.props.rootStore.history.state === 'idle') {
       this.props.rootStore.history.fetchHistory();
     }
+  }
+
+  componentDidMount() {
+    document.title = getTitle('History');
   }
 
   /**@return HistoryStore*/
@@ -97,7 +102,7 @@ class HistoryQuery extends React.Component {
              title={chrome.i18n.getMessage('remove')}
              onClick={this.handleRemove}
           />
-          <Link className="item__link" to={link}>{query.query}</Link>
+          <Link className="item__link" to={link}>{query.query || '""'}</Link>
         </div>
         <div className="click_history item__click_history">
           {links}

@@ -7,6 +7,7 @@ import PropTypes from "prop-types";
 import RootStore from "../stores/RootStore";
 import {inject, observer} from "mobx-react";
 import SearchPage from "../components/SearchPage";
+import getTitle from "../tools/getTitle";
 
 
 @inject('rootStore')
@@ -38,6 +39,10 @@ class Search extends React.Component {
     }
 
     this.rootStore.searchForm.setQuery(this.props.query);
+  }
+
+  componentDidMount() {
+    document.title = getTitle(`${this.props.query} :: Search`);
   }
 
   componentWillUnmount() {

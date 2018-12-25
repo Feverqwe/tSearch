@@ -5,6 +5,7 @@ import ScrollTop from "../components/ScrollTop";
 import PropTypes from "prop-types";
 import {Link} from "react-router-dom";
 import {inject, observer} from "mobx-react";
+import getTitle from "../tools/getTitle";
 
 
 @inject('rootStore')
@@ -21,6 +22,10 @@ class Options extends React.Component {
     if (this.optionsStore.state === 'idle') {
       this.optionsStore.fetchOptions();
     }
+  }
+
+  componentDidMount() {
+    document.title = getTitle('Options');
   }
 
   /**@return OptionsStore*/

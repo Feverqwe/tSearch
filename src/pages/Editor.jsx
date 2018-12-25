@@ -8,6 +8,7 @@ import jsonToUserscript from "../tools/jsonToUserscript";
 import getLogger from "../tools/getLogger";
 import convertCodeV1toV2 from "../tools/convertCodeV1toV2";
 import convertCodeV2toV3 from "../tools/convertCodeV2toV3";
+import getTitle from "../tools/getTitle";
 
 const CodeMirror = require('codemirror');
 require('codemirror/mode/javascript/javascript');
@@ -43,6 +44,11 @@ class Editor extends React.Component {
       this.editorStore.fetchModule();
     }
   }
+
+  componentDidMount() {
+    document.title = getTitle('Code editor');
+  }
+
   componentWillUnmount() {
     this.props.rootStore.destroyEditor();
   }
