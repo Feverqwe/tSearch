@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name OpenTorrent
-// @trackerURL http://opentorrent.ru
+// @trackerURL http://izhtorrent.ru
 // @icon data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3AkeBics+G6WHQAAAf9JREFUOMulk0tI1FEUh7878x8fmUVJCL3ICIKM3hRF0YuYVbQrilZBpJtCCo0e4KKFBRZC4iZBW5op4SwMCUZTKVBo0TsEdYrSqRB1nHHm/v+/FmpkOQj5Lc+59zv3XM4xksQC8M0VlIS8UVz3+/8JhmMhrj/L5/H78/MKzEwLkjDG8OjNcULvQsSTDtkZltvBZvIXn8AYk/4FkrAaoKRlJbUvQ6zIhUTKEk861PZcSnsZwAEwxlDWeoCkN0LruVEgQMfAfaqeXyXgg7sRqOuz/O0pXDYtmLDDVPd+JnrlKWVtRzi8LkimswTXEyc3lVFQZ1m9C5ZPC6Ix+DpmuFZoQJKq24u0rQJNep9EMZLiOt3gV7Ae1fRJVKTUNeFKkjrHXR0NW9GYkiQhSVmlqLRxv6z7Q4M/w6ps3yP/5YCquovFRU/OLatD9VZPoq64aeXcs7rQaSVJTtPHchJRhzstXXyJFfAhOkpPvwNxy6oNpdARxyZFyYtFFDW4OEMGG4GDZ6f6Mcce5Kjtdeyf3z21fSff+nvoaoph9/qJ1GSyZt8kzlo/NsOih9mz52Aucs8kSLx1UZ4PN8uHE0lhlxpeNeewJW9qblAaPM9T76DE+jE5W8fl3zim3eUpDcmT53m/z6UVzLDjRkJsjqmyOzVnfl6BJIVHZlf9E7PQdf4FVC+nbLqwD1EAAAAASUVORK5CYII%3D
 // @description Открытый удмуртский битторрент-трекер.
 // @downloadURL https://github.com/Feverqwe/tSearch/raw/master/src/trackers/opentorrent.js
-// @connect *://opentorrent.ru/*
+// @connect *://izhtorrent.ru/*
 // @require exKit
 // @version 1.0.1
 // ==/UserScript==
@@ -34,9 +34,9 @@ API_exKit({
         humor: []
     },
     search: {
-        loginUrl: 'http://opentorrent.ru/login.php',
-        searchUrl: 'http://opentorrent.ru/tracker.php',
-        baseUrl: 'http://opentorrent.ru/',
+        loginUrl: 'http://izhtorrent.ru/login.php',
+        searchUrl: 'http://izhtorrent.ru/tracker.php',
+        baseUrl: 'http://izhtorrent.ru/',
         requestType: 'GET',
         requestData: 'nm=%search%',
         onAfterRequest: function (details) {

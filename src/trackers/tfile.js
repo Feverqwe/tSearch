@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name TFile
-// @trackerURL http://tfile.co
+// @trackerURL http://tfile1.co
 // @icon data:image/x-icon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAADksgYAAAD/AAAAAACkpKUA4ODgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMzMzMzMzMzMjIyMjIyMjIzMzMzMzMzMzRERERERERERBFARAQEQABEFEBEBAQERAQUQEQEBARERBRARAQEAAAEFEBEBAQERAERAAQEBEAARBRAREQEREREFEQEBAREREREREREREREQzMzMzMzMzMzIyMjIyMjIyMzMzMzMzMzMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-// @description Торрент трекер tfile.co - фильмы, музыка, программы, книги.
+// @description Торрент трекер tfile1.co - фильмы, музыка, программы, книги.
 // @downloadURL https://github.com/Feverqwe/tSearch/raw/master/src/trackers/tfile.js
-// @connect *://tfile.co/*
+// @connect *://tfile1.co/*
 // @require exKit
 // @version 1.0.1
 // ==/UserScript==
@@ -13,7 +13,7 @@ API_exKit({
     id: 'tfile',
     title: 'TFile',
     icon: 'data:image/x-icon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAADksgYAAAD/AAAAAACkpKUA4ODgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMzMzMzMzMzMjIyMjIyMjIzMzMzMzMzMzRERERERERERBFARAQEQABEFEBEBAQERAQUQEQEBARERBRARAQEAAAEFEBEBAQERAERAAQEBEAARBRAREQEREREFEQEBAREREREREREREREQzMzMzMzMzMzIyMjIyMjIyMzMzMzMzMzMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
-    desc: 'Торрент трекер tfile.co - фильмы, музыка, программы, книги.',
+    desc: 'Торрент трекер tfile1.co - фильмы, музыка, программы, книги.',
     flags: {
         auth: 0,
         language: 'ru',
@@ -34,10 +34,10 @@ API_exKit({
         humor: []
     },
     search: {
-        loginUrl: 'http://tfile.co',
-        searchUrl: 'http://tfile.co/forum/ssearch.php',
+        loginUrl: 'http://tfile1.co',
+        searchUrl: 'http://tfile1.co/forum/ssearch.php',
         nextPageSelector: {selector: '.pagination a.next', attr: 'href'},
-        baseUrl: 'http://tfile.co/forum/',
+        baseUrl: 'http://tfile1.co/forum/',
         requestType: 'GET',
         requestData: 'q=%search%',
         onBeforeRequest: function (details) {
