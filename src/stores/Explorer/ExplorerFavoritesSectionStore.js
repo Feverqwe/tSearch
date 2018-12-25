@@ -23,7 +23,7 @@ const oneLimit = promiseLimit(1);
  * @property {function} beforeDestroy
  */
 const ExplorerFavoritesSectionStore = types.compose('ExplorerFavoritesSectionStore', ExplorerSectionStore, types.model({
-  moduleId: types.optional(types.null, null),
+  moduleId: types.maybe(types.string),
 })).actions(self => {
   return {
     setState(state) {

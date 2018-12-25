@@ -27,7 +27,7 @@ class Explorer extends React.Component {
     }
   }
 
-  /**@return {ExplorerStore}*/
+  /**@return {OptionsStore}*/
   get optionsStore() {
     return this.props.rootStore.options;
   }
@@ -84,9 +84,11 @@ class Explorer extends React.Component {
     }
 
     const sections = this.explorerStore.sections.reduce((result, section, index) => {
-      result.push(
-        <ExploreSection key={section.id} index={index} explorerStore={this.explorerStore} sectionStore={section}/>
-      );
+      if (this.optionsStore.options.explorerSections[section.moduleId]) {
+        result.push(
+          <ExploreSection key={section.id} index={index} explorerStore={this.explorerStore} sectionStore={section}/>
+        );
+      }
       return result;
     }, []);
 

@@ -12,7 +12,7 @@ const oneLimit = promiseLimit(1);
 
 /**
  * @typedef {{}} ExplorerSectionsStore
- * @property {boolean} [favorite]
+ * @property {boolean} [favorites]
  * @property {boolean} [kpFavorites]
  * @property {boolean} [kpInCinema]
  * @property {boolean} [imdbInCinema]
@@ -25,7 +25,7 @@ const oneLimit = promiseLimit(1);
  * @property {function} setEnabled
  */
 const ExplorerSectionsStore = types.model('ExplorerSectionsStore', {
-  favorite: types.optional(types.boolean, true),
+  favorites: types.optional(types.boolean, true),
   kpFavorites: types.optional(types.boolean, true),
   kpInCinema: types.optional(types.boolean, true),
   imdbInCinema: types.optional(types.boolean, true),

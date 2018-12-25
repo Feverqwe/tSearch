@@ -197,6 +197,7 @@ const fetchSections = async () => {
   const storage = await storageGet({
     explorerSections: [{
       id: 'favorites',
+      moduleId: 'favorites',
     }, {
       id: 'kpFavorites',
       moduleId: 'kpFavorites',
