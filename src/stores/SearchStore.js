@@ -258,9 +258,12 @@ const SearchStore = types.model('SearchStore', {
     },
     getNextQuery() {
       let result = null;
+      const /**RootStore*/rootStore = getParentOfType(self, RootStore);
       self.trackerSessions.forEach(trackerSession => {
         if (trackerSession.nextQuery) {
-          result = {state: trackerSession.state};
+          if (rootStore.profiles.prepSelectedTrackerIds.indexOf(trackerSession.id) !== -1) {
+            result = {state: trackerSession.state};
+          }
         }
       });
       return result;

@@ -114,6 +114,13 @@ const ProfilesStore = types.model('ProfilesStore', {
       }
       return result;
     },
+    get prepSelectedTrackerIds() {
+      if (!self.selectedTrackerIds.length) {
+        return self.profile.trackers.map(tracker => tracker.id);
+      } else {
+        return self.selectedTrackerIds;
+      }
+    },
     saveProfile() {
       return storageSet({profileId: self.profileId});
     },
