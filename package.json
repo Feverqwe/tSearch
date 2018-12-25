@@ -40,6 +40,7 @@
     "react-autosuggest": "^9.4.2",
     "react-datepicker": "^2.0.0",
     "react-dom": "^16.7.0",
+    "react-resizable": "^1.7.5",
     "react-router-dom": "^4.3.1",
     "requires-port": "^1.0.0",
     "serialize-error": "^2.1.0",

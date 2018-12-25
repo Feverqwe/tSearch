@@ -483,6 +483,7 @@ a.simple_select__menu__item {
 
 .tracker__list {
   overflow: auto;
+  height: 100%;
 }
 
 .tracker {
@@ -1152,16 +1153,17 @@ a.tracker__name {
   margin-top: 1px;
 }
 
-.parameter-tracker .ui-resizable-s {
+.parameter-tracker .react-resizable-handle {
   cursor: s-resize;
   background: url(../img/three_dots.svg) no-repeat center;
   background-size: 12px;
   opacity: 0.5;
   width: 100%;
   height: 9px;
+  display: block;
 }
 
-.parameter-tracker .ui-resizable-s:hover {
+.parameter-tracker .react-resizable-handle:hover {
   opacity: 1;
 }
 

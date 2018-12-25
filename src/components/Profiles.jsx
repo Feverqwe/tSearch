@@ -22,6 +22,16 @@ class Profiles extends React.Component {
     }
   }
 
+  /**@return RootStore*/
+  get rootStore() {
+    return this.props.rootStore;
+  }
+
+  /**@return OptionsStore*/
+  get optionsStore() {
+    return this.rootStore.options;
+  }
+
   get profilesStore() {
     return this.props.rootStore.profiles;
   }
@@ -44,6 +54,10 @@ class Profiles extends React.Component {
   };
 
   render() {
+    if (this.optionsStore.state !== 'done') {
+      return `Loading options: ${this.optionsStore.state}`;
+    }
+
     const profilesStore = this.profilesStore;
 
     let profileStore = null;

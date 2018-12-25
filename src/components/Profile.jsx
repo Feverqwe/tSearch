@@ -2,6 +2,7 @@ import React from "react";
 import {inject, observer} from "mobx-react";
 import PropTypes from "prop-types";
 import ProfileTracker from "./ProfileTracker";
+import {ResizableBox} from "react-resizable";
 
 
 @inject('rootStore')
@@ -17,13 +18,31 @@ class Profile extends React.Component {
   constructor(props) {
     super(props);
 
+    let trackerListHeight = this.optionsStore.options.trackerListHeight;
+    if (trackerListHeight < 56) {
+      trackerListHeight = 56;
+    }
+    this.state = {
+      trackerListHeight: trackerListHeight,
+    };
+
     if (this.trackersStore.state === 'idle') {
       this.trackersStore.fetchTrackers();
     }
   }
 
+  /**@return RootStore*/
+  get rootStore() {
+    return this.props.rootStore;
+  }
+
+  /**@return OptionsStore*/
+  get optionsStore() {
+    return this.rootStore.options;
+  }
+
   get trackersStore() {
-    return this.props.rootStore.trackers;
+    return this.rootStore.trackers;
   }
 
   get profileStore() {
@@ -33,6 +52,12 @@ class Profile extends React.Component {
   get searchStore() {
     return this.props.searchStore;
   }
+
+  handleResizeStop = (e, {size: {height}}) => {
+    this.state.trackerListHeight = height;
+    this.optionsStore.options.setValue('trackerListHeight', height);
+    this.optionsStore.save();
+  };
 
   render() {
     if (this.trackersStore.state !== 'done') {
@@ -51,9 +76,11 @@ class Profile extends React.Component {
     });
 
     return (
-      <div className="tracker__list">
-        {trackers}
-      </div>
+      <ResizableBox onResizeStop={this.handleResizeStop} width={Infinity} height={this.state.trackerListHeight} axis={'y'} minConstraints={[0, 56]}>
+        <div className="tracker__list">
+          {trackers}
+        </div>
+      </ResizableBox>
     );
   }
 }
