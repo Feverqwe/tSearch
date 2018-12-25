@@ -1,4 +1,4 @@
-import {flow, getSnapshot, isAlive, types} from 'mobx-state-tree';
+import {flow, isAlive, types} from 'mobx-state-tree';
 import _isEqual from "lodash.isequal";
 import getLogger from "../tools/getLogger";
 import storageGet from "../tools/storageGet";
