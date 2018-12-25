@@ -42,7 +42,7 @@ class Search extends React.Component {
   }
 
   componentDidMount() {
-    document.title = getTitle(`${this.props.query} :: Search`);
+    document.title = getTitle(JSON.stringify(this.props.query));
   }
 
   componentWillUnmount() {

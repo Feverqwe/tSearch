@@ -8,7 +8,7 @@ import getTitle from "../tools/getTitle";
 
 class Main extends React.Component {
   componentDidMount() {
-    document.title = getTitle('Main');
+    document.title = getTitle();
   }
 
   render() {
