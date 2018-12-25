@@ -49,7 +49,7 @@ const ResultPageItemStore = types.model('ResultPageItemStore', {
       return self.title.toLowerCase();
     },
     get categoryTitleLowerCase() {
-      return self.categoryTitle.toLowerCase();
+      return (self.categoryTitle || '').toLowerCase();
     },
     get tracker() {
       if (!isAlive(self)) {
