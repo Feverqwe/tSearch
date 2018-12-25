@@ -49,7 +49,7 @@ const ExplorerItemStore = types.model('ExplorerItemStore', {
       /**@type RootStore*/
       const rootStore = getParentOfType(self, RootStore);
       let title = null;
-      if (rootStore.options.options.originalPosterName) {
+      if (rootStore.options.originalPosterName) {
         title = self.titleOriginal || self.title;
       } else {
         title = self.title;

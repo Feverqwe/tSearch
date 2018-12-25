@@ -171,7 +171,7 @@ const SearchStore = types.model('SearchStore', {
       const /**RootStore*/rootStore = getParentOfType(self, RootStore);
       const searchPage = SearchPageStore.create({
         state: 'pending',
-        sorts: JSON.parse(JSON.stringify(rootStore.options.options.sorts)),
+        sorts: JSON.parse(JSON.stringify(rootStore.options.sorts)),
       });
 
       try {
@@ -202,7 +202,7 @@ const SearchStore = types.model('SearchStore', {
       const /**RootStore*/rootStore = getParentOfType(self, RootStore);
       const searchPage = SearchPageStore.create({
         state: 'pending',
-        sorts: JSON.parse(JSON.stringify(rootStore.options.options.sorts)),
+        sorts: JSON.parse(JSON.stringify(rootStore.options.sorts)),
       });
 
       try {

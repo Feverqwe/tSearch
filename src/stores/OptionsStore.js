@@ -22,7 +22,7 @@ const oneLimit = promiseLimit(1);
  * @property {boolean} [imdbSeries]
  * @property {boolean} [ggGamesNew]
  * @property {boolean} [ggGamesTop]
- * @property {function} setEnabled
+ * @property {function} setValue
  */
 const ExplorerSectionsStore = types.model('ExplorerSectionsStore', {
   favorites: types.optional(types.boolean, true),
@@ -37,7 +37,7 @@ const ExplorerSectionsStore = types.model('ExplorerSectionsStore', {
   ggGamesTop: types.optional(types.boolean, true),
 }).actions(self => {
   return {
-    setEnabled(key, value) {
+    setValue(key, value) {
       self[key] = value;
     }
   };
@@ -45,23 +45,29 @@ const ExplorerSectionsStore = types.model('ExplorerSectionsStore', {
 
 
 /**
- * @typedef {{}} OptionsValueStore
+ * @typedef {{}} OptionsStore
+ * @property {string} [state]
  * @property {boolean} [hidePeerRow]
  * @property {boolean} [hideSeedRow]
  * @property {boolean} [categoryWordFilter]
- * @property {boolean} [syncProfiles]
  * @property {boolean} [contextMenu]
  * @property {boolean} [disablePopup]
  * @property {boolean} [invertIcon]
  * @property {boolean} [doNotSendStatistics]
  * @property {boolean} [originalPosterName]
- * @property {boolean} [favoriteSync]
  * @property {string} [kpFolderId]
  * @property {ExplorerSectionsStore} [explorerSections]
- * @property {function} setEnabled
+ * @property {{by:string,[direction]:number}[]} [sorts]
+ * @property {number} [trackerListHeight]
  * @property {function} setValue
+ * @property {function} setOptions
+ * @property {function:Promise} fetchOptions
+ * @property {function} save
+ * @property {function} afterCreate
+ * @property {function} beforeDestroy
  */
-const OptionsValueStore = types.model('OptionsValueStore', {
+const OptionsStore = types.model('OptionsStore', {
+  state: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
   hidePeerRow: types.optional(types.boolean, false),
   hideSeedRow: types.optional(types.boolean, false),
   categoryWordFilter: types.optional(types.boolean, true),
@@ -79,40 +85,18 @@ const OptionsValueStore = types.model('OptionsValueStore', {
   trackerListHeight: types.optional(types.number, 0),
 }).actions(self => {
   return {
-    setEnabled(key, value) {
-      self[key] = value;
-    },
     setValue(key, value) {
       self[key] = value;
-    }
-  };
-});
-
-
-/**
- * @typedef {{}} OptionsStore
- * @property {string} [state]
- * @property {OptionsValueStore|undefined|null} options
- * @property {function} setOptions
- * @property {function:Promise} fetchOptions
- * @property {function} save
- * @property {function} afterCreate
- * @property {function} beforeDestroy
- */
-const OptionsStore = types.model('OptionsStore', {
-  state: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
-  options: types.maybeNull(OptionsValueStore),
-}).actions(self => {
-  return {
+    },
     setOptions(value) {
-      self.options = value;
+      Object.assign(self, value);
     },
     fetchOptions: flow(function* () {
       self.state = 'pending';
       try {
         const storage = yield storageGet({options: {}}, 'sync');
         if (isAlive(self)) {
-          self.options = storage.options;
+          self.setOptions(storage.options);
           self.state = 'done';
         }
       } catch (err) {
@@ -131,7 +115,7 @@ const OptionsStore = types.model('OptionsStore', {
       const change = changes.options;
       if (change) {
         const options = change.newValue;
-        if (!_isEqual(options, getSnapshot(self.options))) {
+        if (!_isEqual(options, self.getSnapshot())) {
           self.setOptions(options);
         }
       }
@@ -139,10 +123,14 @@ const OptionsStore = types.model('OptionsStore', {
   };
 
   return {
+    getSnapshot() {
+      const {state, ...options} = self;
+      return JSON.parse(JSON.stringify(options));
+    },
     save() {
       return oneLimit(() => {
         return storageSet({
-          options: getSnapshot(self.options),
+          options: self.getSnapshot(),
         }, 'sync');
       });
     },
