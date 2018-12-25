@@ -33,6 +33,16 @@ class Options extends React.Component {
     return this.props.rootStore.options;
   }
 
+  handleExport = (e) => {
+    e.preventDefault();
+    this.optionsStore.exportZip();
+  };
+
+  handleImport = (e) => {
+    e.preventDefault();
+    this.optionsStore.importZip();
+  };
+
   render() {
     const optionsStore = this.optionsStore;
     if (optionsStore.state !== 'done') {
@@ -80,8 +90,10 @@ class Options extends React.Component {
           <div className="page page-backup">
             <h2 className="page__title">{chrome.i18n.getMessage('backupRestore')}</h2>
             <div className="page__buttons">
-              <a type="button" href="#exportZip" className="button backup__export-zip">{chrome.i18n.getMessage('exportZip')}</a>
-              <a type="button" href="#importZip" className="button backup__import-zip">{chrome.i18n.getMessage('importZip')}</a>
+              <a onClick={this.handleExport} type="button" href="#"
+                 className="button backup__export-zip">{chrome.i18n.getMessage('exportZip')}</a>
+              <a onClick={this.handleImport} type="button" href="#"
+                 className="button backup__import-zip">{chrome.i18n.getMessage('importZip')}</a>
             </div>
           </div>
         );
@@ -188,7 +200,7 @@ class OptionText extends React.Component {
       <div className="option">
         <label>
           <span>{chrome.i18n.getMessage(name)}</span>:
-          <input ref={this.refInput} defaultValue={options.options[name]} onChange={this.handleOptionChange} type="text"/>
+          <input ref={this.refInput} defaultValue={options[name]} onChange={this.handleOptionChange} type="text"/>
         </label>
       </div>
     );
