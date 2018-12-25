@@ -87,7 +87,7 @@ const OptionsStore = types.model('OptionsStore', {
     by: types.string,
     direction: types.optional(types.number, 0),
   })), [{by: 'quality'}]),
-  trackerListHeight: types.optional(types.number, 0),
+  trackerListHeight: types.optional(types.number, 200),
 }).actions(self => {
   return {
     setValue(key, value) {
