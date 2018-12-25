@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 import {Link} from "react-router-dom";
 import {inject, observer} from "mobx-react";
 import getTitle from "../tools/getTitle";
+import promiseFinally from "../tools/promiseFinally";
 
 
 @inject('rootStore')
@@ -18,6 +19,11 @@ class Options extends React.Component {
 
   constructor(props) {
     super(props);
+
+    this.state = {
+      importLock: false,
+      exportLock: false,
+    };
 
     if (this.optionsStore.state === 'idle') {
       this.optionsStore.fetchOptions();
@@ -35,12 +41,18 @@ class Options extends React.Component {
 
   handleExport = (e) => {
     e.preventDefault();
-    this.optionsStore.exportZip();
+    this.state.exportLock = true;
+    this.optionsStore.exportZip().then(...promiseFinally(() => {
+      this.state.exportLock = false;
+    }));
   };
 
   handleImport = (e) => {
     e.preventDefault();
-    this.optionsStore.importZip();
+    this.state.importLock = true;
+    this.optionsStore.importZip().then(...promiseFinally(() => {
+      this.state.importLock = false;
+    }));
   };
 
   render() {
