@@ -27,8 +27,9 @@ class ProfileTracker extends React.Component {
 
   get searchStore() {
     const searches = this.props.rootStore.searches;
-    if (searches.length) {
-      return searches[0];
+    const len = searches.length;
+    if (len) {
+      return searches[len - 1];
     }
   }
 
