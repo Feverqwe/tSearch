@@ -110,10 +110,11 @@ const TrarckerSearchStore = types.model('TrarckerSearchStore', {
 /**
  * @typedef {{}} SearchStore
  * @property {number} id
+ * @property {string} [state]
  * @property {string} query
  * @property {Map<*,TrarckerSearchStore>} trarckerSearch
  * @property {SearchPageStore[]} pages
- * @property {function} searchWrapper
+ * @property {function:Promise} searchWrapper
  * @property {function} search
  * @property {function} searchNext
  * @property {function} createTrackerSearch
@@ -121,7 +122,7 @@ const TrarckerSearchStore = types.model('TrarckerSearchStore', {
  * @property {*} queryRateScheme
  * @property {function} getResultCountByTrackerId
  * @property {function} getVisibleResultCountByTrackerId
- * @property {function} getNextQuery
+ * @property {*} hasNextQuery
  */
 const SearchStore = types.model('SearchStore', {
   id: types.identifierNumber,
