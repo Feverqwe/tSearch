@@ -46,6 +46,7 @@ const ProfilesStore = types.model('ProfilesStore', {
     },
     setProfileId(id) {
       self.profileId = id;
+      self.clearSelectedTrackers();
     },
     fetchProfiles: flow(function* () {
       self.state = 'pending';
