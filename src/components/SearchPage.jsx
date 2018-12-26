@@ -32,7 +32,7 @@ class SearchPage extends React.Component {
 
     const body = this.props.searchPageStore.getSortedAndFilteredResults().map(result => {
       return (
-        <SearchPageRow key={`result-${result.id}`} {...this.props} columns={columns} result={result}/>
+        <SearchPageRow key={`result-${result.url}`} {...this.props} columns={columns} result={result}/>
       )
     });
 
@@ -117,6 +117,7 @@ class SearchPageRow extends React.Component {
 
   render() {
     const result = this.props.result;
+    const tracker = this.props.rootStore.trackers.trackers.get(result.trackerId);
     const cells = this.props.columns.map(type => {
       switch (type) {
         case 'date': {
@@ -152,10 +153,10 @@ class SearchPageRow extends React.Component {
           }
 
           let titleIcon = null;
-          if (result.tracker) {
+          if (tracker) {
             titleIcon = (
-              <div className={`tracker__icon ${getTrackerIconClassName(result.trackerId)}`}
-                   title={result.tracker.name}/>
+              <div className={`tracker__icon ${getTrackerIconClassName(tracker.id)}`}
+                   title={tracker.name}/>
             );
           }
 

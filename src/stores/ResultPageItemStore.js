@@ -7,12 +7,14 @@ import TrackerStore from "./TrackerStore";
  * @property {string} id
  * @property {string} trackerId
  * @property {string} title
+ * @property {string} titleLowerCase
  * @property {*} titleHighlightMap
  * @property {string} url
  * @property {*} rate
  * @property {number} quality
  * @property {number|undefined|null} categoryId
  * @property {string|undefined|null} categoryTitle
+ * @property {string} categoryTitleLowerCase
  * @property {string|undefined|null} categoryUrl
  * @property {number|undefined|null} size
  * @property {string|undefined|null} downloadUrl
@@ -22,18 +24,18 @@ import TrackerStore from "./TrackerStore";
  * @property {string} dateTitle
  * @property {string} dateText
  * @property {string} sizeText
- * @property {*} tracker
  */
 const ResultPageItemStore = types.model('ResultPageItemStore', {
-  id: types.identifier,
   trackerId: types.string,
   title: types.string,
+  titleLowerCase: types.string,
   titleHighlightMap: types.frozen(),
   url: types.string,
   rate: types.frozen(),
   quality: types.number,
   categoryId: types.maybeNull(types.number),
   categoryTitle: types.maybeNull(types.string),
+  categoryTitleLowerCase: types.string,
   categoryUrl: types.maybeNull(types.string),
   size: types.maybeNull(types.number),
   downloadUrl: types.maybeNull(types.string),
@@ -43,22 +45,6 @@ const ResultPageItemStore = types.model('ResultPageItemStore', {
   dateTitle: types.string,
   dateText: types.string,
   sizeText: types.string,
-}).views(self => {
-  return {
-    get titleLowerCase() {
-      return self.title.toLowerCase();
-    },
-    get categoryTitleLowerCase() {
-      return (self.categoryTitle || '').toLowerCase();
-    },
-    get tracker() {
-      if (!isAlive(self)) {
-        return null;
-      } else {
-        return resolveIdentifier(TrackerStore, self, self.trackerId);
-      }
-    }
-  };
 });
 
 export default ResultPageItemStore;

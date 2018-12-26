@@ -291,7 +291,6 @@ const prepSearchResults = (trackerId, queryHighlightMap, queryRateScheme, result
           result[key] = value;
         }
       });
-      result.id = result.url;
       result.trackerId = trackerId;
       result.titleHighlightMap = highlight.getTextMap(result.title, queryHighlightMap);
       const itemRate = rate.getRate(result, queryRateScheme);
@@ -300,6 +299,8 @@ const prepSearchResults = (trackerId, queryHighlightMap, queryRateScheme, result
       result.dateTitle = unixTimeToString(result.date);
       result.dateText = unixTimeToFromNow(result.date);
       result.sizeText = filesize(result.size);
+      result.titleLowerCase = result.title.toLowerCase();
+      result.categoryTitleLowerCase = (result.categoryTitle || '').toLowerCase();
       return true;
     }
   });
