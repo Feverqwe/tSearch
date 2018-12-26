@@ -79,10 +79,10 @@ class Options extends React.Component {
         break;
       }
       case 'explorer': {
-        const sections = Object.keys(optionsStore.explorerSections).map(name => {
+        const sections = Object.keys(optionsStore.options.explorerSections).map(name => {
           if (name === 'favorite') return null;
           return (
-            <OptionCheckbox store={optionsStore.explorerSections} key={name} name={name}/>
+            <OptionCheckbox store={optionsStore.options.explorerSections} key={name} name={name}/>
           );
         });
 
@@ -162,7 +162,7 @@ class OptionCheckbox extends React.Component {
   };
 
   get store() {
-    return this.props.store || this.props.rootStore.options;
+    return this.props.store || this.props.rootStore.options.options;
   }
 
   render() {
@@ -196,7 +196,7 @@ class OptionText extends React.Component {
 
   handleOptionChange = (e) => {
     const name = this.props.name;
-    this.props.rootStore.options.setValue(name, this.input.value);
+    this.props.rootStore.options.options.setValue(name, this.input.value);
     this.props.rootStore.options.save();
   };
 
@@ -205,7 +205,7 @@ class OptionText extends React.Component {
   };
 
   render() {
-    const options = this.props.rootStore.options;
+    const options = this.props.rootStore.options.options;
     const name = this.props.name;
 
     return (

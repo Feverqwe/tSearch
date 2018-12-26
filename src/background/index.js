@@ -29,17 +29,17 @@ const optionsStore = OptionsStore.create();
 optionsStore.fetchOptions().then(() => {
   let isResetUpdateIcon = false;
   autorun(() => {
-    updateIcon(optionsStore.invertIcon, isResetUpdateIcon);
+    updateIcon(optionsStore.options.invertIcon, isResetUpdateIcon);
     isResetUpdateIcon = true;
   });
 
   autorun(() => {
-    setContextMenu(optionsStore.contextMenu);
+    setContextMenu(optionsStore.options.contextMenu);
   });
 
   let isResetSetPopupMenu = false;
   autorun(() => {
-    setPopupMenu(optionsStore.disablePopup, isResetSetPopupMenu);
+    setPopupMenu(optionsStore.options.disablePopup, isResetSetPopupMenu);
     isResetSetPopupMenu = true;
   });
 });

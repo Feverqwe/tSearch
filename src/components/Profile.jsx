@@ -18,7 +18,7 @@ class Profile extends React.Component {
   constructor(props) {
     super(props);
 
-    let trackerListHeight = this.optionsStore.trackerListHeight;
+    let trackerListHeight = this.optionsStore.options.trackerListHeight;
     if (trackerListHeight < 56) {
       trackerListHeight = 56;
     }
@@ -55,7 +55,7 @@ class Profile extends React.Component {
 
   handleResizeStop = (e, {size: {height}}) => {
     this.state.trackerListHeight = height;
-    this.optionsStore.setValue('trackerListHeight', height);
+    this.optionsStore.options.setValue('trackerListHeight', height);
     this.optionsStore.save();
   };
 

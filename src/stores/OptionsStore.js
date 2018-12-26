@@ -47,32 +47,23 @@ const ExplorerSectionsStore = types.model('ExplorerSectionsStore', {
 
 
 /**
- * @typedef {{}} OptionsStore
- * @property {string} [state]
+ * @typedef {{}} OptionsValueStore
  * @property {boolean} [hidePeerRow]
  * @property {boolean} [hideSeedRow]
  * @property {boolean} [categoryWordFilter]
+ * @property {boolean} [syncProfiles]
  * @property {boolean} [contextMenu]
  * @property {boolean} [disablePopup]
  * @property {boolean} [invertIcon]
  * @property {boolean} [doNotSendStatistics]
  * @property {boolean} [originalPosterName]
+ * @property {boolean} [favoriteSync]
  * @property {string} [kpFolderId]
  * @property {ExplorerSectionsStore} [explorerSections]
- * @property {{by:string,[direction]:number}[]} [sorts]
- * @property {number} [trackerListHeight]
+ * @property {function} setEnabled
  * @property {function} setValue
- * @property {function} setOptions
- * @property {function:Promise} fetchOptions
- * @property {function} getSnapshot
- * @property {function} save
- * @property {function} exportZip
- * @property {function} importZip
- * @property {function} afterCreate
- * @property {function} beforeDestroy
  */
-const OptionsStore = types.model('OptionsStore', {
-  state: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
+const OptionsValueStore = types.model('OptionsValueStore', {
   hidePeerRow: types.optional(types.boolean, false),
   hideSeedRow: types.optional(types.boolean, false),
   categoryWordFilter: types.optional(types.boolean, true),
@@ -92,9 +83,28 @@ const OptionsStore = types.model('OptionsStore', {
   return {
     setValue(key, value) {
       self[key] = value;
-    },
+    }
+  };
+});
+
+
+/**
+ * @typedef {{}} OptionsStore
+ * @property {string} [state]
+ * @property {OptionsValueStore|undefined|null} options
+ * @property {function} setOptions
+ * @property {function:Promise} fetchOptions
+ * @property {function} save
+ * @property {function} afterCreate
+ * @property {function} beforeDestroy
+ */
+const OptionsStore = types.model('OptionsStore', {
+  state: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
+  options: types.maybeNull(OptionsValueStore),
+}).actions(self => {
+  return {
     setOptions(value) {
-      Object.assign(self, value);
+      self.options = value;
     },
     fetchOptions: flow(function* () {
       self.state = 'pending';
@@ -129,8 +139,7 @@ const OptionsStore = types.model('OptionsStore', {
 
   return {
     getSnapshot() {
-      const {state, ...options} = self;
-      return JSON.parse(JSON.stringify(options));
+      return JSON.parse(JSON.stringify(self.options));
     },
     save() {
       return oneLimit(() => {

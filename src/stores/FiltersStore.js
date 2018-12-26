@@ -165,7 +165,7 @@ const FiltersStore = types.model('FiltersStore', {
         } else {
           const /**RootStore*/rootStore = getParentOfType(self, RootStore);
           let text = null;
-          if (rootStore.options.categoryWordFilter) {
+          if (rootStore.options.options.categoryWordFilter) {
             text = result.categoryTitleLowerCase + ' ' + result.titleLowerCase;
           } else {
             text = result.titleLowerCase

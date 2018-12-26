@@ -205,7 +205,7 @@ class SeedFilter extends React.Component {
   };
 
   render() {
-    if (this.props.rootStore.options.hideSeedRow) {
+    if (this.props.rootStore.options.options.hideSeedRow) {
       return null;
     }
 
@@ -278,7 +278,7 @@ class PeerFilter extends React.Component {
   };
 
   render() {
-    if (this.props.rootStore.options.hidePeerRow) {
+    if (this.props.rootStore.options.options.hidePeerRow) {
       return null;
     }
 

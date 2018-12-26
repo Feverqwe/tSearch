@@ -84,7 +84,7 @@ class Explorer extends React.Component {
     }
 
     const sections = this.explorerStore.sections.reduce((result, section, index) => {
-      if (this.optionsStore.explorerSections[section.moduleId]) {
+      if (this.optionsStore.options.explorerSections[section.moduleId]) {
         result.push(
           <ExploreSection key={section.id} index={index} explorerStore={this.explorerStore} sectionStore={section}/>
         );

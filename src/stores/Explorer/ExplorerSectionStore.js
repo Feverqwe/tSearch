@@ -155,7 +155,7 @@ const ExplorerSectionStore = types.model('ExplorerSectionStore', {
       let moduleParams = self.moduleParams;
       if (/%kpFolderId%/.test(moduleParams)) {
         const rootStore = getParentOfType(self, RootStore);
-        moduleParams = moduleParams.replace('%kpFolderId%', rootStore.options.kpFolderId);
+        moduleParams = moduleParams.replace('%kpFolderId%', rootStore.options.options.kpFolderId);
       }
       return moduleParams;
     },
