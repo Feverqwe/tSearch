@@ -115,6 +115,8 @@ class SearchSession extends React.Component {
 
   handleSearchNext = (e) => {
     e.preventDefault();
+    if (this.searchStore.state === 'pending') return;
+
     this.searchStore.searchNext();
   };
 
@@ -129,11 +131,10 @@ class SearchSession extends React.Component {
       }
     });
 
-    let nextQuery = this.searchStore.getNextQuery();
     let moreBtn = null;
-    if (nextQuery) {
+    if (this.searchStore.hasNextQuery) {
       const classList = ['loadMore search__submit footer__loadMore'];
-      if (nextQuery.state === 'pending') {
+      if (this.searchStore.state === 'pending') {
         classList.push('loadMore-loading');
       }
       moreBtn = (

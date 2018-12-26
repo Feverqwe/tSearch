@@ -125,30 +125,43 @@ const TrarckerSearchStore = types.model('TrarckerSearchStore', {
  */
 const SearchStore = types.model('SearchStore', {
   id: types.identifierNumber,
+  state: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
   query: types.string,
   trarckerSearch: types.map(TrarckerSearchStore),
   pages: types.array(SearchPageStore),
 }).actions(self => {
   return {
-    searchWrapper(serachFn) {
-      const /**RootStore*/rootStore = getParentOfType(self, RootStore);
+    searchWrapper: flow(function* (serachFn) {
+      self.state = 'pending';
+      try {
+        const /**RootStore*/rootStore = getParentOfType(self, RootStore);
 
-      const page = SearchPageStore.create({
-        sorts: JSON.parse(JSON.stringify(rootStore.options.options.sorts)),
-      });
-      self.pages.push(page);
-
-      return Promise.all(rootStore.profiles.prepSelectedTrackerIds.map(trackerId => {
-        const trackerSearch = self.createTrackerSearch(trackerId);
-        return serachFn(trackerSearch).then((results) => {
-          if (isAlive(self)) {
-            if (results) {
-              page.appendResults(results);
-            }
-          }
+        const page = SearchPageStore.create({
+          sorts: JSON.parse(JSON.stringify(rootStore.options.options.sorts)),
         });
-      }));
-    },
+        self.pages.push(page);
+
+        yield Promise.all(rootStore.profiles.prepSelectedTrackerIds.map(trackerId => {
+          const trackerSearch = self.createTrackerSearch(trackerId);
+          return serachFn(trackerSearch).then((results) => {
+            if (isAlive(self)) {
+              if (results) {
+                page.appendResults(results);
+              }
+            }
+          });
+        }));
+
+        if (isAlive(self)) {
+          self.state = 'done';
+        }
+      } catch (err) {
+        logger.error('searchWrapper error', err);
+        if (isAlive(self)) {
+          self.state = 'error';
+        }
+      }
+    }),
     search() {
       return self.searchWrapper((trackerSearch) => {
         return trackerSearch.search();
@@ -201,17 +214,16 @@ const SearchStore = types.model('SearchStore', {
         return count;
       }, 0);
     },
-    getNextQuery() {
-      let result = null;
+    get hasNextQuery() {
       const /**RootStore*/rootStore = getParentOfType(self, RootStore);
-      self.trarckerSearch.forEach((trackerSearch) => {
+      const prepSelectedTrackerIds = rootStore.profiles.prepSelectedTrackerIds;
+      for (let trackerSearch of self.trarckerSearch.values()) {
         if (trackerSearch.nextQuery) {
-          if (rootStore.profiles.prepSelectedTrackerIds.indexOf(trackerSearch.id) !== -1) {
-            result = {state: trackerSearch.state};
+          if (prepSelectedTrackerIds.indexOf(trackerSearch.id) !== -1) {
+            return true;
           }
         }
-      });
-      return result;
+      }
     }
   };
 });
