@@ -74,16 +74,16 @@ const SearchPageStore = types.model('SearchPageStore', {
     },
     getFilterBySelectedTrackers() {
       const /**RootStore*/rootStore = getParentOfType(self, RootStore);
-      const selectedTrackerIds = rootStore.profiles.selectedTrackers.map(tracker => tracker.id);
+      const prepSelectedTrackerIds = rootStore.profiles.prepSelectedTrackerIds;
       return result => {
-        return selectedTrackerIds.includes(result.trackerId);
+        return prepSelectedTrackerIds.indexOf(result.trackerId) !== -1;
       };
     },
     get filteredResults() {
       const /**RootStore*/rootStore = getParentOfType(self, RootStore);
       return multiFilter(self.results, self.getFilterBySelectedTrackers(), rootStore.filters.getFilter());
     },
-    getSortedAndFilteredResults() {
+    get sortedAndFilteredResults() {
       return sortResults(self.filteredResults, self.sorts);
     },
     getResultCountByTrackerId(id) {

@@ -16,6 +16,11 @@ class SearchPage extends React.Component {
   };
 
   render() {
+    const results = this.props.searchPageStore.sortedAndFilteredResults;
+    if (!results.length) {
+      return null;
+    }
+
     const columns = ['date', 'quality', 'title', 'size', 'seeds', 'peers'];
     if (this.props.rootStore.options.options.hidePeerRow) {
       columns.splice(columns.indexOf('peers'), 1);
@@ -30,7 +35,7 @@ class SearchPage extends React.Component {
       )
     });
 
-    const body = this.props.searchPageStore.getSortedAndFilteredResults().map(result => {
+    const body = results.map(result => {
       return (
         <SearchPageRow key={`result-${result.url}`} {...this.props} columns={columns} result={result}/>
       )

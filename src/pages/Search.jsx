@@ -122,13 +122,9 @@ class SearchSession extends React.Component {
 
   render() {
     const pages = this.searchStore.pages.map((searchPageStore, index) => {
-      if (searchPageStore.results.length) {
-        return (
-          <SearchPage key={`page-${index}`} searchStore={this.searchStore} searchPageStore={searchPageStore}/>
-        );
-      } else {
-        return null;
-      }
+      return (
+        <SearchPage key={`page-${index}`} searchStore={this.searchStore} searchPageStore={searchPageStore}/>
+      );
     });
 
     let moreBtn = null;
@@ -146,10 +142,12 @@ class SearchSession extends React.Component {
       );
     }
 
-    return [
-      pages,
-      moreBtn
-    ];
+    return (
+      <>
+        {pages}
+        {moreBtn}
+      </>
+    )
   }
 }
 
