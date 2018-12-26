@@ -21,10 +21,6 @@ class Search extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      searchId: this.rootStore.createSearch(this.props.query),
-    };
-
     if (this.rootStore.options.state === 'idle') {
       this.rootStore.options.fetchOptions();
     }
@@ -45,17 +41,9 @@ class Search extends React.Component {
     document.title = getTitle(JSON.stringify(this.props.query));
   }
 
-  componentWillUnmount() {
-    this.rootStore.destroySearch(this.state.searchId);
-  }
-
   /**@return RootStore*/
   get rootStore() {
     return this.props.rootStore;
-  }
-
-  get searchStore() {
-    return this.rootStore.getSearch(this.state.searchId);
   }
 
   render() {
@@ -68,7 +56,7 @@ class Search extends React.Component {
       this.rootStore.profiles.profile
     ) {
       searchSession = (
-        <SearchSession key={`query-${this.props.query}`} query={this.props.query} searchStore={this.searchStore}/>
+        <SearchSession query={this.props.query}/>
       )
     }
 
@@ -95,13 +83,15 @@ class Search extends React.Component {
 class SearchSession extends React.Component {
   static propTypes = {
     rootStore: PropTypes.object,
-    query: PropTypes.string,
-    searchStore: PropTypes.object.isRequired,
+    query: PropTypes.string.isRequired,
   };
 
-  componentDidMount() {
-    this.searchStore.fetchResults();
-    this.rootStore.history.addQuery(this.searchStore.query);
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      searchId: this.rootStore.createSearch(this.props.query),
+    };
   }
 
   /**@return RootStore*/
@@ -111,7 +101,16 @@ class SearchSession extends React.Component {
 
   /**@return SearchStore*/
   get searchStore() {
-    return this.props.searchStore;
+    return this.rootStore.getSearch(this.state.searchId);
+  }
+
+  componentDidMount() {
+    this.searchStore.fetchResults();
+    this.rootStore.history.addQuery(this.searchStore.query);
+  }
+
+  componentWillUnmount() {
+    this.rootStore.destroySearch(this.state.searchId);
   }
 
   handleSearchNext = (e) => {
