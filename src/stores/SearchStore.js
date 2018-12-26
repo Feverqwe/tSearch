@@ -147,7 +147,7 @@ const SearchStore = types.model('SearchStore', {
           return serachFn(trackerSearch).then((results) => {
             if (isAlive(self)) {
               if (results) {
-                page.appendResults(results);
+                page.appendResults(trackerId, results);
               }
             }
           });

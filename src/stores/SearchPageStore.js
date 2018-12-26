@@ -24,6 +24,7 @@ const SearchPageStore = types.model('SearchPageStore', {
     by: types.string,
     direction: types.optional(types.number, 0),
   })),
+  trackerIdCountMap: types.map(types.number),
 }).actions(self => {
   return {
     sortBy(by) {
@@ -56,8 +57,13 @@ const SearchPageStore = types.model('SearchPageStore', {
       rootStore.options.options.setValue('sorts', JSON.parse(JSON.stringify(self.sorts)));
       rootStore.options.save();
     },
-    appendResults(results) {
+    appendResults(trackerId, results) {
       self.results.push(...results);
+      self.incTrackerCount(trackerId, results.length);
+    },
+    incTrackerCount(trackerId, count) {
+      const trackerIdCount = self.trackerIdCountMap.get(trackerId) || 0;
+      self.trackerIdCountMap.set(trackerId, trackerIdCount + count);
     }
   };
 }).views(self => {
@@ -87,9 +93,7 @@ const SearchPageStore = types.model('SearchPageStore', {
       return sortResults(self.filteredResults, self.sorts);
     },
     getResultCountByTrackerId(id) {
-      return self.results.filter(result => {
-        return result.trackerId === id;
-      }).length;
+      return self.trackerIdCountMap.get(id) || 0;
     },
     getVisibleResultCountByTrackerId(id) {
       return self.filteredResults.filter(result => {
@@ -99,9 +103,9 @@ const SearchPageStore = types.model('SearchPageStore', {
   };
 });
 
-const multiFilter = (results, ...filters) => {
+const multiFilter = (allResults, ...filters) => {
   const filtersLen = filters.length;
-  return results.filter(item => {
+  return allResults.filter(item => {
     let result = true;
     for (let i = 0; i < filtersLen; i++) {
       if (filters[i](item) === false) {
