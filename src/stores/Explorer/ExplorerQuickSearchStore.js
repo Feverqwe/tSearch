@@ -66,9 +66,12 @@ const ExplorerQuickSearchItemStore = types.model('ExplorerQuickSearchItemStore',
         const searchId = rootStore.createSearch(self.query);
         const searchStore = rootStore.getSearch(searchId);
         const joinedResults = [];
-        yield Promise.all(searchStore.getTrackerSessions().map((trackerSession) => {
-          return trackerSession.fetchResult().then(results => {
-            results.forEach(result => {
+        yield Promise.all(rootStore.profiles.prepSelectedTrackerIds.map((trackerId) => {
+          const trackerSearch = searchStore.createTrackerSearch(trackerId);
+          return trackerSearch.search().then((results) => {
+            if (!results) return;
+
+            results.forEach((result) => {
               if (!isTrailer(result.title)) {
                 result.label = result.rate.quality;
                 if (result.rate.rate.audioFormat) {

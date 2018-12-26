@@ -64,7 +64,9 @@ const RootStore = types.model('RootStore', {
   return {
     createSearch(query) {
       const id = ++searchId;
-      self.searches.push(SearchStore.create({id, query}));
+      self.searches.push(SearchStore.create({
+        id, query,
+      }));
       return id;
     },
     destroySearch(id) {

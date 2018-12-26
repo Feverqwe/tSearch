@@ -25,10 +25,17 @@ class ProfileTracker extends React.Component {
     }
   }
 
-  get trackerSearchSession() {
+  get searchStore() {
     const searches = this.props.rootStore.searches;
     if (searches.length) {
-      return searches[0].trackerSessions.get(this.props.id);
+      return searches[0];
+    }
+  }
+
+  get trackerSearchStore() {
+    const searchStore = this.searchStore;
+    if (searchStore) {
+      return searchStore.trarckerSearch.get(this.props.id);
     }
   }
 
@@ -56,12 +63,12 @@ class ProfileTracker extends React.Component {
 
     iconClassList.push(getTrackerIconClassName(tracker.id));
 
-    const searchSession = this.trackerSearchSession;
-    if (searchSession) {
-      if (searchSession.state === 'pending') {
+    const trackerSearchStore = this.trackerSearchStore;
+    if (trackerSearchStore) {
+      if (trackerSearchStore.state === 'pending') {
         iconClassList.push('tracker__icon-loading');
       } else
-      if (searchSession.state === 'error') {
+      if (trackerSearchStore.state === 'error') {
         iconClassList.push('tracker__icon-error');
       }
     }
@@ -79,15 +86,15 @@ class ProfileTracker extends React.Component {
     }
 
     let searchState = null;
-    if (searchSession) {
-      if (searchSession.authRequired) {
+    if (trackerSearchStore) {
+      if (trackerSearchStore.authRequired) {
         searchState = (
-          <a className="tracker__login" target="_blank" href={searchSession.authRequired.url}
+          <a className="tracker__login" target="_blank" href={trackerSearchStore.authRequired.url}
              title={chrome.i18n.getMessage('login')}/>
         );
       } else {
-        const count = searchSession.search.getResultCountByTrackerId(tracker.id);
-        const visibleCount = searchSession.search.getVisibleResultCountByTrackerId(tracker.id);
+        const count = this.searchStore.getResultCountByTrackerId(tracker.id);
+        const visibleCount = this.searchStore.getVisibleResultCountByTrackerId(tracker.id);
 
         let text = '';
         if (count === visibleCount) {

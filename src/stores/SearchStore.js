@@ -12,37 +12,37 @@ import SearchPageStore from "./SearchPageStore";
 const logger = getLogger('SearchStore');
 
 /**
- * @typedef {{}} TrackerSessionStore
+ * @typedef {{}} TrarckerSearchStore
  * @property {string} id
  * @property {string} [state]
  * @property {*} nextQuery
  * @property {{url:string|undefined|null}|undefined} authRequired
- * @property {function:Promise} fetchResult
- * @property {function:Promise} fetchNextResult
- * @property {function} setAuthRequired
+ * @property {function:Promise} searchWrapper
+ * @property {function} search
+ * @property {function} searchNext
  * @property {*} tracker
- * @property {*} search
+ * @property {*} query
+ * @property {*} queryHighlightMap
+ * @property {*} queryRateScheme
  */
-const TrackerSessionStore = types.model('TrackerSessionStore', {
-  id: types.identifier,
+const TrarckerSearchStore = types.model('TrarckerSearchStore', {
+  id: types.string,
   state: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
   nextQuery: types.frozen(),
   authRequired: types.maybe(types.model({
     url: types.maybeNull(types.string)
   })),
-}).actions(self => {
+}).actions((self) => {
   return {
-    fetchResult: flow(function* () {
-      if (self.state === 'pending') return;
-      const id = self.id;
+    searchWrapper: flow(function* (searchFn) {
+      const {id, queryHighlightMap, queryRateScheme} = self;
       self.state = 'pending';
-      self.nextQuery = undefined;
-      self.authRequired = undefined;
       try {
-        const searchStore = getParentOfType(self, SearchStore);
-        const queryHighlightMap = highlight.getMap(searchStore.query);
-        const queryRateScheme = rate.getScheme(searchStore.query);
-        const result = yield self.tracker.worker.search(searchStore.query);
+        const tracker = self.tracker;
+        if (!tracker) {
+          throw new Error(`Tracker ${id} is not found`);
+        }
+        const result = yield searchFn();
         if (!result) {
           throw new ErrorWithCode(`Search error: result is empty`, 'EMPTY_RESULT');
         }
@@ -59,199 +59,144 @@ const TrackerSessionStore = types.model('TrackerSessionStore', {
         if (isAlive(self)) {
           self.nextQuery = result.nextPageRequest;
           self.state = 'done';
-
-          return prepSearchResults(self.id, queryHighlightMap, queryRateScheme, result.results);
-        } else {
-          return [];
         }
+        return prepSearchResults(id, queryHighlightMap, queryRateScheme, result.results);
       } catch (err) {
-        if (err.code === 'AUTH_REQUIRED') {
-          if (isAlive(self)) {
-            self.setAuthRequired(err.url);
-          }
-        } else {
-          logger.error(`[${id}] fetchResult error`, err);
-        }
         if (isAlive(self)) {
           self.state = 'error';
         }
-        return [];
-      }
-    }),
-    fetchNextResult: flow(function* () {
-      if (self.state === 'pending') return;
-      const id = self.id;
-      self.state = 'pending';
-      try {
-        const searchStore = getParentOfType(self, SearchStore);
-        const queryHighlightMap = highlight.getMap(searchStore.query);
-        const queryRateScheme = rate.getScheme(searchStore.query);
-        let result = null;
-        if (self.nextQuery) {
-          result = yield self.tracker.worker.searchNext(self.nextQuery);
-        } else {
-          result = {success: true, results: []};
-        }
-        if (!result) {
-          throw new ErrorWithCode(`Search error: result is empty`, 'EMPTY_RESULT');
-        }
-        if (!result.success) {
-          if (result.error === 'AUTH') {
-            // legacy
-            const err = new ErrorWithCode(`Search error: auth required`, 'AUTH_REQUIRED');
-            err.url = result.url;
-            throw err;
-          } else {
-            throw new ErrorWithCode(`Search error: not success`, 'NOT_SUCCESS');
-          }
-        }
-        if (isAlive(self)) {
-          self.nextQuery = result.nextPageRequest;
-          self.state = 'done';
-
-          return prepSearchResults(self.id, queryHighlightMap, queryRateScheme, result.results);
-        } else {
-          return [];
-        }
-      } catch (err) {
         if (err.code === 'AUTH_REQUIRED') {
           if (isAlive(self)) {
-            self.setAuthRequired(err.url);
+            self.authRequired = {
+              url: err.url
+            };
           }
         } else {
-          logger.error(`[${id}] fetchResult error`, err);
+          logger.error(`[${id}] searchWrapper error`, err);
         }
-        if (isAlive(self)) {
-          self.state = 'error';
-        }
-        return [];
       }
     }),
-    setAuthRequired(url) {
-      self.authRequired = {url};
+    search() {
+      return self.searchWrapper(() => {
+        return self.tracker.worker.search(self.query);
+      });
+    },
+    searchNext() {
+      const {nextQuery} = self;
+      if (!nextQuery) return Promise.resolve();
+
+      return self.searchWrapper(() => {
+        return self.tracker.worker.searchNext(nextQuery);
+      });
     },
   };
-}).views(self => {
+}).views((self) => {
   return {
     get tracker() {
       return resolveIdentifier(TrackerStore, self, self.id);
     },
-    get search() {
-      return getParentOfType(self, SearchStore);
-    }
+    get query() {
+      return getParentOfType(self, SearchStore).query;
+    },
+    get queryHighlightMap() {
+      return getParentOfType(self, SearchStore).queryHighlightMap;
+    },
+    get queryRateScheme() {
+      return getParentOfType(self, SearchStore).queryRateScheme;
+    },
   };
 });
 
 /**
  * @typedef {{}} SearchStore
- * @property {string} [state]
+ * @property {number} id
  * @property {string} query
- * @property {Map<*,TrackerSessionStore>} trackerSessions
- * @property {SearchPageStore[]} resultPages
- * @property {function:Promise} fetchResults
- * @property {function:Promise} fetchNextResults
- * @property {function} getTrackerSessions
+ * @property {Map<*,TrarckerSearchStore>} trarckerSearch
+ * @property {SearchPageStore[]} pages
+ * @property {function} searchWrapper
+ * @property {function} search
+ * @property {function} searchNext
+ * @property {function} createTrackerSearch
+ * @property {*} queryHighlightMap
+ * @property {*} queryRateScheme
  * @property {function} getResultCountByTrackerId
  * @property {function} getVisibleResultCountByTrackerId
  * @property {function} getNextQuery
  */
 const SearchStore = types.model('SearchStore', {
   id: types.identifierNumber,
-  state: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
   query: types.string,
-  trackerSessions: types.map(TrackerSessionStore),
-  resultPages: types.array(SearchPageStore),
+  trarckerSearch: types.map(TrarckerSearchStore),
+  pages: types.array(SearchPageStore),
 }).actions(self => {
   return {
-    fetchResults: flow(function* () {
-      if (self.state === 'pending') return;
-      self.state = 'pending';
-      self.resultPages.splice(0);
-
+    searchWrapper(serachFn) {
       const /**RootStore*/rootStore = getParentOfType(self, RootStore);
-      const searchPage = SearchPageStore.create({
-        state: 'pending',
+
+      const page = SearchPageStore.create({
         sorts: JSON.parse(JSON.stringify(rootStore.options.options.sorts)),
       });
+      self.pages.push(page);
 
-      try {
-        self.resultPages.push(searchPage);
-        yield Promise.all(self.getTrackerSessions().map(trackerSession => {
-          return trackerSession.fetchResult().then(results => {
-            if (isAlive(searchPage)) {
-              searchPage.appendResults(results);
+      return Promise.all(rootStore.profiles.prepSelectedTrackerIds.map(trackerId => {
+        const trackerSearch = self.createTrackerSearch(trackerId);
+        return serachFn(trackerSearch).then((results) => {
+          if (isAlive(self)) {
+            if (results) {
+              page.appendResults(results);
             }
-          });
-        }));
-        if (isAlive(self)) {
-          searchPage.setState('done');
-          self.state = 'done';
-        }
-      } catch (err) {
-        logger.error('fetchResults error', err);
-        if (isAlive(self)) {
-          searchPage.setState('error');
-          self.state = 'error';
-        }
-      }
-    }),
-    fetchNextResults: flow(function* () {
-      if (self.state === 'pending') return;
-      self.state = 'pending';
-
-      const /**RootStore*/rootStore = getParentOfType(self, RootStore);
-      const searchPage = SearchPageStore.create({
-        state: 'pending',
-        sorts: JSON.parse(JSON.stringify(rootStore.options.options.sorts)),
-      });
-
-      try {
-        self.resultPages.push(searchPage);
-        yield Promise.all(self.getTrackerSessions().map(trackerSession => {
-          return trackerSession.fetchNextResult().then(results => {
-            if (isAlive(searchPage)) {
-              searchPage.appendResults(results);
-            }
-          });
-        }));
-        if (isAlive(self)) {
-          searchPage.setState('done');
-          self.state = 'done';
-        }
-      } catch (err) {
-        logger.error('fetchResults error', err);
-        if (isAlive(self)) {
-          searchPage.setState('error');
-          self.state = 'error';
-        }
-      }
-    }),
-    getTrackerSessions() {
-      const result = [];
-      const /**RootStore*/rootStore = getParentOfType(self, RootStore);
-      rootStore.profiles.selectedTrackers.forEach(profileTracker => {
-        const /**TrackerStore*/tracker = profileTracker.tracker;
-        if (tracker) {
-          if (!self.trackerSessions.has(tracker.id)) {
-            self.trackerSessions.set(tracker.id, {id: tracker.id});
           }
-          const session = self.trackerSessions.get(tracker.id);
-          result.push(session);
-        }
+        });
+      }));
+    },
+    search() {
+      return self.searchWrapper((trackerSearch) => {
+        return trackerSearch.search();
       });
-      return result;
+    },
+    searchNext() {
+      return self.searchWrapper((trackerSearch) => {
+        return trackerSearch.searchNext();
+      });
+    },
+    createTrackerSearch(trackerId) {
+      let nextQuery = undefined;
+      const prevTrackerSearch = self.trarckerSearch.get(trackerId);
+      if (prevTrackerSearch && prevTrackerSearch.state === 'done') {
+        nextQuery =  prevTrackerSearch.nextQuery;
+      }
+      const trackerSearch = TrarckerSearchStore.create({
+        id: trackerId,
+        nextQuery: nextQuery
+      });
+      self.trarckerSearch.set(trackerId, trackerSearch);
+      return trackerSearch;
     }
   };
 }).views(self => {
+  let queryHighlightMapCache = null;
+  let queryRateScheme = null;
   return {
+    get queryHighlightMap() {
+      if (queryHighlightMapCache === null) {
+        queryHighlightMapCache = highlight.getMap(self.query);
+      }
+      return queryHighlightMapCache;
+    },
+    get queryRateScheme() {
+      if (queryRateScheme === null) {
+        queryRateScheme = rate.getScheme(self.query);
+      }
+      return queryRateScheme;
+    },
     getResultCountByTrackerId(id) {
-      return self.resultPages.reduce((count, page) => {
+      return self.pages.reduce((count, page) => {
         count += page.getResultCountByTrackerId(id);
         return count;
       }, 0);
     },
     getVisibleResultCountByTrackerId(id) {
-      return self.resultPages.reduce((count, page) => {
+      return self.pages.reduce((count, page) => {
         count += page.getVisibleResultCountByTrackerId(id);
         return count;
       }, 0);
@@ -259,10 +204,10 @@ const SearchStore = types.model('SearchStore', {
     getNextQuery() {
       let result = null;
       const /**RootStore*/rootStore = getParentOfType(self, RootStore);
-      self.trackerSessions.forEach(trackerSession => {
-        if (trackerSession.nextQuery) {
-          if (rootStore.profiles.prepSelectedTrackerIds.indexOf(trackerSession.id) !== -1) {
-            result = {state: trackerSession.state};
+      self.trarckerSearch.forEach((trackerSearch) => {
+        if (trackerSearch.nextQuery) {
+          if (rootStore.profiles.prepSelectedTrackerIds.indexOf(trackerSearch.id) !== -1) {
+            result = {state: trackerSearch.state};
           }
         }
       });
@@ -307,4 +252,3 @@ const prepSearchResults = (trackerId, queryHighlightMap, queryRateScheme, result
 };
 
 export default SearchStore;
-export {TrackerSessionStore};

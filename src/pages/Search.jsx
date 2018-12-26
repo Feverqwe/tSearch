@@ -105,7 +105,7 @@ class SearchSession extends React.Component {
   }
 
   componentDidMount() {
-    this.searchStore.fetchResults();
+    this.searchStore.search();
     this.rootStore.history.addQuery(this.searchStore.query);
   }
 
@@ -115,15 +115,11 @@ class SearchSession extends React.Component {
 
   handleSearchNext = (e) => {
     e.preventDefault();
-    this.searchStore.fetchNextResults();
+    this.searchStore.searchNext();
   };
 
   render() {
-    if (!this.searchStore) {
-      return ('Loading...');
-    }
-
-    const pages = this.searchStore.resultPages.map((searchPageStore, index) => {
+    const pages = this.searchStore.pages.map((searchPageStore, index) => {
       if (searchPageStore.results.length) {
         return (
           <SearchPage key={`page-${index}`} searchStore={this.searchStore} searchPageStore={searchPageStore}/>
