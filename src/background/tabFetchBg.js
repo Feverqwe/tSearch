@@ -291,7 +291,7 @@ class Request extends Events {
           }
         }})(${strArgs(this.id, this.url, this.options)})`,
         runAt: 'document_start',
-      });
+      }).then(results => results[0]);
     }).then((result) => {
       if (sessionId !== this.sessionIndex) return;
 
