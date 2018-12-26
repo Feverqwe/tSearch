@@ -1,7 +1,7 @@
 import {inject, observer} from "mobx-react";
 import React from "react";
 import PropTypes from "prop-types";
-import {Link} from "react-router-dom";
+import {Link, withRouter} from "react-router-dom";
 import getLogger from "../tools/getLogger";
 
 const uuid = require('uuid/v4');
@@ -10,6 +10,7 @@ const Sortable = require('sortablejs');
 const logger = getLogger('EditProfiles');
 
 
+@withRouter
 @inject('rootStore')
 @observer
 class EditProfiles extends React.Component {
@@ -75,7 +76,7 @@ class EditProfiles extends React.Component {
     const profileEditorStore = this.profileEditorStore;
     const profiles = profileEditorStore.profiles.map((profileStore, index) => {
       return (
-        <ProfileItem key={profileStore.id} index={index} profileStore={profileStore} history={this.props.history}/>
+        <ProfileItem key={profileStore.id} index={index} profileStore={profileStore}/>
       );
     });
 
@@ -97,6 +98,7 @@ class EditProfiles extends React.Component {
   }
 }
 
+@withRouter
 @inject('rootStore')
 @observer
 class ProfileItem extends React.Component {

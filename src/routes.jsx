@@ -12,7 +12,7 @@ const routes = [{
   exact: true,
   render: props => {
     return (
-      <ComponentLoader {...props} load-page={'main'}/>
+      <ComponentLoader load-page={'main'}/>
     );
   },
 }, {
@@ -25,7 +25,7 @@ const routes = [{
       );
     }
     return (
-      <ComponentLoader {...props} load-page={'profile-editor'} id={id}/>
+      <ComponentLoader load-page={'profile-editor'} id={id}/>
     );
   },
 }, {
@@ -45,7 +45,7 @@ const routes = [{
   path: '/history',
   render: props => {
     return (
-      <ComponentLoader {...props} load-page={'history'}/>
+      <ComponentLoader load-page={'history'}/>
     );
   },
 }, {
@@ -58,7 +58,7 @@ const routes = [{
       );
     }
     return (
-      <ComponentLoader {...props} load-page={'options'} page={page}/>
+      <ComponentLoader load-page={'options'} page={page}/>
     );
   },
 }, {
@@ -72,7 +72,7 @@ const routes = [{
       );
     }
     return (
-      <ComponentLoader {...props} load-page={'editor'} type={type} id={id}/>
+      <ComponentLoader load-page={'editor'} type={type} id={id}/>
     );
   },
 }, {
@@ -85,14 +85,14 @@ const routes = [{
       );
     }
     return (
-      <ComponentLoader {...props} load-page={'codeMaker'} page={page}/>
+      <ComponentLoader load-page={'codeMaker'} page={page}/>
     );
   },
 }, {
   path: null,
   render: props => {
     return (
-      <NotFound {...props}/>
+      <NotFound/>
     );
   },
 }];

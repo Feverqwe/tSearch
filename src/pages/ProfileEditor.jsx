@@ -94,7 +94,7 @@ class ProfileEditorPage extends React.Component {
       );
     } else {
       return (
-        <EditProfiles history={this.props.history}/>
+        <EditProfiles/>
       );
     }
   }
