@@ -51,16 +51,15 @@ const ExplorerSectionsStore = types.model('ExplorerSectionsStore', {
  * @property {boolean} [hidePeerRow]
  * @property {boolean} [hideSeedRow]
  * @property {boolean} [categoryWordFilter]
- * @property {boolean} [syncProfiles]
  * @property {boolean} [contextMenu]
  * @property {boolean} [disablePopup]
  * @property {boolean} [invertIcon]
  * @property {boolean} [doNotSendStatistics]
  * @property {boolean} [originalPosterName]
- * @property {boolean} [favoriteSync]
  * @property {string} [kpFolderId]
  * @property {ExplorerSectionsStore} [explorerSections]
- * @property {function} setEnabled
+ * @property {{by:string,[direction]:number}[]} [sorts]
+ * @property {number} [trackerListHeight]
  * @property {function} setValue
  */
 const OptionsValueStore = types.model('OptionsValueStore', {
@@ -94,7 +93,10 @@ const OptionsValueStore = types.model('OptionsValueStore', {
  * @property {OptionsValueStore|undefined|null} options
  * @property {function} setOptions
  * @property {function:Promise} fetchOptions
+ * @property {function} getSnapshot
  * @property {function} save
+ * @property {function} exportZip
+ * @property {function} importZip
  * @property {function} afterCreate
  * @property {function} beforeDestroy
  */
