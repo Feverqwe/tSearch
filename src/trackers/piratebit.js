@@ -6,7 +6,7 @@
 // @downloadURL https://github.com/Feverqwe/tSearch/raw/master/src/trackers/piratebit.js
 // @connect *://pb.wtf/*
 // @require exKit
-// @version 1.0.1
+// @version 1.0.2
 // ==/UserScript==
 
 API_exKit({

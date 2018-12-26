@@ -7,7 +7,7 @@
 // @connect *://extratorrent.si/*
 // @require exKit
 // @require https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js
-// @version 1.0.2
+// @version 1.0.3
 // ==/UserScript==
 
 API_exKit({

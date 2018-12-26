@@ -6,7 +6,7 @@
 // @downloadURL https://github.com/Feverqwe/tSearch/raw/master/src/trackers/filebase.js
 // @connect *://*.filebase.ws/*
 // @require exKit
-// @version 1.0.1
+// @version 1.0.2
 // ==/UserScript==
 
 API_exKit({

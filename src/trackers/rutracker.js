@@ -6,7 +6,7 @@
 // @downloadURL https://github.com/Feverqwe/tSearch/raw/master/src/trackers/rutracker.js
 // @connect *://rutracker.org/*
 // @require jquery
-// @version 1.0.2
+// @version 1.0.3
 // ==/UserScript==
 
 

@@ -6,7 +6,7 @@
 // @downloadURL https://github.com/Feverqwe/tSearch/raw/master/src/trackers/nnmclub.js
 // @connect *://nnm-club.me/*
 // @require exKit
-// @version 1.0.3
+// @version 1.0.4
 // ==/UserScript==
 
 const code = {

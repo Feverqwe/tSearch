@@ -6,7 +6,7 @@
 // @downloadURL https://github.com/Feverqwe/tSearch/raw/master/src/trackers/kinozal.js
 // @connect *://kinozal.tv/*
 // @require exKit
-// @version 1.0.1
+// @version 1.0.2
 // ==/UserScript==
 
 API_exKit({

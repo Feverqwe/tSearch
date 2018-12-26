@@ -6,7 +6,7 @@
 // @downloadURL http://github.com/Feverqwe/tSearch/raw/master/src/trackers/tfile.js
 // @connect *://tfile1.cc/*
 // @require exKit
-// @version 1.0.1
+// @version 1.0.2
 // ==/UserScript==
 
 API_exKit({
