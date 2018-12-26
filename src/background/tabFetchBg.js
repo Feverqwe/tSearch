@@ -271,36 +271,41 @@ class Request extends Events {
 
     const sessionId = ++this.sessionIndex;
 
-    await this.originTab.initTab();
+    return this.originTab.initTab().then(() => {
+      if (sessionId !== this.sessionIndex) return;
 
-    await executeScriptPromise(this.originTab.tabId, {
-      file: 'tabFetch.js',
-      runAt: 'document_start',
+      return executeScriptPromise(this.originTab.tabId, {
+        file: 'tabFetch.js',
+        runAt: 'document_start',
+      });
+    }).then(() => {
+      if (sessionId !== this.sessionIndex) return;
+
+      return executeScriptPromise(this.originTab.tabId, {
+        code: `(${function (id, url, options) {
+          try {
+            window.tabFetch(id, url, options);
+            return {result: true};
+          } catch (err) {
+            return {error: {message: err.message, stack: err.stack}};
+          }
+        }})(${strArgs(this.id, this.url, this.options)})`,
+        runAt: 'document_start',
+      });
+    }).then((result) => {
+      if (sessionId !== this.sessionIndex) return;
+
+      if (!result) {
+        this.handleReject(new Error('tabFetch error'));
+      } else
+      if (result.error) {
+        this.handleReject(deserializeError(result.error));
+      }
+    }, (err) => {
+      if (sessionId !== this.sessionIndex) return;
+
+      this.handleReject(err);
     });
-
-    if (sessionId !== this.sessionIndex) return;
-
-    const result = await executeScriptPromise(this.originTab.tabId, {
-      code: `(${function (id, url, options) {
-        try {
-          window.tabFetch(id, url, options);
-          return {result: true};
-        } catch (err) {
-          return {error: {message: err.message, stack: err.stack}};
-        }
-      }})(${strArgs(this.id, this.url, this.options)})`,
-      runAt: 'document_start',
-    }).then(results => results[0]);
-
-    if (sessionId !== this.sessionIndex) return;
-
-    if (!result) {
-      this.handleReject(new Error('tabFetch error'));
-    }
-
-    if (result.error) {
-      this.handleReject(deserializeError(result.error));
-    }
   }
 
   handleResponse(result) {
