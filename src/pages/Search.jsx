@@ -138,7 +138,7 @@ class SearchSession extends React.Component {
         classList.push('loadMore-loading');
       }
       moreBtn = (
-        <div key={'more'} className="footer table__footer">
+        <div className="footer table__footer">
           <a className={classList.join(' ')} href="#search-next" onClick={this.handleSearchNext}>{
             chrome.i18n.getMessage('loadMore')
           }</a>
