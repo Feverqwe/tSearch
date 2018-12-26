@@ -38,7 +38,7 @@ const routes = [{
       );
     }
     return (
-      <Search key={query.query} {...props} query={query.query}/>
+      <Search key={`unic-${Date.now()}`} query={query.query}/>
     );
   },
 }, {

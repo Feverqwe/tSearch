@@ -74,10 +74,10 @@ class Search extends React.Component {
 
     return (
       <div className="page-ctr">
-        <Header {...this.props} searchStore={this.searchStore}/>
+        <Header/>
         <div className="content content-row">
           <div className="parameter_box">
-            <Profiles searchStore={this.searchStore}/>
+            <Profiles/>
             <Filters/>
           </div>
           <div className="main">

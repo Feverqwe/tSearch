@@ -11,7 +11,6 @@ class ProfileTracker extends React.Component {
     rootStore: PropTypes.object,
     id: PropTypes.string,
     profileTrackerStore: PropTypes.object,
-    trackerSearchSession: PropTypes.object,
   };
 
   componentDidMount() {
@@ -23,6 +22,13 @@ class ProfileTracker extends React.Component {
   componentWillUnmount() {
     if (this.props.profileTrackerStore.tracker) {
       this.props.profileTrackerStore.tracker.deattach();
+    }
+  }
+
+  get trackerSearchSession() {
+    const searches = this.props.rootStore.searches;
+    if (searches.length) {
+      return searches[0].trackerSessions.get(this.props.id);
     }
   }
 
@@ -50,7 +56,7 @@ class ProfileTracker extends React.Component {
 
     iconClassList.push(getTrackerIconClassName(tracker.id));
 
-    const searchSession = this.props.trackerSearchSession;
+    const searchSession = this.trackerSearchSession;
     if (searchSession) {
       if (searchSession.state === 'pending') {
         iconClassList.push('tracker__icon-loading');

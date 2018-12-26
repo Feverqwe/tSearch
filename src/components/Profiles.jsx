@@ -9,7 +9,6 @@ import {Link} from "react-router-dom";
 class Profiles extends React.Component {
   static propTypes = {
     rootStore: PropTypes.object,
-    searchStore: PropTypes.object,
   };
 
   constructor(props) {
@@ -81,7 +80,7 @@ class Profiles extends React.Component {
     let profile = null;
     if (profileStore) {
       profile = (
-        <Profile key={profileStore.id} profileStore={profileStore} searchStore={this.props.searchStore}/>
+        <Profile key={profileStore.id} profileStore={profileStore}/>
       );
     }
 

@@ -12,7 +12,6 @@ class Profile extends React.Component {
     id: PropTypes.string,
     rootStore: PropTypes.object,
     profileStore: PropTypes.object,
-    searchStore: PropTypes.object,
   };
 
   constructor(props) {
@@ -49,10 +48,6 @@ class Profile extends React.Component {
     return this.props.profileStore;
   }
 
-  get searchStore() {
-    return this.props.searchStore;
-  }
-
   handleResizeStop = (e, {size: {height}}) => {
     this.state.trackerListHeight = height;
     this.optionsStore.options.setValue('trackerListHeight', height);
@@ -66,12 +61,8 @@ class Profile extends React.Component {
 
     const trackers = [];
     this.profileStore.trackers.forEach(profileTracker => {
-      let trackerSearchSession = null;
-      if (this.searchStore) {
-        trackerSearchSession = this.searchStore.trackerSessions.get(profileTracker.id);
-      }
       trackers.push(
-        <ProfileTracker key={profileTracker.id} id={profileTracker.id} profileTrackerStore={profileTracker} trackerSearchSession={trackerSearchSession}/>
+        <ProfileTracker key={profileTracker.id} id={profileTracker.id} profileTrackerStore={profileTracker}/>
       );
     });
 

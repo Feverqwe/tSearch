@@ -3,26 +3,24 @@ import {Link} from "react-router-dom";
 import React from "react";
 import PropTypes from "prop-types";
 import {inject, observer} from "mobx-react";
+import {withRouter} from "react-router-dom";
 
 const qs = require('querystring');
 
+@withRouter
 @inject('rootStore')
 @observer
 class Header extends React.Component {
   static propTypes = {
     rootStore: PropTypes.object,
-    searchStore: PropTypes.object,
+    history: PropTypes.object,
   };
 
   handleSubmit = (query) => {
-    if (this.props.searchStore && this.props.searchStore.query === query) {
-      this.props.searchStore.fetchResults();
-    } else {
-      const location = '/search?' + qs.stringify({
-        query: query
-      });
-      this.props.history.push(location);
-    }
+    const location = '/search?' + qs.stringify({
+      query: query
+    });
+    this.props.history.push(location);
   };
 
   handleClick = () => {
