@@ -113,7 +113,12 @@ const OptionsStore = types.model('OptionsStore', {
       try {
         const storage = yield storageGet({options: {}}, 'sync');
         if (isAlive(self)) {
-          self.setOptions(storage.options);
+          try {
+            self.setOptions(storage.options);
+          } catch (err) {
+            logger.error('fetchOptions error, options will cleared', err);
+            self.setOptions({});
+          }
           self.state = 'done';
         }
       } catch (err) {

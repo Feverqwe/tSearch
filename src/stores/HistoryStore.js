@@ -139,7 +139,12 @@ const HistoryStore = types.model('HistoryStore', {
       try {
         const storage = yield storageGet({history: {}});
         if (isAlive(self)) {
-          self.history = storage.history;
+          try {
+            self.history = storage.history;
+          } catch (err) {
+            logger.error('fetchHistory error, history will cleared', err);
+            self.history = {};
+          }
           self.state = 'done';
         }
       } catch (err) {

@@ -37,7 +37,12 @@ const ExplorerFavoritesSectionStore = types.compose('ExplorerFavoritesSectionSto
           explorerFavorites: [],
         }, 'sync');
         if (isAlive(self)) {
-          self.setItems(storage.explorerFavorites);
+          try {
+            self.setItems(storage.explorerFavorites);
+          } catch (err) {
+            logger.error('setItems error, data will cleared', err);
+            self.setItems([]);
+          }
           self.setState('done');
         }
       } catch (err) {

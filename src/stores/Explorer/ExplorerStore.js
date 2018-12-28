@@ -67,8 +67,18 @@ const ExplorerStore = types.model('ExplorerStore', {
           self.quickSearch.fetch(),
         ]);
         if (isAlive(self)) {
-          self.sections = sections;
-          self.modules = modules;
+          try {
+            self.sections = sections;
+          } catch (err) {
+            logger.error('set setions error, sections will cleared', err);
+            self.sections = [];
+          }
+          try {
+            self.modules = modules;
+          } catch (err) {
+            logger.error('set modules error, sections will cleared', err);
+            self.modules = {};
+          }
           self.state = 'done';
         }
       } catch (err) {

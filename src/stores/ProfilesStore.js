@@ -56,8 +56,18 @@ const ProfilesStore = types.model('ProfilesStore', {
           storageGet({profileId: null}),
         ]);
         if (isAlive(self)) {
-          self.setProfiles(syncStorage.profiles);
-          self.setProfileId(storage.profileId);
+          try {
+            self.setProfiles(syncStorage.profiles);
+          } catch (err) {
+            logger.error('fetchProfiles error, profiles will cleared');
+            self.setProfiles([]);
+          }
+          try {
+            self.setProfileId(storage.profileId);
+          } catch (err) {
+            logger.error('fetchProfiles error, active profile will cleared');
+            self.setProfileId(null);
+          }
           self.state = 'done';
         }
       } catch (err) {

@@ -158,7 +158,12 @@ const ExplorerQuickSearchStore = types.model('ExplorerQuickSearchStore', {
       try {
         const storage = yield storageGet({quickSearch: {}});
         if (isAlive(self)) {
-          self.quickSearch = storage.quickSearch;
+          try {
+            self.quickSearch = storage.quickSearch;
+          } catch (err) {
+            logger.error('set quickSearch error, quickSearch will cleared', err);
+            self.quickSearch = {};
+          }
           self.state = 'done';
         }
       } catch (err) {
