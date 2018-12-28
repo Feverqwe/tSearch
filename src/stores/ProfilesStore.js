@@ -59,13 +59,13 @@ const ProfilesStore = types.model('ProfilesStore', {
           try {
             self.setProfiles(syncStorage.profiles);
           } catch (err) {
-            logger.error('fetchProfiles error, profiles will cleared');
+            logger.error('fetchProfiles error, profiles will cleared', err);
             self.setProfiles([]);
           }
           try {
             self.setProfileId(storage.profileId);
           } catch (err) {
-            logger.error('fetchProfiles error, active profile will cleared');
+            logger.error('fetchProfiles error, active profile will cleared', err);
             self.setProfileId(null);
           }
           self.state = 'done';
