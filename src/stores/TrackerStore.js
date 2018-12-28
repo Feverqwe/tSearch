@@ -1,4 +1,4 @@
-import {types} from 'mobx-state-tree';
+import {flow, isAlive, types} from 'mobx-state-tree';
 import TrackerWorker from "../tools/trackerWorker";
 import getLogger from "../tools/getLogger";
 
@@ -63,6 +63,7 @@ const TrackerMetaStore = types.model('TrackerMetaStore', {
  * @property {function} beforeDestroy
  */
 const TrackerStore = types.model('TrackerStore', {
+  updateState: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
   id: types.identifier,
   options: types.optional(TrackerOptionsStore, {}),
   meta: TrackerMetaStore,
@@ -71,14 +72,53 @@ const TrackerStore = types.model('TrackerStore', {
   return {
     setOptions(value) {
       self.options = value;
-    }
+    },
+    update: flow(function* () {
+      self.updateState = 'pending';
+      try {
+        const result = yield new Promise((resolve, reject) => {
+          chrome.runtime.sendMessage({
+            action: 'updateTracker',
+            id: self.id,
+          }, response => {
+            let err = chrome.runtime.lastError;
+            err ? reject(err) : resolve(response);
+          });
+        }).then((response) => {
+          if (!response) {
+            throw new Error('Response is empty');
+          }
+          if (response.error) {
+            throw Object.assign(new Error(), response.error);
+          }
+          return response.result;
+        }).catch((err) => {
+          if (err.code !== 'NEW_VERSION_IS_NOT_FOUND') {
+            throw err;
+          }
+        });
+
+        logger('update response', result);
+
+        if (isAlive(self)) {
+          self.updateState = 'done';
+        }
+      } catch (err) {
+        logger.error('update error', err);
+        if (isAlive(self)) {
+          self.updateState = 'error';
+        }
+      }
+    })
   };
 }).views(self => {
   let attached = 0;
   let worker = null;
   return {
     getSnapshot() {
-      return JSON.parse(JSON.stringify(self));
+      const snapshot = JSON.parse(JSON.stringify(self));
+      delete snapshot.updateState;
+      return snapshot;
     },
     getIconUrl() {
       if (self.meta.icon64) {

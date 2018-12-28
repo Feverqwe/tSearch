@@ -251,21 +251,21 @@ class TrackerItem extends React.Component {
     rootStore: PropTypes.object,
     id: PropTypes.string,
     profile: PropTypes.object,
-    editorTracker: PropTypes.object,
+    editorTracker: PropTypes.object.isRequired,
   };
 
   constructor(props) {
     super(props);
-
-    this.state = {
-      update: false
-    };
 
     this.checkbox = null;
   }
 
   get profileStore() {
     return this.props.profile;
+  }
+
+  get editorTracker() {
+    return this.props.editorTracker;
   }
 
   handleChecked = () => {
@@ -295,21 +295,13 @@ class TrackerItem extends React.Component {
 
   handleUpdate = (e) => {
     e.preventDefault();
-    if (this.state.update) return;
-
-    this.setState({update: true}, () => {
-      chrome.runtime.sendMessage({
-        action: 'updateTracker',
-        id: this.props.id,
-      }, response => {
-        logger('update response', response);
-        this.setState({update: false});
-      });
-    });
+    if (!this.editorTracker.isEditorProfileTrackerStore) {
+      this.editorTracker.update();
+    }
   };
 
   render() {
-    const tracker = this.props.editorTracker;
+    const editorTracker = this.editorTracker;
 
     const checked = this.profileStore.selectedTrackerIds.indexOf(this.props.id) !== -1;
 
@@ -324,40 +316,48 @@ class TrackerItem extends React.Component {
     let deleteBtn = null;
     let author = null;
 
-    const icon = tracker.getIconUrl() || blankSvg;
-    const name = tracker.meta.name || tracker.id;
-    const version = tracker.meta.version;
-    if (tracker.meta.supportURL) {
+    const icon = editorTracker.getIconUrl() || blankSvg;
+    const name = editorTracker.meta.name || editorTracker.id;
+
+    let version = editorTracker.meta.version;
+    if (editorTracker.updateState === 'pending') {
+      version = '...';
+    }
+
+    if (editorTracker.meta.supportURL) {
       supportBtn = (
-        <a className="item__cell item__button button-support" target="_blank" href={tracker.meta.supportURL}/>
+        <a className="item__cell item__button button-support" target="_blank" href={editorTracker.meta.supportURL}/>
       );
     }
-    if (tracker.meta.downloadURL) {
+
+    if (editorTracker.meta.downloadURL) {
       updateBtn = (
         <a onClick={this.handleUpdate} className="item__cell item__button button-update" href="#update" title={chrome.i18n.getMessage('update')}/>
       );
     }
-    if (tracker.meta.homepageURL) {
+
+    if (editorTracker.meta.homepageURL) {
       homepageBtn = (
-        <a className="item__cell item__button button-home" target="_blank" href={tracker.meta.homepageURL}/>
-      );
-    }
-    if (tracker.meta.author) {
-      author = (
-        <div className="item__cell item__author">{tracker.meta.author}</div>
+        <a className="item__cell item__button button-home" target="_blank" href={editorTracker.meta.homepageURL}/>
       );
     }
 
-    if (!tracker.isEditorProfileTrackerStore) {
+    if (editorTracker.meta.author) {
+      author = (
+        <div className="item__cell item__author">{editorTracker.meta.author}</div>
+      );
+    }
+
+    if (!editorTracker.isEditorProfileTrackerStore) {
       deleteBtn = (
         <a onClick={this.handleRemove} className="item__cell item__button button-remove" href="#remove" title={chrome.i18n.getMessage('remove')}/>
       );
     }
 
-    const editUrl = `/editor/tracker/${tracker.id}`;
+    const editUrl = `/editor/tracker/${editorTracker.id}`;
 
     return (
-      <div className={classList.join(' ')} data-id={tracker.id}>
+      <div className={classList.join(' ')} data-id={editorTracker.id}>
         <div className="item__move"/>
         <div className="item__checkbox">
           <input ref={this.refCheckbox} type="checkbox" defaultChecked={checked} onChange={this.handleChecked}/>
