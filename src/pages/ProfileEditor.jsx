@@ -42,14 +42,14 @@ class ProfileEditor extends React.Component {
     const trackersStore = rootStore.trackers;
 
     if (profilesStore.state !== 'done') {
-      return (`Loading profile: ${profilesStore.state}`);
+      return (`Loading profiles: ${profilesStore.state}`);
     }
     if (trackersStore.state !== 'done') {
       return (`Loading trackers: ${trackersStore.state}`);
     }
 
     return (
-      <div className="page-ctr">
+      <div className="page-ctr profile-editor">
         <Header {...this.props}/>
         <div className="content content-row">
           <div className="parameter_box">

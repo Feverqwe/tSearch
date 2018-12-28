@@ -1,5 +1,6 @@
 html {
   min-height: 100%;
+  height: 100%;
 }
 
 body {
@@ -7,14 +8,21 @@ body {
   margin: 0;
   font-size: 14px;
   min-height: 100%;
+  height: 100%;
 }
 
 #root {
   min-height: 100%;
+  height: 100%;
 }
 
 .page-ctr {
   min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  &.profile-editor {
+    height: 100%;
+  }
 }
 
 a:link {
@@ -35,6 +43,7 @@ a:visited {
   border-bottom: 1px solid rgba(0, 0, 0, 0.3);
   justify-content: center;
   height: 70px;
+  flex-shrink: 0;
 }
 
 .search {
@@ -225,6 +234,7 @@ a.search__submit {
 
 .content-row {
   flex-direction: row;
+  flex-grow: 1;
 }
 
 .content-column {
@@ -600,6 +610,7 @@ a.tracker__name {
 .manager {
   display: flex;
   flex-direction: column;
+  max-height: 100%;
   height: 100%;
 }
 
@@ -633,6 +644,7 @@ a.tracker__name {
   display: flex;
   flex-direction: row-reverse;
   align-items: center;
+  flex-shrink: 0;
 }
 
 .manager__footer__btn {
@@ -715,12 +727,14 @@ a.tracker__name {
 
 .manager .sub_header__profile {
   height: 36px;
+  flex-shrink: 0;
 }
 
 .manager .sub_header__filter {
   height: 36px;
   justify-content: space-between;
   border-top: 1px dashed #ccc;
+  flex-shrink: 0;
 }
 
 .manager .filter__box {
@@ -767,9 +781,10 @@ a.tracker__name {
 .manager__trackers {
   display: block;
   border-top: 1px dashed #ccc;
-  min-height: 370px;
-  max-height: 370px;
   overflow: auto;
+  flex-grow: 1;
+  min-height: 100%;
+  height: 100%;
 }
 
 .manager .item {
