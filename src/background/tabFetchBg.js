@@ -16,6 +16,8 @@ class TabFetchBg {
     this.idRequestMap = new Map();
     this.requestIndex = 0;
 
+    this.isMobile = /Mobile Safari\/(\d+)|Android (\d+)/.test(navigator.userAgent);
+
     DEBUG && logger.debug('constructor');
   }
 
@@ -179,7 +181,13 @@ class OriginTab {
   initTab() {
     DEBUG && logger.debug('OriginTab createTab', this.tabId, this.originUrl);
     if (this.tabPromise) return this.tabPromise;
-    return this.tabPromise = createPopup(this.originUrl).then((tabId) => {
+    return this.tabPromise = Promise.resolve().then(() => {
+      if (this.tabFetchBg.isMobile) {
+        return createTab(this.originUrl);
+      } else {
+        return createPopup(this.originUrl);
+      }
+    }).then((tabId) => {
       this.tabId = tabId;
       this.addTabUpdatedListener();
     });
@@ -351,6 +359,17 @@ const createPopup = (originUrl) => {
     type: 'popup',
   }, resolve)).then((window) => {
     const tabId = window.tabs[0].id;
+    chrome.tabs.update(tabId, {muted: true});
+    return tabId;
+  });
+};
+
+const createTab = (originUrl) => {
+  return new Promise(resolve => chrome.tabs.create({
+    url: originUrl,
+    active: false,
+  }, resolve)).then((tab) => {
+    const tabId = tab.id;
     chrome.tabs.update(tabId, {muted: true});
     return tabId;
   });
