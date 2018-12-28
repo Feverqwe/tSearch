@@ -40,7 +40,6 @@ const ProfilesStore = types.model('ProfilesStore', {
     setProfiles(profiles) {
       if (!profiles.length) {
         profiles.push(getDefaultProfile());
-        profiles.push(getTestProfile());
       }
       self.profiles = profiles;
     },
@@ -155,18 +154,14 @@ const getDefaultProfile = () => {
       id: 'rutracker'
     }, {
       id: 'nnmclub'
-    }]
-  };
-};
-
-const getTestProfile = () => {
-  return {
-    id: 'test',
-    name: 'Test',
-    trackers: [{
-      id: 'rutracker'
     }, {
-      id: 'nnmclub1'
+      id: 'kinozal'
+    }, {
+      id: 'rutor'
+    }, {
+      id: 'tfile'
+    }, {
+      id: 'opentorrent'
     }]
   };
 };
