@@ -12,6 +12,7 @@ import getExploreModuleCodeMeta from "../tools/getExploreModuleCodeMeta";
 import storageGet from "../tools/storageGet";
 import storageSet from "../tools/storageSet";
 import TabFetchBg from "./tabFetchBg";
+import migrate from "../tools/migrate";
 
 const promiseLimit = require('promise-limit');
 const qs = require('querystring');
@@ -20,6 +21,8 @@ const serializeError = require('serialize-error');
 
 const logger = getLogger('background');
 const oneLimit = promiseLimit(1);
+
+migrate();
 
 let tabFetchBg = null;
 
