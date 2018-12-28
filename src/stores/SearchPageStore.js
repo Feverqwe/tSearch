@@ -90,7 +90,7 @@ const SearchPageStore = types.model('SearchPageStore', {
       return multiFilter(self.results, self.getFilterBySelectedTrackers(), rootStore.filters.getFilter());
     },
     get sortedAndFilteredResults() {
-      return sortResults(self.filteredResults, self.sorts);
+      return sortResults(self.filteredResults.slice(0), self.sorts);
     },
     getResultCountByTrackerId(id) {
       return self.trackerIdCountMap.get(id) || 0;
