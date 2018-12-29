@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name __MSG_name__
 // @connect *://*.imdb.com/*
-// @version 1.0
+// @version 1.1
 // @cacheTTL 86400
 // @locale ru {"name": "IMDB: Сейчас в кино"}
 // @locale en {"name": "IMDB: Now in movie"}
@@ -110,7 +110,8 @@ const onPageLoad = response => {
 const getItems = () => {
   return API_request({
     method: 'GET',
-    url: `https://www.imdb.com/movies-in-theaters/`
+    url: `https://www.imdb.com/movies-in-theaters/`,
+    useCookie: false,
   }).then(response => {
     return onPageLoad(response);
   });

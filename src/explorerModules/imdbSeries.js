@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name __MSG_name__
 // @connect *://*.imdb.com/*
-// @version 1.0
+// @version 1.1
 // @cacheTTL 86400
 // @locale ru {"name": "IMDB: Сериалы"}
 // @locale en {"name": "IMDB: TV Series"}
@@ -91,7 +91,8 @@ const onPageLoad = response => {
 const getItems = () => {
   return API_request({
     method: 'GET',
-    url: `https://www.imdb.com/search/title?count=100&title_type=tv_series`
+    url: `https://www.imdb.com/search/title?count=100&title_type=tv_series`,
+    useCookie: false,
   }).then(response => {
     return onPageLoad(response);
   });

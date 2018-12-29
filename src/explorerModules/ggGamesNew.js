@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name __MSG_name__
 // @connect *://*.gameguru.ru/*
-// @version 1.0
+// @version 1.1
 // @cacheTTL 86400
 // @locale ru {"name": "Игры: Новые"}
 // @locale en {"name": "Games: New"}
@@ -83,7 +83,8 @@ const getItems = () => {
     promise = promise.then(() => {
       return API_request({
         method: 'GET',
-        url: `https://gameguru.ru/pc/games/released/page${page}/list.html`
+        url: `https://gameguru.ru/pc/games/released/page${page}/list.html`,
+        useCookie: false,
       }).then(response => {
         return onPageLoad(response);
       }).then(_items => {

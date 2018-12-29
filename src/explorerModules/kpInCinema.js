@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name __MSG_name__
 // @connect *://*.kinopoisk.ru/*
-// @version 1.0
+// @version 1.1
 // @cacheTTL 86400
 // @locale ru {"name": "Кнопоиск: в кино"}
 // @locale en {"name": "Kinopoisk: in cinema"}
@@ -118,7 +118,8 @@ const getItems = () => {
     promise = promise.then(() => {
       return API_request({
         method: 'GET',
-        url: `https://www.kinopoisk.ru/afisha/new/page/${page}/`
+        url: `https://www.kinopoisk.ru/afisha/new/page/${page}/`,
+        useCookie: false,
       }).then(response => {
         return onPageLoad(response);
       }).then(_items => {

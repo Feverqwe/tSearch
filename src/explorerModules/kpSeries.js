@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name __MSG_name__
 // @connect *://*.kinopoisk.ru/*
-// @version 1.0
+// @version 1.1
 // @cacheTTL 86400
 // @locale ru {"name": "Сериалы"}
 // @locale en {"name": "Series"}
@@ -122,7 +122,8 @@ const onPageLoad = response => {
 const getItems = () => {
   return API_request({
     method: 'GET',
-    url: 'https://www.kinopoisk.ru/top/lists/45/perpage/100/'
+    url: 'https://www.kinopoisk.ru/top/lists/45/perpage/100/',
+    useCookie: false,
   }).then(response => {
     return onPageLoad(response);
   });

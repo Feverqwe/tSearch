@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name __MSG_name__
 // @connect *://*.kinopoisk.ru/*
-// @version 1.0
+// @version 1.1
 // @cacheTTL 86400
 // @locale ru {"name": "Фильмы"}
 // @locale en {"name": "Movies"}
@@ -118,7 +118,8 @@ const onPageLoad = response => {
 const getItems = () => {
   return API_request({
     method: 'GET',
-    url: 'https://www.kinopoisk.ru/popular/day/now/perpage/200/'
+    url: 'https://www.kinopoisk.ru/popular/day/now/perpage/200/',
+    useCookie: false,
   }).then(response => {
     return onPageLoad(response);
   });
