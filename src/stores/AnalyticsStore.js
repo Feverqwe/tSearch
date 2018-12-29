@@ -1,6 +1,7 @@
 import {flow, isAlive, types} from "mobx-state-tree";
 import "whatwg-fetch";
 import getLogger from "../tools/getLogger";
+import {ErrorWithCode} from "../tools/errors";
 
 const logger = getLogger('AnalyticsStore');
 
@@ -22,7 +23,7 @@ const AnalyticsStore = types.model('AnalyticsStore', {
           method: 'HEAD'
         }).then((response) => {
           if (!response.ok) {
-            throw new Error('Head is not ok');
+            throw new ErrorWithCode('Head is not ok', 'HEAD_ERROR');
           }
 
           initGa();
@@ -32,7 +33,11 @@ const AnalyticsStore = types.model('AnalyticsStore', {
           self.state = 'done';
         }
       } catch (err) {
-        logger.error('init error', err);
+        if (err.code === 'HEAD_ERROR') {
+          logger.warn('init error', err);
+        } else {
+          logger.error('init error', err);
+        }
         self.state = 'error';
       }
     }),
