@@ -105,6 +105,7 @@ const ElementSelectorStore = types.model('ElementSelectorStore', {
  * @property {string} url
  * @property {string} [method]
  * @property {string} [baseUrl]
+ * @property {boolean} [useCookie]
  * @property {string} [originUrl]
  * @property {string} [headers]
  * @property {string} [body]
@@ -117,6 +118,7 @@ const CodeSearchStore = types.model('CodeSearchStore', {
   url: types.string,
   method: types.optional(types.enumeration(['GET', 'POST']), 'GET'),
   baseUrl: types.optional(types.string, ''),
+  useCookie: types.optional(types.boolean, true),
   originUrl: types.optional(types.string, ''),
   headers: types.optional(types.string, ''),
   body: types.optional(types.string, ''),
@@ -134,7 +136,7 @@ const CodeSearchStore = types.model('CodeSearchStore', {
 /**
  * @typedef {{}} CodeAuthStore
  * @property {string} [url]
- * @property {ElementSelectorStore} [loginForm]
+ * @property {ElementSelectorStore|undefined} loginForm
  * @property {function} set
  */
 const CodeAuthStore = types.model('CodeAuthStore', {
@@ -225,6 +227,7 @@ const CodeSelectorsStore = types.model('CodeSelectorsStore', {
  * @typedef {{}} CodeDescriptionStore
  * @property {string} icon
  * @property {string} name
+ * @property {string} [url]
  * @property {string} [description]
  * @property {string} [downloadUrl]
  * @property {string} [version]
@@ -249,10 +252,12 @@ const CodeDescriptionStore = types.model('CodeDescriptionStore', {
  * @typedef {{}} CodeStore
  * @property {string|undefined} id
  * @property {number} [version]
+ * @property {string} [type]
  * @property {CodeSearchStore} search
  * @property {CodeAuthStore} [auth]
  * @property {CodeSelectorsStore} selectors
  * @property {CodeDescriptionStore} description
+ * @property {function} getSnapshot
  */
 const CodeStore = types.model('CodeStore', {
   id: types.maybe(types.string),

@@ -320,6 +320,9 @@
   "kitOriginUrl": {
     "message": "Origin URL"
   },
+  "kitUseCookie": {
+    "message": "Использовать cookie"
+  },
   "kitLoginUrl": {
     "message": "URL страницы авторизации"
   },

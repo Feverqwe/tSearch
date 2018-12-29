@@ -224,6 +224,10 @@ class CodeMakerSearchPage extends React.Component {
           <BindInput store={this.codeSearchStore} id={'originUrl'} type="text" placeholder="auto"/>
         </div>
         <div className="field">
+          <span className="field-name">{chrome.i18n.getMessage('kitUseCookie')}</span>
+          <BindInput store={this.codeSearchStore} id={'useCookie'} type="checkbox" defaultChecked={this.codeSearchStore.useCookie}/>
+        </div>
+        <div className="field">
           <span className="field-name">{chrome.i18n.getMessage('kitPageCharset')}</span>
           <BindInput store={this.codeSearchStore} id={'charset'} type="text" placeholder="auto"/>
         </div>

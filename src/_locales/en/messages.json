@@ -329,6 +329,9 @@
     "kitOriginUrl": {
         "message": "Origin URL"
     },
+    "kitUseCookie": {
+        "message": "Use cookie"
+    },
     "kitTrackerUrl": {
         "message": "URL"
     },
