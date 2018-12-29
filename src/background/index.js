@@ -13,11 +13,15 @@ import storageGet from "../tools/storageGet";
 import storageSet from "../tools/storageSet";
 import TabFetchBg from "./tabFetchBg";
 import migrate from "../tools/migrate";
+import errorTracker from "../tools/errorTracker";
+
+errorTracker.bindExceptions();
 
 const promiseLimit = require('promise-limit');
 const qs = require('querystring');
 const compareVersions = require('compare-versions');
 const serializeError = require('serialize-error');
+const uuid = require('uuid/v4');
 
 const logger = getLogger('background');
 const oneLimit = promiseLimit(1);
@@ -85,6 +89,11 @@ chrome.runtime.onMessage.addListener(function (message, sender, response) {
       });
       break;
     }
+    case 'track': {
+      const {params} = message;
+      promise = track(params);
+      break;
+    }
     case 'abortSearch': {
       if (tabFetchBg) {
         tabFetchBg.abortRequest(message.id);
@@ -104,6 +113,8 @@ chrome.runtime.onMessage.addListener(function (message, sender, response) {
       response({result});
     }, err => {
       response({error: serializeError(err)});
+    }).catch((err) => {
+      logger.error('Send response error', err);
     });
     return true;
   }
@@ -310,5 +321,53 @@ const updateExplorerModule = (id) => {
         });
       });
     }).then(() => true);
+  });
+};
+
+let uuidCache = null;
+const getUuid = () => {
+  if (uuidCache) {
+    return Promise.resolve(uuidCache);
+  }
+  return storageGet('uuid').then(storage => {
+    if (!storage.uuid) {
+      storage.uuid = uuid();
+      return storageSet(storage).then(() => storage.uuid);
+    } else {
+      return storage.uuid;
+    }
+  }).then(uuid => {
+    return uuidCache = uuid;
+  });
+};
+
+const track = params => {
+  return getUuid().then(uuid => {
+    const defaultParams = {
+      v: 1,
+      ul: navigator.language,
+      tid: 'UA-10717861-22',
+      cid: uuid,
+
+      an: 'tms',
+      aid: 'tms-v3',
+      av: BUILD_ENV.version,
+    };
+
+    return Object.assign({}, defaultParams, params);
+  }).then(params => {
+    logger.debug('track', params);
+
+    return fetch('https://www.google-analytics.com/collect', {
+      method: 'POST',
+      headers: {
+        'Content-Type': ' application/x-www-form-urlencoded'
+      },
+      body: qs.stringify(params)
+    }).then(response => {
+      if (!response.ok) {
+        throw new ErrorWithCode(`${response.status}: ${response.statusText}`, response.status);
+      }
+    });
   });
 };

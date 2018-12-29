@@ -16,6 +16,7 @@ import getNow from "../tools/getNow";
 import storageSet from "../tools/storageSet";
 import {ErrorWithCode} from "../tools/errors";
 import getLogger from "../tools/getLogger";
+import tracker from "../tools/tracker";
 
 const deserializeError = require('deserialize-error');
 
@@ -121,6 +122,7 @@ const RootStore = types.model('RootStore', {
     afterCreate() {
       self.page.init();
       self.checkForUpdate();
+      tracker.init();
     },
   };
 }).views((self) => {
