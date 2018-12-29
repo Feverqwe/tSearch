@@ -64,7 +64,9 @@ class Profiles extends React.Component {
     const selectOptions = [];
     if (profilesStore.state === 'done') {
       profileStore = profilesStore.profile;
-      selectValue = profileStore.id;
+      if (profileStore) {
+        selectValue = profileStore.id;
+      }
       profilesStore.profiles.forEach(profile => {
         selectOptions.push(
           <option key={profile.id} value={profile.id}>{profile.name}</option>
