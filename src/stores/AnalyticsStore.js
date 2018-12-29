@@ -38,7 +38,9 @@ const AnalyticsStore = types.model('AnalyticsStore', {
         } else {
           logger.error('init error', err);
         }
-        self.state = 'error';
+        if (isAlive(self)) {
+          self.state = 'error';
+        }
       }
     }),
   };
