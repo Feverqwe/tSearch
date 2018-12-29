@@ -164,7 +164,7 @@ class ExplorerItem extends React.Component {
             <span className="dialog__label">{chrome.i18n.getMessage('title')}</span>
             <input ref={this.refTitle} defaultValue={itemStore.title} className="input__input" name="title"
                    type="text"/>
-            <span className="dialog__label">{chrome.i18n.getMessage('title')}</span>
+            <span className="dialog__label">{chrome.i18n.getMessage('originalTitle')}</span>
             <input ref={this.refTitleOriginal} defaultValue={itemStore.titleOriginal} className="input__input"
                    name="titleOriginal" type="text"/>
             <span className="dialog__label">{chrome.i18n.getMessage('imageUrl')}</span>

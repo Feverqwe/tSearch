@@ -233,6 +233,9 @@
   "title": {
     "message": "Заголовок"
   },
+  "originalTitle": {
+    "message": "Оригинальный заголовок"
+  },
   "imageUrl": {
     "message": "URL изображения"
   },

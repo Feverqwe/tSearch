@@ -233,6 +233,9 @@
     "title": {
         "message": "Title"
     },
+    "originalTitle": {
+        "message": "Original title"
+    },
     "imageUrl": {
         "message": "URL picture"
     },
