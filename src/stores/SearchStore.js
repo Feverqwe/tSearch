@@ -256,7 +256,11 @@ const prepSearchResults = (trackerId, queryHighlightMap, queryRateScheme, result
       result.quality = itemRate.sum;
       result.dateTitle = unixTimeToString(result.date);
       result.dateText = unixTimeToFromNow(result.date);
-      result.sizeText = filesize(result.size);
+      try {
+        result.sizeText = filesize(result.size);
+      } catch (err) {
+        result.sizeText = 'n/a';
+      }
       result.titleLowerCase = result.title.toLowerCase();
       result.categoryTitleLowerCase = (result.categoryTitle || '').toLowerCase();
       return true;
