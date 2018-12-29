@@ -17,6 +17,7 @@ import storageSet from "../tools/storageSet";
 import {ErrorWithCode} from "../tools/errors";
 import getLogger from "../tools/getLogger";
 import tracker from "../tools/tracker";
+import AnalyticsStore from "./AnalyticsStore";
 
 const deserializeError = require('deserialize-error');
 
@@ -31,13 +32,14 @@ let searchId = 0;
  * @property {FiltersStore} [filters]
  * @property {ProfilesStore} [profiles]
  * @property {TrackersStore} [trackers]
- * @property {Map<*,SearchStore>} searches
+ * @property {SearchStore[]} searches
  * @property {OptionsStore} [options]
  * @property {ExplorerStore} [explorer]
  * @property {ProfileEditorStore|undefined|null} profileEditor
  * @property {EditorStore|undefined|null} editor
  * @property {CodeMakerStore|undefined|null} codeMaker
  * @property {PageStore} [page]
+ * @property {AnalyticsStore} [analytics]
  * @property {function} createSearch
  * @property {function} destroySearch
  * @property {function} createProfileEditor
@@ -46,7 +48,9 @@ let searchId = 0;
  * @property {function} destroyEditor
  * @property {function} createCodeMaker
  * @property {function} destroyCodeMaker
+ * @property {function} checkForUpdate
  * @property {function} afterCreate
+ * @property {function} getSearch
  */
 const RootStore = types.model('RootStore', {
   searchForm: types.optional(SearchForm, {}),
@@ -61,6 +65,7 @@ const RootStore = types.model('RootStore', {
   editor: types.maybeNull(EditorStore),
   codeMaker: types.maybeNull(CodeMakerStore),
   page: types.optional(PageStore, {}),
+  analytics: types.optional(AnalyticsStore, {}),
 }).actions(/**RootStore*/self => {
   return {
     createSearch(query) {
@@ -121,7 +126,6 @@ const RootStore = types.model('RootStore', {
     },
     afterCreate() {
       self.page.init();
-      self.checkForUpdate();
       tracker.init();
     },
   };
