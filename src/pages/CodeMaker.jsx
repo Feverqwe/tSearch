@@ -220,12 +220,12 @@ class CodeMakerSearchPage extends React.Component {
           </select>
         </div>
         <div className="field">
-          <span className="field-name">{chrome.i18n.getMessage('kitOriginUrl')}</span>
-          <BindInput store={this.codeSearchStore} id={'originUrl'} type="text" placeholder="auto"/>
-        </div>
-        <div className="field">
           <span className="field-name">{chrome.i18n.getMessage('kitUseCookie')}</span>
           <BindInput store={this.codeSearchStore} id={'useCookie'} type="checkbox" defaultChecked={this.codeSearchStore.useCookie}/>
+        </div>
+        <div className="field">
+          <span className="field-name">{chrome.i18n.getMessage('kitOriginUrl')}</span>
+          <BindInput store={this.codeSearchStore} id={'originUrl'} type="text" placeholder="auto"/>
         </div>
         <div className="field">
           <span className="field-name">{chrome.i18n.getMessage('kitPageCharset')}</span>
