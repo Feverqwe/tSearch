@@ -33,10 +33,10 @@ class Tracker {
 
 const track = params => {
   return new Promise((resolve, reject) => {
-    chrome.runtime.sendMessage(Object.assign({
+    chrome.runtime.sendMessage({
       action: 'track',
       params: params,
-    }), response => {
+    }, response => {
       if (!response) {
         return reject(new Error('Unknown error'));
       }
