@@ -3,13 +3,11 @@ import getLogger from "../../tools/getLogger";
 import getExplorerModules from "../../tools/getExplorerModules";
 import ExplorerModuleStore from "./ExplorerModuleStore";
 import ExplorerSectionStore from "./ExplorerSectionStore";
-import _isEqual from "lodash.isequal";
 import ExplorerFavoritesSectionStore from "./ExplorerFavoritesSectionStore";
 import storageSet from "../../tools/storageSet";
 import storageGet from "../../tools/storageGet";
-import getUnic from "../../tools/getUnic";
 import ExplorerQuickSearchStore from "./ExplorerQuickSearchStore";
-import {compare} from "fast-json-patch";
+import {compare, getValueByPointer} from "fast-json-patch";
 import reOrderStoreItems from "../../tools/reOrderStoreItems";
 
 const promiseLimit = require('promise-limit');
@@ -98,6 +96,9 @@ const ExplorerStore = types.model('ExplorerStore', {
     },
     patchSections(patch) {
       applyPatch(self.sections, patch);
+    },
+    patchModules(patch) {
+      applyPatch(self.modules, patch);
     }
   };
 }).views(self => {
@@ -125,25 +126,20 @@ const ExplorerStore = types.model('ExplorerStore', {
     if (namespace === 'local') {
       const change = changes.explorerModules;
       if (change) {
-        const {newValue = {}} = change;
-        const ids = getUnic([...Object.keys(newValue), ...self.modules.keys()]);
-        ids.forEach(id => {
-          const module = self.modules.get(id);
-          const newModule = newValue[id];
-          if (!newModule) {
-            self.deleteModule(id);
-          } else
-          if (!module) {
-            self.setModule(id, newModule);
-          } else
-          if (module.code !== newModule.code) {
-            self.setModule(id, newModule);
-            module.reloadWorker();
-          } else
-          if (!_isEqual(module.options.toJSON(), newModule.options)) {
-            module.setOptions(newModule.options);
+        const newValue = change.newValue || {};
+        const oldValue = self.getModulesSnapshot();
+        const diff = compare(oldValue, newValue).filter((patch) => {
+          if (patch.op === 'remove') {
+            if (/^\/[^\/]+\/meta\/(author|description|homepageURL|icon|icon64|siteURL|downloadURL|supportURL|locales|defaultLocale)$/.test(patch.path)) {
+              const value = getValueByPointer(oldValue, patch.path);
+              if (value === undefined) {
+                return false;
+              }
+            }
           }
+          return true;
         });
+        self.patchModules(diff);
       }
     }
   };
@@ -151,6 +147,9 @@ const ExplorerStore = types.model('ExplorerStore', {
   return {
     getSectionsSnapshot() {
       return self.sections.map(section => section.getSnapshot());
+    },
+    getModulesSnapshot() {
+      return self.modules.toJSON();
     },
     saveSections() {
       return limitOne(() => {
