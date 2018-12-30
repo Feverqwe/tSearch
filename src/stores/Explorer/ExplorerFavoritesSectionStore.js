@@ -3,7 +3,8 @@ import getLogger from "../../tools/getLogger";
 import ExplorerSectionStore from "./ExplorerSectionStore";
 import storageGet from "../../tools/storageGet";
 import storageSet from "../../tools/storageSet";
-import {compare} from 'fast-json-patch';
+import {compare, getValueByPointer} from 'fast-json-patch';
+import reOrderStoreItems from "../../tools/reOrderStoreItems";
 
 const promiseLimit = require('promise-limit');
 
@@ -97,7 +98,20 @@ const ExplorerFavoritesSectionStore = types.compose('ExplorerFavoritesSectionSto
     if (namespace === 'sync') {
       const change = changes.explorerFavorites;
       if (change) {
-        const diff = compare(self.items, change.newValue || []);
+        const newValue = change.newValue || [];
+        const oldValue = reOrderStoreItems(self.items, newValue, 'url');
+        self.setItems(oldValue);
+        const diff = compare(oldValue, newValue).filter((patch) => {
+          if (patch.op === 'remove') {
+            if (/^\/\d+\/(titleOriginal|poster)$/.test(patch.path)) {
+              const value = getValueByPointer(self.items, patch.path);
+              if (value === undefined) {
+                return false;
+              }
+            }
+          }
+          return true;
+        });
         self.patchItems(diff);
       }
     }

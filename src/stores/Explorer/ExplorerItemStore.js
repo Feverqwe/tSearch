@@ -20,9 +20,9 @@ import {ExplorerQuickSearchItemStore} from "./ExplorerQuickSearchStore";
  */
 const ExplorerItemStore = types.model('ExplorerItemStore', {
   title: types.string,
-  titleOriginal: types.optional(types.maybeNull(types.string), null),
+  titleOriginal: types.maybe(types.string),
   url: types.string,
-  poster: types.optional(types.maybeNull(types.string), null),
+  poster: types.maybe(types.string),
 }).actions(/**ExplorerItemStore*/self => {
   return {
     updateProps(props) {
