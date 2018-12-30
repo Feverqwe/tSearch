@@ -119,7 +119,6 @@ const getItems = () => {
       return API_request({
         method: 'GET',
         url: `https://www.kinopoisk.ru/afisha/new/page/${page}/`,
-        useCookie: false,
       }).then(response => {
         return onPageLoad(response);
       }).then(_items => {

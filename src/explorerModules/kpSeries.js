@@ -123,7 +123,6 @@ const getItems = () => {
   return API_request({
     method: 'GET',
     url: 'https://www.kinopoisk.ru/top/lists/45/perpage/100/',
-    useCookie: false,
   }).then(response => {
     return onPageLoad(response);
   });

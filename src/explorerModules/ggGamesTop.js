@@ -84,7 +84,6 @@ const getItems = () => {
       return API_request({
         method: 'GET',
         url: `https://gameguru.ru/pc/games/rated/page${page}/list.html`,
-        useCookie: false,
       }).then(response => {
         return onPageLoad(response);
       }).then(_items => {

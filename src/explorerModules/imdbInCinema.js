@@ -111,7 +111,6 @@ const getItems = () => {
   return API_request({
     method: 'GET',
     url: `https://www.imdb.com/movies-in-theaters/`,
-    useCookie: false,
   }).then(response => {
     return onPageLoad(response);
   });

@@ -107,7 +107,6 @@ const getItems = () => {
   return API_request({
     method: 'GET',
     url: `https://www.imdb.com/search/title?count=100&title_type=feature`,
-    useCookie: false,
   }).then(response => {
     return onPageLoad(response);
   });

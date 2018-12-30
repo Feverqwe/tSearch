@@ -119,7 +119,6 @@ const getItems = () => {
   return API_request({
     method: 'GET',
     url: 'https://www.kinopoisk.ru/popular/day/now/perpage/200/',
-    useCookie: false,
   }).then(response => {
     return onPageLoad(response);
   });
