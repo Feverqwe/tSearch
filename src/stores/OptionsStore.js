@@ -1,9 +1,9 @@
-import {flow, isAlive, types} from 'mobx-state-tree';
-import _isEqual from "lodash.isequal";
+import {applyPatch, flow, isAlive, types} from 'mobx-state-tree';
 import getLogger from "../tools/getLogger";
 import storageGet from "../tools/storageGet";
 import storageSet from "../tools/storageSet";
 import downloadBlob from "../tools/downloadBlob";
+import {compare} from "fast-json-patch";
 
 const JSZip = require("jszip");
 const promiseLimit = require('promise-limit');
@@ -127,7 +127,10 @@ const OptionsStore = types.model('OptionsStore', {
           self.state = 'error';
         }
       }
-    })
+    }),
+    patchOptions(patch) {
+      applyPatch(self.options, patch);
+    }
   };
 }).views(self => {
   const storageChangeListener = (changes, namespace) => {
@@ -136,10 +139,9 @@ const OptionsStore = types.model('OptionsStore', {
     if (namespace === 'sync') {
       const change = changes.options;
       if (change) {
-        const options = change.newValue;
-        if (!_isEqual(options, self.getSnapshot())) {
-          self.setOptions(options);
-        }
+        const newValue = change.newValue || {};
+        const diff = compare(self.options, newValue);
+        self.patchOptions(diff);
       }
     }
   };
