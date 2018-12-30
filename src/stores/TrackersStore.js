@@ -63,8 +63,7 @@ const TrackersStore = types.model('TrackersStore', {
       const change = changes.trackers;
       if (change) {
         const newValue = change.newValue || {};
-        const oldValue = self.getTrackersSnapshot();
-        const diff = mobxCompare(oldValue, newValue);
+        const diff = mobxCompare(self.trackers, newValue);
         self.patchTrackers(diff);
       }
     }

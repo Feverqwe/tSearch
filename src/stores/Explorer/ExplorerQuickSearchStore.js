@@ -201,7 +201,7 @@ const ExplorerQuickSearchStore = types.model('ExplorerQuickSearchStore', {
       if (checkChangeId('quickSearch', storeId, changes)) {
         const change = changes.quickSearch;
         if (change) {
-          const diff = mobxCompare(self.quickSearch.toJSON(), change.newValue || {});
+          const diff = mobxCompare(self.quickSearch, change.newValue || {});
           self.patchQuickSearch(diff);
         }
       }

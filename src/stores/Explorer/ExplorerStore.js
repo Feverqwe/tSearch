@@ -128,8 +128,7 @@ const ExplorerStore = types.model('ExplorerStore', {
       const change = changes.explorerModules;
       if (change) {
         const newValue = change.newValue || {};
-        const oldValue = self.getModulesSnapshot();
-        const diff = mobxCompare(oldValue, newValue);
+        const diff = mobxCompare(self.modules, newValue);
         self.patchModules(diff);
       }
     }

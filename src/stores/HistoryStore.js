@@ -186,7 +186,7 @@ const HistoryStore = types.model('HistoryStore', {
         const change = changes.history;
         if (change) {
           const newValue = change.newValue || {};
-          const diff = mobxCompare(self.getHistorySnapshot(), newValue);
+          const diff = mobxCompare(self.history, newValue);
           self.patchHistory(diff);
         }
       }
