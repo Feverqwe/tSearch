@@ -1,10 +1,9 @@
-import {flow, isAlive, resolveIdentifier, types} from "mobx-state-tree";
+import {applyPatch, flow, isAlive, resolveIdentifier, types} from "mobx-state-tree";
 import TrackerStore from "./TrackerStore";
 import getLogger from "../tools/getLogger";
 import getTrackers from "../tools/getTrackers";
-import _isEqual from "lodash.isequal";
-import getUnic from "../tools/getUnic";
 import storageSet from "../tools/storageSet";
+import {compare, getValueByPointer} from "fast-json-patch";
 
 const logger = getLogger('TrackersStore');
 
@@ -49,6 +48,9 @@ const TrackersStore = types.model('TrackersStore', {
     },
     setTracker(id, tracker) {
       self.trackers.set(id, tracker);
+    },
+    patchTrackers(patch) {
+      applyPatch(self.trackers, patch);
     }
   };
 }).views(self => {
@@ -58,25 +60,20 @@ const TrackersStore = types.model('TrackersStore', {
     if (namespace === 'local') {
       const change = changes.trackers;
       if (change) {
-        const {newValue = {}} = change;
-        const ids = getUnic([...Object.keys(newValue), ...self.trackers.keys()]);
-        ids.forEach(id => {
-          const tracker = self.trackers.get(id);
-          const newTracker = newValue[id];
-          if (!newTracker) {
-            self.deleteTracker(id);
-          } else
-          if (!tracker) {
-            self.setTracker(id, newTracker);
-          } else
-          if (tracker.code !== newTracker.code) {
-            self.setTracker(id, newTracker);
-            tracker.reloadWorker();
-          } else
-          if (!_isEqual(tracker.options.toJSON(), newTracker.options)) {
-            tracker.setOptions(newTracker.options);
+        const newValue = change.newValue || {};
+        const oldValue = self.getTrackersSnapshot();
+        const diff = compare(oldValue, newValue).filter((patch) => {
+          if (patch.op === 'remove') {
+            if (/^\/[^\/]+\/meta\/(version|author|description|homepageURL|icon|icon64|trackerURL|downloadURL|supportURL)$/.test(patch.path)) {
+              const value = getValueByPointer(oldValue, patch.path);
+              if (value === undefined) {
+                return false;
+              }
+            }
           }
+          return true;
         });
+        self.patchTrackers(diff);
       }
     }
   };
@@ -86,7 +83,10 @@ const TrackersStore = types.model('TrackersStore', {
       return resolveIdentifier(TrackerStore, self, id);
     },
     saveTrackers() {
-      return storageSet({trackers: self.trackers.toJSON()});
+      return storageSet({trackers: self.getTrackersSnapshot()});
+    },
+    getTrackersSnapshot() {
+      return self.trackers.toJSON();
     },
     afterCreate() {
       chrome.storage.onChanged.addListener(storageChangeListener);
