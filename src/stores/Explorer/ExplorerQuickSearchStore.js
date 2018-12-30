@@ -1,11 +1,11 @@
-import {flow, getParentOfType, getSnapshot, isAlive, types} from "mobx-state-tree";
+import {applyPatch, flow, getParentOfType, getSnapshot, isAlive, types} from "mobx-state-tree";
 import getLogger from "../../tools/getLogger";
 import storageGet from "../../tools/storageGet";
-import _isEqual from "lodash.isequal";
 import storageSet from "../../tools/storageSet";
 import RootStore from "../RootStore";
 import isTrailer from "../../tools/isTrailer";
 import highlight from "../../tools/highlight";
+import {compare} from "fast-json-patch";
 
 const promiseLimit = require('promise-limit');
 
@@ -184,6 +184,9 @@ const ExplorerQuickSearchStore = types.model('ExplorerQuickSearchStore', {
     },
     removeItem(query) {
       self.quickSearch.delete(query);
+    },
+    patchQuickSearch(patch) {
+      applyPatch(self.quickSearch, patch);
     }
   };
 }).views((self) => {
@@ -193,10 +196,8 @@ const ExplorerQuickSearchStore = types.model('ExplorerQuickSearchStore', {
     if (namespace === 'local') {
       const change = changes.quickSearch;
       if (change) {
-        const quickSearch = change.newValue;
-        if (!_isEqual(quickSearch, getSnapshot(self.quickSearch))) {
-          self.setQuickSearch(quickSearch);
-        }
+        const diff = compare(self.quickSearch.toJSON(), change.newValue || {});
+        self.patchQuickSearch(diff);
       }
     }
   };
