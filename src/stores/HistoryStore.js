@@ -180,7 +180,7 @@ const HistoryStore = types.model('HistoryStore', {
       const change = changes.history;
       if (change) {
         const newValue = change.newValue || {};
-        const diff = compare(self.getSnapshot(), newValue);
+        const diff = compare(self.getHistorySnapshot(), newValue);
         self.patchHistory(diff);
       }
     }
@@ -190,7 +190,7 @@ const HistoryStore = types.model('HistoryStore', {
     save() {
       return oneLimit(() => {
         return storageSet({
-          history: getSnapshot(self.history)
+          history: self.getHistorySnapshot()
         });
       });
     },
@@ -207,7 +207,7 @@ const HistoryStore = types.model('HistoryStore', {
         return a === b ? 0 : a < b ? 1 : -1;
       });
     },
-    getSnapshot() {
+    getHistorySnapshot() {
       return self.history.toJSON();
     },
     afterCreate() {
