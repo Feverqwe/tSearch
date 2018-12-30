@@ -1,11 +1,11 @@
-import {flow, getParentOfType, getSnapshot, isAlive, types} from 'mobx-state-tree';
+import {applyPatch, flow, getParentOfType, getSnapshot, isAlive, types} from 'mobx-state-tree';
 import highlight from "../tools/highlight";
-import _isEqual from "lodash.isequal";
 import getLogger from "../tools/getLogger";
 import getNow from "../tools/getNow";
 import {unixTimeToString} from "../tools/unixTimeTo";
 import storageGet from "../tools/storageGet";
 import storageSet from "../tools/storageSet";
+import {compare} from "fast-json-patch";
 
 const promiseLimit = require('promise-limit');
 
@@ -23,7 +23,7 @@ const oneLimit = promiseLimit(1);
  * @property {*} timeString
  */
 const HistoryClickStore = types.model('HistoryClickStore', {
-  url: types.identifier,
+  url: types.string,
   title: types.string,
   trackerId: types.string,
   time: types.number,
@@ -168,6 +168,9 @@ const HistoryStore = types.model('HistoryStore', {
       }
       return q;
     },
+    patchHistory(patch) {
+      applyPatch(self.history, patch);
+    },
   };
 }).views(self => {
   const storageChangeListener = (changes, namespace) => {
@@ -176,10 +179,9 @@ const HistoryStore = types.model('HistoryStore', {
     if (namespace === 'local') {
       const change = changes.history;
       if (change) {
-        const history = change.newValue;
-        if (!_isEqual(history, getSnapshot(self.history))) {
-          self.setHistory(history);
-        }
+        const newValue = change.newValue || {};
+        const diff = compare(self.getSnapshot(), newValue);
+        self.patchHistory(diff);
       }
     }
   };
@@ -205,6 +207,9 @@ const HistoryStore = types.model('HistoryStore', {
         return a === b ? 0 : a < b ? 1 : -1;
       });
     },
+    getSnapshot() {
+      return self.history.toJSON();
+    },
     afterCreate() {
       chrome.storage.onChanged.addListener(storageChangeListener);
     },
@@ -215,4 +220,3 @@ const HistoryStore = types.model('HistoryStore', {
 });
 
 export default HistoryStore;
-export {HistoryQueryStore, HistoryClickStore};
