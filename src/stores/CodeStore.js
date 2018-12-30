@@ -105,7 +105,6 @@ const ElementSelectorStore = types.model('ElementSelectorStore', {
  * @property {string} url
  * @property {string} [method]
  * @property {string} [baseUrl]
- * @property {boolean} [useCookie]
  * @property {string} [originUrl]
  * @property {string} [headers]
  * @property {string} [body]
@@ -118,7 +117,6 @@ const CodeSearchStore = types.model('CodeSearchStore', {
   url: types.string,
   method: types.optional(types.enumeration(['GET', 'POST']), 'GET'),
   baseUrl: types.optional(types.string, ''),
-  useCookie: types.optional(types.boolean, true),
   originUrl: types.optional(types.string, ''),
   headers: types.optional(types.string, ''),
   body: types.optional(types.string, ''),

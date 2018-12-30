@@ -266,6 +266,9 @@
   "autoUpdate": {
     "message": "Обновлять автоматически"
   },
+  "enableProxy": {
+    "message": "Включить поддержку прокси"
+  },
   "doNotSendStatistics": {
     "message": "Не отправлять статистику"
   },
@@ -319,12 +322,6 @@
   },
   "kitBaseUrl": {
     "message": "Основной URL"
-  },
-  "kitOriginUrl": {
-    "message": "Origin URL"
-  },
-  "kitUseCookie": {
-    "message": "Использовать cookie"
   },
   "kitLoginUrl": {
     "message": "URL страницы авторизации"

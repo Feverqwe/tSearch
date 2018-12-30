@@ -23,6 +23,16 @@ class TabFetchBg {
 
   async request(senderTabId, originUrl, fetchUrl, fetchOptions) {
     DEBUG && logger.debug('request', senderTabId, originUrl, fetchUrl, fetchOptions);
+
+    const permissions = {
+      permissions: ['tabs'],
+    };
+
+    const hasPermissions = await containsPermissions(permissions);
+    if (!hasPermissions) {
+      await requsetPermissions(permissions);
+    }
+
     if (!this.senderTabMap.has(senderTabId)) {
       this.senderTabMap.set(senderTabId, new SenderTab(this, senderTabId));
     }
@@ -381,6 +391,28 @@ const executeScriptPromise = (tabId, options) => {
       const err = chrome.runtime.lastError;
       err ? reject(err) : resolve(results);
     });
+  });
+};
+
+const containsPermissions = (permissions) => {
+  return new Promise((resolve, reject) => {
+    chrome.permissions.contains(permissions, (result) => {
+      const err = chrome.runtime.lastError;
+      err ? reject(err) : resolve(result);
+    });
+  });
+};
+
+const requsetPermissions = (permissions) => {
+  return new Promise((resolve, reject) => {
+    chrome.permissions.request(permissions, (result) => {
+      const err = chrome.runtime.lastError;
+      err ? reject(err) : resolve(result);
+    });
+  }).then((granted) => {
+    if (!granted) {
+      throw new Error('Permissions is not granted');
+    }
   });
 };
 

@@ -14,7 +14,8 @@
         "16": "assets/icons/icon_16.png"
     },
     "options_page": "index.html#/options",
-    "permissions": ["storage", "contextMenus", "<all_urls>", "unlimitedStorage", "tabs"],
+    "optional_permissions": ["tabs"],
+    "permissions": ["storage", "contextMenus", "unlimitedStorage", "http://*/*", "https://*/*"],
     "omnibox": {
         "keyword" : "tms"
     },

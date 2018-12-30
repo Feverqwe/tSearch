@@ -14,11 +14,15 @@ const logger = getLogger('EditorStore');
 /**
  * @typedef {TrackerOptionsStore} EditorTrackerOptionsStore
  * @property {function} setAutoUpdate
+ * @property {function} setEnableProxy
  */
 const EditorTrackerOptionsStore = types.compose('EditorTrackerOptionsStore', TrackerOptionsStore).actions(self => {
   return {
     setAutoUpdate(value) {
       self.autoUpdate = value;
+    },
+    setEnableProxy(value) {
+      self.enableProxy = value;
     }
   };
 });

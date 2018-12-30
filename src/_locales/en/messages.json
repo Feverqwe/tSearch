@@ -266,6 +266,9 @@
     "autoUpdate": {
         "message": "Auto update"
     },
+    "enableProxy": {
+        "message": "Enable proxy support"
+    },
     "doNotSendStatistics": {
         "message": "Do not send statistics"
     },
@@ -328,12 +331,6 @@
     },
     "kitBaseUrl": {
         "message": "Base URL"
-    },
-    "kitOriginUrl": {
-        "message": "Origin URL"
-    },
-    "kitUseCookie": {
-        "message": "Use cookie"
     },
     "kitTrackerUrl": {
         "message": "URL"

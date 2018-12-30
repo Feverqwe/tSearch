@@ -8,10 +8,12 @@ const logger = getLogger('TrackerStore');
  * @typedef {{}} TrackerOptionsStore
  * @property {number} [lastUpdate]
  * @property {boolean} [autoUpdate]
+ * @property {boolean} [enableProxy]
  */
 const TrackerOptionsStore = types.model('TrackerOptionsStore', {
   lastUpdate: types.optional(types.number, 0),
   autoUpdate: types.optional(types.boolean, true),
+  enableProxy: types.optional(types.boolean, false),
 });
 
 /**

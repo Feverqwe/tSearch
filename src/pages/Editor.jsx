@@ -36,7 +36,6 @@ class Editor extends React.Component {
     };
 
     this.editor = null;
-    this.autoUpdate = null;
     this.dialogTextarea = null;
 
     this.props.rootStore.createEditor(props.type, props.id);
@@ -88,8 +87,14 @@ class Editor extends React.Component {
     }
   };
 
+  autoUpdate = null;
   refAutoUpdate = (element) => {
     this.autoUpdate = element;
+  };
+
+  enableProxy = null;
+  refEnableProxy = (element) => {
+    this.enableProxy = element;
   };
 
   refDialogTextarea = (element) => {
@@ -104,6 +109,11 @@ class Editor extends React.Component {
   handleAutoUpdateChange = (e) => {
     const editorStore = this.editorStore;
     editorStore.options.setAutoUpdate(this.autoUpdate.checked);
+  };
+
+  handleEnableProxyChange = (e) => {
+    const editorStore = this.editorStore;
+    editorStore.options.setEnableProxy(this.enableProxy.checked);
   };
 
   handleAddCode = (e) => {
@@ -211,6 +221,10 @@ class Editor extends React.Component {
             <label>
               <input ref={this.refAutoUpdate} type="checkbox" className="option__auto-update" defaultChecked={editorStore.options.autoUpdate} onChange={this.handleAutoUpdateChange}/>
               <span>{chrome.i18n.getMessage('autoUpdate')}</span>
+            </label>
+            <label>
+              <input ref={this.refEnableProxy} type="checkbox" className="option__auto-update" defaultChecked={editorStore.options.enableProxy} onChange={this.handleEnableProxyChange}/>
+              <span>{chrome.i18n.getMessage('enableProxy')}</span>
             </label>
           </div>
           <div className="head__action">

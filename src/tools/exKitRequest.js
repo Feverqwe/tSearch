@@ -28,7 +28,7 @@ const exKitRequest = (tracker, options) => {
     throw new ErrorWithCode('Options is not set', 'OPTIONS_IS_EMPTY');
   }
 
-  const {url, charset, originUrl, useCookie, ...fetchOptions} = options;
+  const {url, charset, originUrl, ...fetchOptions} = options;
 
   if (typeof url !== 'string') {
     throw new ErrorWithCode('Incorrect request, url is not string', 'INCORRECT_REQUEST');
@@ -40,10 +40,10 @@ const exKitRequest = (tracker, options) => {
   }
 
   let request = null;
-  if (useCookie === false) {
-    request = fetchRequest(url, fetchOptions);
-  } else {
+  if (tracker.enableProxy) {
     request = tabFetchRequest(originUrl || origin, url, fetchOptions);
+  } else {
+    request = fetchRequest(url, fetchOptions);
   }
 
   tracker.requests.push(request);

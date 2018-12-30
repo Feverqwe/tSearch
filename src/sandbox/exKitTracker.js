@@ -34,7 +34,6 @@ class ExKitTracker {
       method: searchStore.method,
       url: searchStore.url.replace('%search%', encodedQuery),
       originUrl: searchStore.originUrl,
-      useCookie: searchStore.useCookie,
       query: (searchStore.query || '').replace('%search%', encodedQuery),
       body: (searchStore.body || '').replace('%search%', encodedQuery),
       charset: searchStore.charset,
@@ -52,7 +51,6 @@ class ExKitTracker {
       method: 'GET',
       url: url,
       originUrl: searchStore.originUrl,
-      useCookie: searchStore.useCookie,
       charset: searchStore.charset,
     };
 

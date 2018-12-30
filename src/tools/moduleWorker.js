@@ -14,6 +14,7 @@ class ModuleWorker {
     this.requests = [];
 
     this.connectRe = null;
+    this.enableProxy = false;
 
     const self = this;
     this.api = {
@@ -25,6 +26,7 @@ class ModuleWorker {
   init() {
     const module = this.module;
     this.connectRe = exKitBuildConnectRe(module.meta.connect);
+    this.enableProxy = module.options.enableProxy;
     this.worker = new FrameWorker({
       moduleId: module.id
     }, this.api);
