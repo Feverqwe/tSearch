@@ -48,11 +48,14 @@ const TrackerMetaStore = types.model('TrackerMetaStore', {
 
 /**
  * @typedef {{}} TrackerStore
+ * @property {string} [updateState]
  * @property {string} id
  * @property {TrackerOptionsStore} [options]
  * @property {TrackerMetaStore} meta
  * @property {string} code
  * @property {function} setOptions
+ * @property {function:Promise} update
+ * @property {function} getSnapshot
  * @property {function} getIconUrl
  * @property {*} attached
  * @property {*} worker
@@ -62,6 +65,7 @@ const TrackerMetaStore = types.model('TrackerMetaStore', {
  * @property {function} createWorker
  * @property {function} destroyWorker
  * @property {function} reloadWorker
+ * @property {function} afterCreate
  * @property {function} beforeDestroy
  */
 const TrackerStore = types.model('TrackerStore', {

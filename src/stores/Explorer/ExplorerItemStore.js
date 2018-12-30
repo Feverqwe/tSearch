@@ -9,7 +9,6 @@ import {ExplorerQuickSearchItemStore} from "./ExplorerQuickSearchStore";
  * @property {string|undefined} titleOriginal
  * @property {string} url
  * @property {string|undefined} poster
- * @property {*} extra
  * @property {function} updateProps
  * @property {function} addFavorite
  * @property {function} removeFavorite

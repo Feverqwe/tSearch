@@ -13,7 +13,7 @@ const oneLimit = promiseLimit(1);
 
 /**
  * @typedef {ExplorerSectionStore} ExplorerFavoritesSectionStore
- * @property {null} moduleId
+ * @property {string|undefined} moduleId
  * @property {function} setState
  * @property {function:Promise} fetchData
  * @property {function} addItem

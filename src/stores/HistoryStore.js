@@ -103,10 +103,12 @@ const HistoryQueryStore = types.model('HistoryQueryStore', {
  * @property {function} removeQuery
  * @property {function:Promise} fetchHistory
  * @property {function} getOrCreateQuery
+ * @property {function} patchHistory
  * @property {function} save
  * @property {function} getHistory
  * @property {function} getHistorySortByTime
  * @property {function} getHistorySortByCount
+ * @property {function} getHistorySnapshot
  * @property {function} afterCreate
  * @property {function} beforeDestroy
  */

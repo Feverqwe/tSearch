@@ -26,7 +26,10 @@ const limitOne = promiseLimit(1);
  * @property {function:Promise} fetch
  * @property {function} setModule
  * @property {function} deleteModule
+ * @property {function} patchSections
+ * @property {function} patchModules
  * @property {function} getSectionsSnapshot
+ * @property {function} getModulesSnapshot
  * @property {function} saveSections
  * @property {function} moveSection
  * @property {*} favoritesSection

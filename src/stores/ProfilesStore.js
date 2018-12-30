@@ -22,10 +22,12 @@ const logger = getLogger('ProfilesStore');
  * @property {function:Promise} fetchProfiles
  * @property {function} addSelectedTracker
  * @property {function} clearSelectedTrackers
+ * @property {function} patchProfiles
  * @property {*} profile
  * @property {function} getProfileById
  * @property {function} isSelectedTracker
  * @property {*} selectedTrackers
+ * @property {*} prepSelectedTrackerIds
  * @property {function} saveProfile
  * @property {function} saveProfiles
  * @property {function} afterCreate

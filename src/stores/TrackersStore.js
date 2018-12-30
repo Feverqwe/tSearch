@@ -15,8 +15,10 @@ const logger = getLogger('TrackersStore');
  * @property {function:Promise} fetchTrackers
  * @property {function} deleteTracker
  * @property {function} setTracker
+ * @property {function} patchTrackers
  * @property {function} getTackerById
  * @property {function} saveTrackers
+ * @property {function} getTrackersSnapshot
  * @property {function} afterCreate
  * @property {function} beforeDestroy
  */

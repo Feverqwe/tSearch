@@ -21,6 +21,7 @@ const logger = getLogger('ExplorerModuleStore');
  * @property {function} createWorker
  * @property {function} destroyWorker
  * @property {function} reloadWorker
+ * @property {function} afterCreate
  * @property {function} beforeDestroy
  */
 const ExplorerModuleStore = types.model('ExplorerModuleStore', {

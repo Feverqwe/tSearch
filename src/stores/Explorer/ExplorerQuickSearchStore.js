@@ -46,6 +46,7 @@ const ExplorerQuickSearchResultStore = types.model('ExplorerQuickSearchResultSto
  * @property {ExplorerQuickSearchResultStore[]} results
  * @property {function} setResults
  * @property {function:Promise} search
+ * @property {function} save
  * @property {*} queryHighlightMap
  * @property {*} label
  */
@@ -138,8 +139,8 @@ const ExplorerQuickSearchItemStore = types.model('ExplorerQuickSearchItemStore',
  * @property {function:Promise} fetch
  * @property {function} addItem
  * @property {function} removeItem
+ * @property {function} patchQuickSearch
  * @property {function} save
- * @property {function} getItem
  * @property {function} getQuickSearch
  * @property {function} getQuickSearchSortByTime
  * @property {function} afterCreate

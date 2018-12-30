@@ -93,6 +93,7 @@ const OptionsValueStore = types.model('OptionsValueStore', {
  * @property {OptionsValueStore|undefined|null} options
  * @property {function} setOptions
  * @property {function:Promise} fetchOptions
+ * @property {function} patchOptions
  * @property {function} getSnapshot
  * @property {function} save
  * @property {function} exportZip
