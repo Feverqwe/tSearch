@@ -1,4 +1,4 @@
-import {flow, isAlive, types} from 'mobx-state-tree';
+import {flow, isAlive, types, onPatch} from 'mobx-state-tree';
 import TrackerWorker from "../tools/trackerWorker";
 import getLogger from "../tools/getLogger";
 
@@ -169,6 +169,13 @@ const TrackerStore = types.model('TrackerStore', {
         self.destroyWorker();
         self.createWorker();
       }
+    },
+    afterCreate() {
+      onPatch(self, (patch) => {
+        if (/^\/(code|options\/enableProxy)$/.test(patch.path)) {
+          self.reloadWorker();
+        }
+      });
     },
     beforeDestroy() {
       self.destroyWorker();
