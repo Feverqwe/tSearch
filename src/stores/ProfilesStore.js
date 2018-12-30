@@ -99,7 +99,7 @@ const ProfilesStore = types.model('ProfilesStore', {
         const newValue = change.newValue || [];
         const oldValue = reOrderStoreItems(self.profiles, newValue, 'id');
         self.setProfiles(oldValue);
-        const diff = mobxCompare(oldValue, newValue);
+        const diff = mobxCompare(self.profiles, newValue);
         self.patchProfiles(diff);
       }
     }

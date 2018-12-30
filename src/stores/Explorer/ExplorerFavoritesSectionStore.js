@@ -101,7 +101,7 @@ const ExplorerFavoritesSectionStore = types.compose('ExplorerFavoritesSectionSto
         const newValue = change.newValue || [];
         const oldValue = reOrderStoreItems(self.items, newValue, 'url');
         self.setItems(oldValue);
-        const diff = mobxCompare(oldValue, newValue);
+        const diff = mobxCompare(self.items, newValue);
         self.patchItems(diff);
       }
     }

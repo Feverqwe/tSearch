@@ -114,7 +114,7 @@ const ExplorerStore = types.model('ExplorerStore', {
         const newValue = change.newValue || [];
         const oldValue = reOrderStoreItems(self.sections, newValue, 'id');
         self.setSections(oldValue);
-        const diff = mobxCompare(oldValue, newValue).filter((patch) => {
+        const diff = mobxCompare(self.sections, newValue).filter((patch) => {
           if (/^\/\d+\/(state|authRequired|items|commands)(\/.*|$)/.test(patch.path)) {
             return false;
           }
