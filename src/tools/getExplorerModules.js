@@ -20,6 +20,7 @@ const getExplorerModules = () => {
     const idsUnic = ids.filter((id, index) => ids.indexOf(id) === index);
     return Promise.all(idsUnic.map(id => {
       let module = idModule[id];
+      const options = Object.assign({}, module && module.options);
 
       const localVersion = idLocalVersion[id];
       if (localVersion && module) {
@@ -36,8 +37,9 @@ const getExplorerModules = () => {
       }
 
       if (!module) {
-        return loadLocalExplorerModule(id).then(localTracker => {
-          const moduleStore = ExplorerModuleStore.create(localTracker);
+        return loadLocalExplorerModule(id).then(localModule => {
+          localModule.options = options;
+          const moduleStore = ExplorerModuleStore.create(localModule);
           const module = moduleStore.toJSON();
           destroy(moduleStore);
 

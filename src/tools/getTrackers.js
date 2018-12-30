@@ -20,6 +20,7 @@ const getTrackers = () => {
     const idsUnic = ids.filter((id, index) => ids.indexOf(id) === index);
     return Promise.all(idsUnic.map(id => {
       let tracker = idTracker[id];
+      const options = Object.assign({}, tracker && tracker.options);
 
       const localVersion = idLocalVersion[id];
       if (localVersion && tracker) {
@@ -37,6 +38,7 @@ const getTrackers = () => {
 
       if (!tracker) {
         return loadLocalTrackerModule(id).then(localTracker => {
+          localTracker.options = options;
           const trackerStore = TrackerStore.create(localTracker);
           const tracker = trackerStore.toJSON();
           destroy(trackerStore);
