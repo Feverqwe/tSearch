@@ -9,7 +9,11 @@ const reOrderStoreItems = (oldStore, newStore, idKey) => {
   oldStore.forEach((item) => {
     idItem.set(item[idKey], item);
   });
-  return idOrder.map(id => idItem.get(id) || idNewItem.get(id));
+  return idOrder.map(id => {
+    const value = idItem.get(id);
+    idItem.delete(id);
+    return value || idNewItem.get(id);
+  });
 };
 
 export default reOrderStoreItems;
