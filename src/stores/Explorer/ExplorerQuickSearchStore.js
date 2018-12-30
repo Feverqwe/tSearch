@@ -72,7 +72,7 @@ const ExplorerQuickSearchItemStore = types.model('ExplorerQuickSearchItemStore',
             if (!results) return;
 
             results.forEach((result) => {
-              if (!isTrailer(result.title)) {
+              if (!isTrailer(result.title) && result.size) {
                 result.label = result.rate.quality;
                 if (result.rate.rate.audioFormat) {
                   result.quality -= result.rate.rate.audioFormat;
