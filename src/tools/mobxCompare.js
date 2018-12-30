@@ -1,4 +1,4 @@
-import {escapeJsonPath, getType, isArrayType, isMapType, isStateTreeNode, resolvePath} from "mobx-state-tree";
+import {escapeJsonPath, getType, isArrayType, isMapType, resolvePath} from "mobx-state-tree";
 import {compare, unescapePathComponent} from "fast-json-patch";
 
 const getParentPath = (path) => {
