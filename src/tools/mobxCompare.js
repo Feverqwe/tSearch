@@ -1,9 +1,7 @@
 import {compare, getValueByPointer} from "fast-json-patch";
 
 const getParentPath = (path) => {
-  const parts = path.split('/');
-  parts.pop();
-  return parts.join('/');
+  return path.substr(0, path.lastIndexOf('/'));
 };
 
 const mobxCompare = (oldValue, newValue) => {
