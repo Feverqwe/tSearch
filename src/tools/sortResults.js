@@ -7,7 +7,9 @@ const typeSortMap = {
 const sortResults = (results, sorts) => {
   const sortFns = sorts.map(({by, direction}) => {
     const info = typeSortMap[by];
-    return ({[by]: a}, {[by]: b}) => {
+    return (aa, bb) => {
+      const a = aa[by];
+      const b = bb[by];
       if (info && info.reverse) {
         [a, b] = [b, a];
       }
