@@ -3,7 +3,7 @@ import TrackerStore from "./TrackerStore";
 import getLogger from "../tools/getLogger";
 import getTrackers from "../tools/getTrackers";
 import storageSet from "../tools/storageSet";
-import {compare, getValueByPointer} from "fast-json-patch";
+import mobxCompare from "../tools/mobxCompare";
 
 const logger = getLogger('TrackersStore');
 
@@ -64,15 +64,7 @@ const TrackersStore = types.model('TrackersStore', {
       if (change) {
         const newValue = change.newValue || {};
         const oldValue = self.getTrackersSnapshot();
-        const diff = compare(oldValue, newValue).filter((patch) => {
-          if (patch.op === 'remove') {
-            const value = getValueByPointer(oldValue, patch.path);
-            if (value === undefined) {
-              return false;
-            }
-          }
-          return true;
-        });
+        const diff = mobxCompare(oldValue, newValue);
         self.patchTrackers(diff);
       }
     }

@@ -7,8 +7,8 @@ import ExplorerFavoritesSectionStore from "./ExplorerFavoritesSectionStore";
 import storageSet from "../../tools/storageSet";
 import storageGet from "../../tools/storageGet";
 import ExplorerQuickSearchStore from "./ExplorerQuickSearchStore";
-import {compare, getValueByPointer} from "fast-json-patch";
 import reOrderStoreItems from "../../tools/reOrderStoreItems";
+import mobxCompare from "../../tools/mobxCompare";
 
 const promiseLimit = require('promise-limit');
 
@@ -114,11 +114,9 @@ const ExplorerStore = types.model('ExplorerStore', {
         const newValue = change.newValue || [];
         const oldValue = reOrderStoreItems(self.sections, newValue, 'id');
         self.setSections(oldValue);
-        const diff = compare(oldValue, newValue).filter((patch) => {
-          if (patch.op === 'remove') {
-            if (/^\/\d+\/(state|authRequired|items|commands)$/.test(patch.path)) {
-              return false;
-            }
+        const diff = mobxCompare(oldValue, newValue).filter((patch) => {
+          if (/^\/\d+\/(state|authRequired|items|commands)(\/.*|$)/.test(patch.path)) {
+            return false;
           }
           return true;
         });
@@ -131,15 +129,7 @@ const ExplorerStore = types.model('ExplorerStore', {
       if (change) {
         const newValue = change.newValue || {};
         const oldValue = self.getModulesSnapshot();
-        const diff = compare(oldValue, newValue).filter((patch) => {
-          if (patch.op === 'remove') {
-            const value = getValueByPointer(oldValue, patch.path);
-            if (value === undefined) {
-              return false;
-            }
-          }
-          return true;
-        });
+        const diff = mobxCompare(oldValue, newValue);
         self.patchModules(diff);
       }
     }

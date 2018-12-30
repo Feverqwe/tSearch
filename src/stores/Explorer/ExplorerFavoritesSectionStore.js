@@ -3,8 +3,8 @@ import getLogger from "../../tools/getLogger";
 import ExplorerSectionStore from "./ExplorerSectionStore";
 import storageGet from "../../tools/storageGet";
 import storageSet from "../../tools/storageSet";
-import {compare, getValueByPointer} from 'fast-json-patch';
 import reOrderStoreItems from "../../tools/reOrderStoreItems";
+import mobxCompare from "../../tools/mobxCompare";
 
 const promiseLimit = require('promise-limit');
 
@@ -101,15 +101,7 @@ const ExplorerFavoritesSectionStore = types.compose('ExplorerFavoritesSectionSto
         const newValue = change.newValue || [];
         const oldValue = reOrderStoreItems(self.items, newValue, 'url');
         self.setItems(oldValue);
-        const diff = compare(oldValue, newValue).filter((patch) => {
-          if (patch.op === 'remove') {
-            const value = getValueByPointer(self.items, patch.path);
-            if (value === undefined) {
-              return false;
-            }
-          }
-          return true;
-        });
+        const diff = mobxCompare(oldValue, newValue);
         self.patchItems(diff);
       }
     }

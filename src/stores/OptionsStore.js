@@ -3,7 +3,7 @@ import getLogger from "../tools/getLogger";
 import storageGet from "../tools/storageGet";
 import storageSet from "../tools/storageSet";
 import downloadBlob from "../tools/downloadBlob";
-import {compare} from "fast-json-patch";
+import mobxCompare from "../tools/mobxCompare";
 
 const JSZip = require("jszip");
 const promiseLimit = require('promise-limit');
@@ -141,7 +141,7 @@ const OptionsStore = types.model('OptionsStore', {
       const change = changes.options;
       if (change) {
         const newValue = change.newValue || {};
-        const diff = compare(self.options, newValue);
+        const diff = mobxCompare(self.options, newValue);
         self.patchOptions(diff);
       }
     }

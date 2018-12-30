@@ -1,11 +1,11 @@
-import {applyPatch, flow, getParentOfType, getSnapshot, isAlive, types} from 'mobx-state-tree';
+import {applyPatch, flow, getParentOfType, isAlive, types} from 'mobx-state-tree';
 import highlight from "../tools/highlight";
 import getLogger from "../tools/getLogger";
 import getNow from "../tools/getNow";
 import {unixTimeToString} from "../tools/unixTimeTo";
 import storageGet from "../tools/storageGet";
 import storageSet from "../tools/storageSet";
-import {compare} from "fast-json-patch";
+import mobxCompare from "../tools/mobxCompare";
 
 const promiseLimit = require('promise-limit');
 
@@ -182,7 +182,7 @@ const HistoryStore = types.model('HistoryStore', {
       const change = changes.history;
       if (change) {
         const newValue = change.newValue || {};
-        const diff = compare(self.getHistorySnapshot(), newValue);
+        const diff = mobxCompare(self.getHistorySnapshot(), newValue);
         self.patchHistory(diff);
       }
     }

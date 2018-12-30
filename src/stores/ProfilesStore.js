@@ -4,7 +4,7 @@ import getLogger from "../tools/getLogger";
 import storageGet from "../tools/storageGet";
 import storageSet from "../tools/storageSet";
 import reOrderStoreItems from "../tools/reOrderStoreItems";
-import {compare, getValueByPointer} from "fast-json-patch";
+import mobxCompare from "../tools/mobxCompare";
 
 const uuid = require('uuid/v4');
 
@@ -99,15 +99,7 @@ const ProfilesStore = types.model('ProfilesStore', {
         const newValue = change.newValue || [];
         const oldValue = reOrderStoreItems(self.profiles, newValue, 'id');
         self.setProfiles(oldValue);
-        const diff = compare(oldValue, newValue).filter((patch) => {
-          if (patch.op === 'remove') {
-            const value = getValueByPointer(self.profiles, patch.path);
-            if (value === undefined) {
-              return false;
-            }
-          }
-          return true;
-        });
+        const diff = mobxCompare(oldValue, newValue);
         self.patchProfiles(diff);
       }
     }

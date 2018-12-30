@@ -1,4 +1,4 @@
-import {flow, isAlive, types, onPatch} from 'mobx-state-tree';
+import {flow, isAlive, onPatch, types} from 'mobx-state-tree';
 import TrackerWorker from "../tools/trackerWorker";
 import getLogger from "../tools/getLogger";
 

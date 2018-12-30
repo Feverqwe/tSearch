@@ -1,9 +1,8 @@
 import SearchForm from "./SearchForm/SearchForm";
-import {Link} from "react-router-dom";
+import {Link, withRouter} from "react-router-dom";
 import React from "react";
 import PropTypes from "prop-types";
 import {inject, observer} from "mobx-react";
-import {withRouter} from "react-router-dom";
 
 const qs = require('querystring');
 

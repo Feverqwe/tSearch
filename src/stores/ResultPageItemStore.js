@@ -1,5 +1,4 @@
-import {isAlive, resolveIdentifier, types} from "mobx-state-tree";
-import TrackerStore from "./TrackerStore";
+import {types} from "mobx-state-tree";
 
 
 /**

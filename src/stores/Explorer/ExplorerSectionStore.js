@@ -1,4 +1,4 @@
-import {flow, getParentOfType, isAlive, resolveIdentifier, types, applyPatch} from "mobx-state-tree";
+import {applyPatch, flow, getParentOfType, isAlive, resolveIdentifier, types} from "mobx-state-tree";
 import ExplorerModuleStore from "./ExplorerModuleStore";
 import getLogger from "../../tools/getLogger";
 import ExplorerItemStore from "./ExplorerItemStore";

@@ -5,7 +5,7 @@ import storageSet from "../../tools/storageSet";
 import RootStore from "../RootStore";
 import isTrailer from "../../tools/isTrailer";
 import highlight from "../../tools/highlight";
-import {compare} from "fast-json-patch";
+import mobxCompare from "../../tools/mobxCompare";
 
 const promiseLimit = require('promise-limit');
 
@@ -197,7 +197,7 @@ const ExplorerQuickSearchStore = types.model('ExplorerQuickSearchStore', {
     if (namespace === 'local') {
       const change = changes.quickSearch;
       if (change) {
-        const diff = compare(self.quickSearch.toJSON(), change.newValue || {});
+        const diff = mobxCompare(self.quickSearch.toJSON(), change.newValue || {});
         self.patchQuickSearch(diff);
       }
     }
