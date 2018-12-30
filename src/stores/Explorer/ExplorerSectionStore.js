@@ -6,6 +6,7 @@ import RootStore from "../RootStore";
 import ExplorerCommandStore from "./ExplorerCommandStore";
 import ExplorerCache from "../../tools/explorerCache";
 import parseModuleParams from "../../tools/parseModuleParams";
+import promiseFinally from "../../tools/promiseFinally";
 
 const logger = getLogger('ExplorerSectionStore');
 
@@ -74,9 +75,9 @@ const ExplorerSectionStore = types.model('ExplorerSectionStore', {
         let result = {items: cacheItems};
         if (!cacheItems) {
           module.attach();
-          result = yield fn().finally(() => {
+          result = yield fn().then(...promiseFinally(() => {
             module.deattach();
-          });
+          }));
         }
         if (isAlive(self)) {
           if (result.items) {
