@@ -3,7 +3,7 @@ import getLogger from "../../tools/getLogger";
 import ExplorerSectionStore from "./ExplorerSectionStore";
 import storageGet from "../../tools/storageGet";
 import storageSet from "../../tools/storageSet";
-import _isEqual from "lodash.isequal";
+import {compare} from 'fast-json-patch';
 
 const promiseLimit = require('promise-limit');
 
@@ -97,10 +97,8 @@ const ExplorerFavoritesSectionStore = types.compose('ExplorerFavoritesSectionSto
     if (namespace === 'sync') {
       const change = changes.explorerFavorites;
       if (change) {
-        const explorerFavorites = change.newValue || [];
-        if (!_isEqual(explorerFavorites, self.getItemsSnapshot())) {
-          self.setItems(explorerFavorites);
-        }
+        const diff = compare(self.items, change.newValue || []);
+        self.patchItems(diff);
       }
     }
   };

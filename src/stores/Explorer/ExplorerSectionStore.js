@@ -1,4 +1,4 @@
-import {flow, getParentOfType, isAlive, resolveIdentifier, types} from "mobx-state-tree";
+import {flow, getParentOfType, isAlive, resolveIdentifier, types, applyPatch} from "mobx-state-tree";
 import ExplorerModuleStore from "./ExplorerModuleStore";
 import getLogger from "../../tools/getLogger";
 import ExplorerItemStore from "./ExplorerItemStore";
@@ -123,6 +123,9 @@ const ExplorerSectionStore = types.model('ExplorerSectionStore', {
     createCommand(index) {
       self.commands.set(index, {index});
     },
+    patchItems(patch) {
+      applyPatch(self.items, patch);
+    }
   };
 }).views(self => {
   return {
