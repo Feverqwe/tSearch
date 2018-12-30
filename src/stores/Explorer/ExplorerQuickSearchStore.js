@@ -6,6 +6,7 @@ import RootStore from "../RootStore";
 import isTrailer from "../../tools/isTrailer";
 import highlight from "../../tools/highlight";
 import mobxCompare from "../../tools/mobxCompare";
+import checkChangeId from "../../tools/checkChangeId";
 
 const promiseLimit = require('promise-limit');
 
@@ -191,14 +192,18 @@ const ExplorerQuickSearchStore = types.model('ExplorerQuickSearchStore', {
     }
   };
 }).views((self) => {
+  const storeId = Math.random() * 1000;
+
   const storageChangeListener = (changes, namespace) => {
     if (self.state !== 'done') return;
 
     if (namespace === 'local') {
-      const change = changes.quickSearch;
-      if (change) {
-        const diff = mobxCompare(self.quickSearch.toJSON(), change.newValue || {});
-        self.patchQuickSearch(diff);
+      if (checkChangeId('quickSearch', storeId, changes)) {
+        const change = changes.quickSearch;
+        if (change) {
+          const diff = mobxCompare(self.quickSearch.toJSON(), change.newValue || {});
+          self.patchQuickSearch(diff);
+        }
       }
     }
   };
@@ -213,7 +218,8 @@ const ExplorerQuickSearchStore = types.model('ExplorerQuickSearchStore', {
           }
         });
         return storageSet({
-          quickSearch: snapshot
+          quickSearch: snapshot,
+          quickSearchChangeId: `${storeId}_${Date.now()}`,
         });
       });
     },

@@ -6,6 +6,7 @@ import {unixTimeToString} from "../tools/unixTimeTo";
 import storageGet from "../tools/storageGet";
 import storageSet from "../tools/storageSet";
 import mobxCompare from "../tools/mobxCompare";
+import checkChangeId from "../tools/checkChangeId";
 
 const promiseLimit = require('promise-limit');
 
@@ -175,15 +176,19 @@ const HistoryStore = types.model('HistoryStore', {
     },
   };
 }).views(self => {
+  const storeId = Math.random() * 1000;
+
   const storageChangeListener = (changes, namespace) => {
     if (self.state !== 'done') return;
 
     if (namespace === 'local') {
-      const change = changes.history;
-      if (change) {
-        const newValue = change.newValue || {};
-        const diff = mobxCompare(self.getHistorySnapshot(), newValue);
-        self.patchHistory(diff);
+      if (checkChangeId('history', storeId, changes)) {
+        const change = changes.history;
+        if (change) {
+          const newValue = change.newValue || {};
+          const diff = mobxCompare(self.getHistorySnapshot(), newValue);
+          self.patchHistory(diff);
+        }
       }
     }
   };
@@ -192,7 +197,8 @@ const HistoryStore = types.model('HistoryStore', {
     save() {
       return oneLimit(() => {
         return storageSet({
-          history: self.getHistorySnapshot()
+          history: self.getHistorySnapshot(),
+          historyChangeId: `${storeId}_${Date.now()}`,
         });
       });
     },
