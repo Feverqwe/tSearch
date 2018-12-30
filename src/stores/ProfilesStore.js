@@ -1,9 +1,10 @@
-import {flow, getSnapshot, isAlive, resolveIdentifier, types} from 'mobx-state-tree';
+import {applyPatch, flow, isAlive, resolveIdentifier, types} from 'mobx-state-tree';
 import ProfileStore from "./ProfileStore";
 import getLogger from "../tools/getLogger";
-import _isEqual from "lodash.isequal";
 import storageGet from "../tools/storageGet";
 import storageSet from "../tools/storageSet";
+import reOrderStoreItems from "../tools/reOrderStoreItems";
+import {compare} from "fast-json-patch";
 
 const uuid = require('uuid/v4');
 
@@ -82,6 +83,9 @@ const ProfilesStore = types.model('ProfilesStore', {
     clearSelectedTrackers() {
       self.selectedTrackerIds = [];
     },
+    patchProfiles(patch) {
+      applyPatch(self.profiles, patch);
+    },
   };
 }).views(/**ProfilesStore*/self => {
   const storageChangeListener = (changes, namespace) => {
@@ -90,10 +94,18 @@ const ProfilesStore = types.model('ProfilesStore', {
     if (namespace === 'sync') {
       const change = changes.profiles;
       if (change) {
-        const profiles = change.newValue || [];
-        if (!_isEqual(profiles, getSnapshot(self.profiles))) {
-          self.setProfiles(profiles);
-        }
+        const newValue = change.newValue || [];
+        const oldValue = reOrderStoreItems(self.profiles, newValue, 'id');
+        self.setProfiles(oldValue);
+        const diff = compare(oldValue, newValue).filter((patch) => {
+          if (patch.op === 'remove') {
+            if (/^\/\d+\/trackers\/\d+\/meta\/(name|author|homepageURL|trackerURL|downloadURL)$/.test(patch.path)) {
+              return false;
+            }
+          }
+          return true;
+        });
+        self.patchProfiles(diff);
       }
     }
   };
