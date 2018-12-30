@@ -33,7 +33,7 @@
     "lodash.uniq": "^4.5.0",
     "mobx": "^5.8.0",
     "mobx-react": "^5.4.3",
-    "mobx-state-tree": "^3.9.0",
+    "mobx-state-tree": "^3.10.0",
     "moment": "^2.23.0",
     "parse5": "^5.1.0",
     "promise-limit": "^2.7.0",
@@ -76,7 +76,7 @@
     "script-loader": "^0.7.2",
     "style-loader": "^0.23.1",
     "url-loader": "^1.1.2",
-    "webpack": "^4.28.2",
+    "webpack": "^4.28.3",
     "webpack-cli": "^3.1.2"
   }
 }
