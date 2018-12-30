@@ -171,8 +171,16 @@ const HistoryStore = types.model('HistoryStore', {
       }
       return q;
     },
-    patchHistory(patch) {
-      applyPatch(self.history, patch);
+    patchHistory(diff) {
+      diff.forEach((patch) => {
+        // mobx-state-tree bug with path
+        if (/^\/\//.test(patch.path)) {
+          patch.path = patch.path.substr(1);
+          applyPatch(self.history.get(''), patch);
+        } else {
+          applyPatch(self.history, patch);
+        }
+      });
     },
   };
 }).views(self => {
