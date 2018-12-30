@@ -4,7 +4,7 @@ import getLogger from "../tools/getLogger";
 import storageGet from "../tools/storageGet";
 import storageSet from "../tools/storageSet";
 import reOrderStoreItems from "../tools/reOrderStoreItems";
-import {compare} from "fast-json-patch";
+import {compare, getValueByPointer} from "fast-json-patch";
 
 const uuid = require('uuid/v4');
 
@@ -100,7 +100,10 @@ const ProfilesStore = types.model('ProfilesStore', {
         const diff = compare(oldValue, newValue).filter((patch) => {
           if (patch.op === 'remove') {
             if (/^\/\d+\/trackers\/\d+\/meta\/(name|author|homepageURL|trackerURL|downloadURL)$/.test(patch.path)) {
-              return false;
+              const value = getValueByPointer(self.profiles, patch.path);
+              if (value === undefined) {
+                return false;
+              }
             }
           }
           return true;
