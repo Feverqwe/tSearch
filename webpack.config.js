@@ -57,7 +57,13 @@ const config = {
           loader: 'babel-loader',
           options: {
             plugins: [
-              ["@babel/plugin-proposal-decorators", { "legacy": true }],
+              ['@babel/plugin-transform-runtime', {
+                'corejs': false,
+                'helpers': true,
+                'regenerator': true,
+                'useESModules': true
+              }],
+              ['@babel/plugin-proposal-decorators', {'legacy': true}],
               '@babel/plugin-syntax-dynamic-import',
               '@babel/plugin-proposal-class-properties'
             ],
