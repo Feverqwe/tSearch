@@ -1,4 +1,4 @@
-import {flow, isAlive, resolveIdentifier, types} from "mobx-state-tree";
+import {applyPatch, flow, isAlive, resolveIdentifier, types} from "mobx-state-tree";
 import getLogger from "../../tools/getLogger";
 import getExplorerModules from "../../tools/getExplorerModules";
 import ExplorerModuleStore from "./ExplorerModuleStore";
@@ -9,6 +9,8 @@ import storageSet from "../../tools/storageSet";
 import storageGet from "../../tools/storageGet";
 import getUnic from "../../tools/getUnic";
 import ExplorerQuickSearchStore from "./ExplorerQuickSearchStore";
+import {compare} from "fast-json-patch";
+import reOrderStoreItems from "../../tools/reOrderStoreItems";
 
 const promiseLimit = require('promise-limit');
 
@@ -94,6 +96,9 @@ const ExplorerStore = types.model('ExplorerStore', {
     deleteModule(id) {
       self.modules.delete(id);
     },
+    patchSections(patch) {
+      applyPatch(self.sections, patch);
+    }
   };
 }).views(self => {
   const storageChangeListener = (changes, namespace) => {
@@ -102,20 +107,18 @@ const ExplorerStore = types.model('ExplorerStore', {
     if (namespace === 'sync') {
       const change = changes.explorerSections;
       if (change) {
-        const explorerSections = change.newValue || [];
-        const sections = [];
-        explorerSections.forEach(sectionSnapshot => {
-          const section = self.getSectionById(sectionSnapshot.id);
-          if (!section) {
-            sections.push(sectionSnapshot);
-          } else {
-            if (!_isEqual(sectionSnapshot, section.getSnapshot())) {
-              section.assignSnapshot(sectionSnapshot);
+        const newValue = change.newValue || [];
+        const oldValue = reOrderStoreItems(self.sections, newValue, 'id');
+        self.setSections(oldValue);
+        const diff = compare(oldValue, newValue).filter((patch) => {
+          if (patch.op === 'remove') {
+            if (/^\/\d+\/(state|authRequired|items|commands)$/.test(patch.path)) {
+              return false;
             }
-            sections.push(section);
           }
+          return true;
         });
-        self.setSections(sections);
+        self.patchSections(diff);
       }
     }
 

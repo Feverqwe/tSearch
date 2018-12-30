@@ -55,9 +55,6 @@ const ExplorerSectionStore = types.model('ExplorerSectionStore', {
   moduleParams: types.optional(types.string, ''),
 }).actions(self => {
   return {
-    assignSnapshot(snapshot) {
-      Object.assign(self, snapshot);
-    },
     setState(state) {
       self.state = state;
     },
