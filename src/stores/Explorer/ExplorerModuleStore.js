@@ -1,4 +1,4 @@
-import {types} from "mobx-state-tree";
+import {onPatch, types} from "mobx-state-tree";
 import {TrackerOptionsStore} from "../TrackerStore";
 import ExplorerModuleWorker from "../../tools/explorerModuleWorker";
 import ExplorerModuleMetaStore from "./ExplorerModuleMetaStore";
@@ -77,6 +77,13 @@ const ExplorerModuleStore = types.model('ExplorerModuleStore', {
         self.destroyWorker();
         self.createWorker();
       }
+    },
+    afterCreate() {
+      onPatch(self, (patch) => {
+        if (/^\/(code|options\/enableProxy)$/.test(patch.path)) {
+          self.reloadWorker();
+        }
+      });
     },
     beforeDestroy() {
       self.destroyWorker();
