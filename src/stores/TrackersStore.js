@@ -66,11 +66,9 @@ const TrackersStore = types.model('TrackersStore', {
         const oldValue = self.getTrackersSnapshot();
         const diff = compare(oldValue, newValue).filter((patch) => {
           if (patch.op === 'remove') {
-            if (/^\/[^\/]+\/meta\/(version|author|description|homepageURL|icon|icon64|trackerURL|downloadURL|supportURL)$/.test(patch.path)) {
-              const value = getValueByPointer(oldValue, patch.path);
-              if (value === undefined) {
-                return false;
-              }
+            const value = getValueByPointer(oldValue, patch.path);
+            if (value === undefined) {
+              return false;
             }
           }
           return true;

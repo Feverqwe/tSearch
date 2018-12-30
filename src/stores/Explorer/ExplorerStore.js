@@ -133,11 +133,9 @@ const ExplorerStore = types.model('ExplorerStore', {
         const oldValue = self.getModulesSnapshot();
         const diff = compare(oldValue, newValue).filter((patch) => {
           if (patch.op === 'remove') {
-            if (/^\/[^\/]+\/meta\/(author|description|homepageURL|icon|icon64|siteURL|downloadURL|supportURL|locales|defaultLocale)$/.test(patch.path)) {
-              const value = getValueByPointer(oldValue, patch.path);
-              if (value === undefined) {
-                return false;
-              }
+            const value = getValueByPointer(oldValue, patch.path);
+            if (value === undefined) {
+              return false;
             }
           }
           return true;

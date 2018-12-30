@@ -103,11 +103,9 @@ const ExplorerFavoritesSectionStore = types.compose('ExplorerFavoritesSectionSto
         self.setItems(oldValue);
         const diff = compare(oldValue, newValue).filter((patch) => {
           if (patch.op === 'remove') {
-            if (/^\/\d+\/(titleOriginal|poster)$/.test(patch.path)) {
-              const value = getValueByPointer(self.items, patch.path);
-              if (value === undefined) {
-                return false;
-              }
+            const value = getValueByPointer(self.items, patch.path);
+            if (value === undefined) {
+              return false;
             }
           }
           return true;

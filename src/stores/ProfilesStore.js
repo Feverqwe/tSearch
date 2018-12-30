@@ -101,11 +101,9 @@ const ProfilesStore = types.model('ProfilesStore', {
         self.setProfiles(oldValue);
         const diff = compare(oldValue, newValue).filter((patch) => {
           if (patch.op === 'remove') {
-            if (/^\/\d+\/trackers\/\d+\/meta\/(name|author|homepageURL|trackerURL|downloadURL)$/.test(patch.path)) {
-              const value = getValueByPointer(self.profiles, patch.path);
-              if (value === undefined) {
-                return false;
-              }
+            const value = getValueByPointer(self.profiles, patch.path);
+            if (value === undefined) {
+              return false;
             }
           }
           return true;
