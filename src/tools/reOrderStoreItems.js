@@ -3,7 +3,7 @@ const reOrderStoreItems = (oldStore, newStore, idKey) => {
   const idOrder = [];
   newStore.forEach(item => {
     idNewItem.set(item[idKey], item);
-    idOrder.push(item.id);
+    idOrder.push(item[idKey]);
   });
   const idItem = new Map();
   oldStore.forEach((item) => {
