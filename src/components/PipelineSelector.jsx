@@ -23,6 +23,7 @@ class PipelineSelector extends _ElementSelector {
     rootStore: PropTypes.object,
     onResolvePath: PropTypes.func,
     onHighlightPath: PropTypes.func,
+    setActiveSelector: PropTypes.func,
   };
 
   state = {
@@ -116,19 +117,16 @@ class PipelineSelector extends _ElementSelector {
     this.handleChange();
   };
 
-  handleSelectElement = (path) => {
-    this.frameStore.setSelect();
-
-    this.input.value = path;
-    this.handleChange();
-  };
-
   output = null;
   refOutput = input => {
     this.output = input;
   };
 
   updateResult = () => {
+    if (this.props.setActiveSelector) {
+      this.props.setActiveSelector(this);
+    }
+
     if (this.state.outputError || this.state.inputError) {
       this.setState({
         inputError: null,
@@ -136,9 +134,11 @@ class PipelineSelector extends _ElementSelector {
       });
     }
 
+    const selector = this.selectorStore.selector;
+
     let node = null;
     try {
-      node = this.props.onResolvePath(this.selectorStore.selector, {
+      node = this.props.onResolvePath(selector, {
         containerSelector: this.getContainerSelector(),
         skipFromStart: this.store.skipFromStart,
         skipFromEnd: this.store.skipFromEnd,
@@ -147,20 +147,35 @@ class PipelineSelector extends _ElementSelector {
         throw new Error('Node is not found');
       }
     } catch (err) {
-      logger('updateResult error', err);
+      logger('updateResult error', selector, err);
 
       this.setState({
         inputError: err.message
       });
     }
 
+    try {
+      this.props.onHighlightPath(selector, {
+        containerSelector: this.getContainerSelector(),
+        skipFromStart: this.store.skipFromStart,
+        skipFromEnd: this.store.skipFromEnd,
+        scrollIntoView: !this.state.selectMode
+      });
+    } catch (err) {
+      logger.error('highlightPath error', selector, err);
+    }
+
+    let lastResult = '';
     return this.selectorStore.pipeline.reduce((promise, method) => {
       return promise.then(result => {
         return Promise.resolve().then(() => {
           return exKitPipelineMethods[method.name].getMethod(...method.args);
-        }).then(fn => fn(result));
+        }).then(fn => lastResult = fn(result));
       });
-    }, Promise.resolve(node)).then(result => {
+    }, Promise.resolve(node)).then((result) => {
+      this.selectorStore.verifyType(result);
+      return result;
+    }).then(result => {
       if (this.output) {
         this.output.value = result;
       }
@@ -168,7 +183,7 @@ class PipelineSelector extends _ElementSelector {
       logger('updateResult error', err);
 
       if (this.output) {
-        this.output.value = '';
+        this.output.value = lastResult;
         this.setState({
           outputError: err.message
         });
@@ -237,6 +252,11 @@ class PipelineSelector extends _ElementSelector {
       }
     }
 
+    let isReadonly = false;
+    if (this.state.selectMode) {
+      isReadonly = true;
+    }
+
     return (
       <div className={'field pipeline-selector'}>
         <div className={'field-left'}>
@@ -244,7 +264,7 @@ class PipelineSelector extends _ElementSelector {
         </div>
         <div className={'field-right'}>
           <div className='select'>
-            <input disabled={isDisabled} type="text" data-id={id} ref={this.refInput}
+            <input disabled={isDisabled} readOnly={isReadonly} type="text" data-id={id} ref={this.refInput}
                    onChange={this.handleChange} onKeyUp={this.handleKeyup} defaultValue={defaultValue} className={inputClassList.join(' ')}/>
             <input disabled={isDisabled} type="text" data-id={`${id}-result`} ref={this.refOutput}
                    className={outputClassList.join(' ')} readOnly={true}/>

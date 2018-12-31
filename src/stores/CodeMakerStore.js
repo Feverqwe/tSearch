@@ -10,11 +10,11 @@ const logger = getLogger('CodeMakerStore');
  * @property {string} [path]
  * @property {*} options
  * @property {boolean} [selectMode]
- * @property {string|undefined|null} containerSelector
+ * @property {string|undefined|null} selectOptions
  * @property {function} setPath
  * @property {function} setOptions
  * @property {function} setSelectMode
- * @property {function} setContainerSelector
+ * @property {function} setSelectOptions
  * @property {function} selectListener
  * @property {function} selectHandler
  * @property {function} setSelectListener
@@ -26,7 +26,7 @@ const FrameStore = types.model('FrameStore', {
   path: types.optional(types.string, ''),
   options: types.frozen(),
   selectMode: types.optional(types.boolean, false),
-  containerSelector: types.maybeNull(types.string),
+  selectOptions: types.frozen(),
 }).actions(self => {
   return {
     setState(value) {
@@ -41,8 +41,8 @@ const FrameStore = types.model('FrameStore', {
     setSelectMode(value) {
       self.selectMode = value;
     },
-    setContainerSelector(value) {
-      self.containerSelector = value;
+    setSelectOptions(value) {
+      self.selectOptions = value;
     },
   };
 }).views(self => {
@@ -67,9 +67,9 @@ const FrameStore = types.model('FrameStore', {
     setSelectHandler(handler) {
       selectHandler = handler;
     },
-    setSelect(selectMode = false, containerSelector = null, listener = null, handleSelect = null) {
+    setSelect(selectMode = false, options = null, listener = null, handleSelect = null) {
       self.setSelectMode(selectMode);
-      self.setContainerSelector(containerSelector);
+      self.setSelectOptions(options);
       self.setSelectListener(listener);
       self.setSelectHandler(handleSelect);
     }

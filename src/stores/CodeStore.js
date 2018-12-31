@@ -1,4 +1,5 @@
 import {types} from "mobx-state-tree";
+import {isNumber, isString} from "../tools/assertType";
 
 /**
  * @typedef {{}} MethodStore
@@ -71,7 +72,13 @@ const StringSelectorStore = types.model('StringSelectorStore', {
       }
 
       self.pipeline = items;
-    },
+    }
+  };
+}).views((self) => {
+  return {
+    verifyType(value) {
+      return isString(value);
+    }
   };
 });
 
@@ -83,7 +90,13 @@ const StringSelectorStore = types.model('StringSelectorStore', {
 const NumberSelectorStore = types.compose('NumberSelectorStore', StringSelectorStore, types.model({
   selector: types.string,
   pipeline: types.array(MethodStore),
-}));
+})).views((self) => {
+  return {
+    verifyType(value) {
+      return isNumber(value);
+    }
+  };
+});
 
 /**
  * @typedef {{}} ElementSelectorStore
@@ -162,7 +175,7 @@ const CodeAuthStore = types.model('CodeAuthStore', {
  * @property {StringSelectorStore|undefined} downloadUrl
  * @property {NumberSelectorStore|undefined} seeds
  * @property {NumberSelectorStore|undefined} peers
- * @property {StringSelectorStore|undefined} date
+ * @property {NumberSelectorStore|undefined} date
  * @property {StringSelectorStore|undefined} nextPageUrl
  * @property {function} set
  * @property {function} getDefaultPipeline
@@ -180,7 +193,7 @@ const CodeSelectorsStore = types.model('CodeSelectorsStore', {
   downloadUrl: types.maybe(StringSelectorStore),
   seeds: types.maybe(NumberSelectorStore),
   peers: types.maybe(NumberSelectorStore),
-  date: types.maybe(StringSelectorStore),
+  date: types.maybe(NumberSelectorStore),
   nextPageUrl: types.maybe(StringSelectorStore),
 }).actions(self => {
   return {
@@ -206,7 +219,7 @@ const CodeSelectorsStore = types.model('CodeSelectorsStore', {
           name: 'parseSize'
         }];
       } else
-      if (/Link$/.test(id)) {
+      if (/Url$/.test(id)) {
         pipeline = [{
           name: 'getProp',
           args: ['href']

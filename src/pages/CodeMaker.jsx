@@ -14,6 +14,7 @@ import ExKitTracker from "../sandbox/exKitTracker";
 import exKitRequestOptionsNormalize from "../tools/exKitRequestOptionsNormalize";
 import CodeMakerFrame from "../components/CodeMakerFrame";
 import getTitle from "../tools/getTitle";
+import {autorun} from "mobx";
 
 const logger = getLogger('codeMaker');
 
@@ -299,19 +300,45 @@ class CodeMakerSelectorsPage extends React.Component {
     return this.props.codeStore.selectors;
   }
 
+  outputAutorun = null;
+  componentWillUnmount() {
+    if (this.outputAutorun) {
+      this.outputAutorun();
+      this.outputAutorun = null;
+    }
+  }
+
+  activeSelector = null;
+  setActiveSelector = (component) => {
+    if (this.activeSelector !== component) {
+      if (this.outputAutorun) {
+        this.outputAutorun();
+        this.outputAutorun = null;
+      }
+
+      this.activeSelector = component;
+
+      this.outputAutorun = autorun(() => {
+        if (this.activeSelector && this.activeSelector.selectorStore) {
+          this.activeSelector.updateResult();
+        }
+      });
+    }
+  };
+
   render() {
     const pipelineProps = {
       store: this.codeSearchSelectors,
       onResolvePath: this.props.onResolvePath,
       onHighlightPath: this.props.onHighlightPath,
+      setActiveSelector: this.setActiveSelector,
     };
 
     return (
       <div className="page selectors">
         <h2>{chrome.i18n.getMessage('kitSelectors')}</h2>
-        <ElementSelector store={this.codeSearchSelectors}
-          onResolvePath={this.props.onResolvePath} onHighlightPath={this.props.onHighlightPath}
-         id={'row'} type="text" className={'input'} title={chrome.i18n.getMessage('kitRowSelector')}/>
+        <ElementSelector {...pipelineProps} id={'row'} type="text"
+          className={'input'} title={chrome.i18n.getMessage('kitRowSelector')}/>
         <div className="field skip-field">
           <div className={'field-left'}>
             <span className="field-name">{chrome.i18n.getMessage('kitSkip')}</span>

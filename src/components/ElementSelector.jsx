@@ -18,6 +18,7 @@ class _ElementSelector extends React.Component {
     rootStore: PropTypes.object,
     onResolvePath: PropTypes.func,
     onHighlightPath: PropTypes.func,
+    setActiveSelector: PropTypes.func,
   };
 
   constructor(props) {
@@ -30,22 +31,14 @@ class _ElementSelector extends React.Component {
     showAddDialog: false,
     snapshot: null,
     inputError: null,
+    selectMode: false
   };
 
-  outputAutorun = null;
-  componentDidMount() {
-    this.outputAutorun = autorun(() => {
-      if (this.selectorStore) {
-        this.updateResult();
-      }
-    });
-  }
-
   componentWillUnmount() {
-    this.fireActiveSelect();
-    if (this.outputAutorun) {
-      this.outputAutorun();
+    if (this.props.setActiveSelector) {
+      this.props.setActiveSelector(null);
     }
+    this.fireActiveSelect();
   }
 
   get frameStore() {
@@ -100,10 +93,27 @@ class _ElementSelector extends React.Component {
 
   handleSelect = e => {
     e.preventDefault();
-    this.frameStore.setSelect(true, this.getContainerSelector(), this.selectListener, this.handleSelectElement);
+
+    if (this.props.setActiveSelector) {
+      this.props.setActiveSelector(this);
+    }
+
+    this.frameStore.setSelect(true, {
+      containerSelector: this.getContainerSelector(),
+      skipFromStart: this.store.skipFromStart,
+      skipFromEnd: this.store.skipFromEnd,
+    }, this.selectListener, this.handleSelectElement);
+
+    this.setState({
+      selectMode: true,
+    });
 
     this.activeSelect = () => {
       this.frameStore.setSelect();
+
+      this.setState({
+        selectMode: false,
+      });
     };
   };
 
@@ -115,28 +125,49 @@ class _ElementSelector extends React.Component {
   handleSelectElement = (path) => {
     this.frameStore.setSelect();
 
+    this.setState({
+      selectMode: false,
+    });
+
     this.input.value = path;
     this.handleChange();
   };
 
   updateResult() {
+    if (this.props.setActiveSelector) {
+      this.props.setActiveSelector(this);
+    }
+
     if (this.state.inputError) {
       this.setState({
         inputError: null
       });
     }
 
+    const selector = this.selectorStore.selector;
+
     try {
-      const node = this.props.onResolvePath(this.selectorStore.selector);
+      const node = this.props.onResolvePath(selector);
       if (!node) {
         throw new Error('Node is not found');
       }
     } catch (err) {
-      logger('updateResult error', err);
+      logger('updateResult error', selector, err);
 
       this.setState({
         inputError: err.message
       });
+    }
+
+    try {
+      this.props.onHighlightPath(selector, {
+        containerSelector: this.getContainerSelector(),
+        skipFromStart: this.store.skipFromStart,
+        skipFromEnd: this.store.skipFromEnd,
+        scrollIntoView: true
+      });
+    } catch (err) {
+      logger.error('highlightPath error', selector, err);
     }
   }
 
@@ -147,15 +178,6 @@ class _ElementSelector extends React.Component {
   handleKeyup = (e) => {
     if (this.selectorStore) {
       this.updateResult();
-      try {
-        this.props.onHighlightPath(this.selectorStore.selector, {
-          containerSelector: this.getContainerSelector(),
-          skipFromStart: this.store.skipFromStart,
-          skipFromEnd: this.store.skipFromEnd,
-        });
-      } catch (err) {
-        // pass
-      }
     }
   };
 
@@ -188,10 +210,15 @@ class _ElementSelector extends React.Component {
       inputClassList.push('error');
     }
 
+    let isReadonly = false;
+    if (this.state.selectMode) {
+      isReadonly = true;
+    }
+
     return (
       <div className="field">
         {title}
-        <input disabled={isDisabled} type={type} defaultValue={defaultValue} data-id={id} ref={this.refInput} onChange={this.handleChange} onKeyUp={this.handleKeyup} className={inputClassList.join(' ')}/>
+        <input disabled={isDisabled} readOnly={isReadonly} type={type} defaultValue={defaultValue} data-id={id} ref={this.refInput} onChange={this.handleChange} onKeyUp={this.handleKeyup} className={inputClassList.join(' ')}/>
         {children}
         <input disabled={isDisabled} onClick={this.handleSelect} type="button" data-id={`${id}-btn`} value={chrome.i18n.getMessage('kitSelect')}/>
       </div>

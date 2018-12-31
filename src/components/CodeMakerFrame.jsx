@@ -124,6 +124,9 @@ class CodeMakerFrame extends React.Component {
     this.hideSelect();
     if (node) {
       node.classList.add(this.selectClassName);
+      if (options.scrollIntoView) {
+        node.scrollIntoView();
+      }
     }
   }
 
@@ -162,6 +165,12 @@ const getContainer = (doc, options) => {
   } else {
     container = doc;
   }
+
+  if (!container) {
+    logger.error('Container is not found', options);
+    throw new Error('Container is not found');
+  }
+
   return container;
 };
 
@@ -170,7 +179,7 @@ const getContainer = (doc, options) => {
 class CodeMakerFrameSelectMode extends React.Component {
   static propTypes = {
     rootStore: PropTypes.object,
-    frameDoc: PropTypes.instanceOf(HTMLDocument),
+    frameDoc: PropTypes.object,
     selectClassName: PropTypes.string,
     hideSelect: PropTypes.func,
   };
@@ -212,8 +221,16 @@ class CodeMakerFrameSelectMode extends React.Component {
 
   getPath(node) {
     let container = null;
-    if (this.frameStore.containerSelector) {
-      container = sizzleQuerySelector(this.props.frameDoc, this.frameStore.containerSelector);
+    const options = this.frameStore.selectOptions;
+    if (options && options.containerSelector) {
+      container = sizzleQuerySelectorAll(this.props.frameDoc, options.containerSelector);
+      if (options.skipFromStart) {
+        container.splice(0, options.skipFromStart);
+      }
+      if (options.skipFromEnd) {
+        container.splice(options.skipFromEnd * -1);
+      }
+      container = container[0];
     } else {
       container = this.props.frameDoc;
     }
