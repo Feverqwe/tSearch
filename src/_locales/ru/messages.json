@@ -164,6 +164,9 @@
   "invertIcon": {
     "message": "Инвертировать цвет иконки расширения"
   },
+  "defineCategory": {
+    "message": "Автоматически определять категорию раздачи"
+  },
   "favorites": {
     "message": "Избранное"
   },
@@ -250,6 +253,48 @@
   },
   "login": {
     "message": "Войти"
+  },
+  "categoryFilms": {
+    "message": "Фильмы"
+  },
+  "categorySerials": {
+    "message": "Сериалы"
+  },
+  "categoryAnime": {
+    "message": "Анимэ"
+  },
+  "categoryDocumentary": {
+    "message": "Докум."
+  },
+  "categoryHumor": {
+    "message": "Юмор"
+  },
+  "categoryMusic": {
+    "message": "Музыка"
+  },
+  "categoryGames": {
+    "message": "Игры"
+  },
+  "categoryBooks": {
+    "message": "Книги"
+  },
+  "categoryCartoons": {
+    "message": "Мультфильмы"
+  },
+  "categorySoft": {
+    "message": "ПО"
+  },
+  "categorySport": {
+    "message": "Спорт"
+  },
+  "categoryXXX": {
+    "message": "XXX"
+  },
+  "categoryOther": {
+    "message": "Прочее"
+  },
+  "categoryAll": {
+    "message": "Всё"
   },
   "createCode": {
     "message": "Создать код"

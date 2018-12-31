@@ -2,20 +2,25 @@ import {getParentOfType, types} from "mobx-state-tree";
 import ResultPageItemStore from "./ResultPageItemStore";
 import RootStore from "./RootStore";
 import sortResults from "../tools/sortResults";
+import SearchStore from "./SearchStore";
 
 
 /**
  * @typedef {{}} SearchPageStore
  * @property {ResultPageItemStore[]} results
  * @property {{by:string,[direction]:number}[]} sorts
+ * @property {Map<*,number>} trackerIdCountMap
  * @property {function} sortBy
  * @property {function} appendSortBy
  * @property {function} appendResults
+ * @property {function} incTrackerCount
  * @property {function} getSortBy
  * @property {function} getFilterBySelectedTrackers
+ * @property {function} getCategoryFilter
  * @property {*} filteredResults
- * @property {function} getSortedAndFilteredResults
+ * @property {*} sortedAndFilteredResults
  * @property {function} getResultCountByTrackerId
+ * @property {function} getResultCountByCategoryId
  * @property {function} getVisibleResultCountByTrackerId
  */
 const SearchPageStore = types.model('SearchPageStore', {
@@ -24,6 +29,7 @@ const SearchPageStore = types.model('SearchPageStore', {
     by: types.string,
     direction: types.optional(types.number, 0),
   })),
+  categoryId: types.maybe(types.number),
   trackerIdCountMap: types.map(types.number),
 }).actions(self => {
   return {
@@ -64,6 +70,11 @@ const SearchPageStore = types.model('SearchPageStore', {
     incTrackerCount(trackerId, count) {
       const trackerIdCount = self.trackerIdCountMap.get(trackerId) || 0;
       self.trackerIdCountMap.set(trackerId, trackerIdCount + count);
+    },
+    setCategoryId(value) {
+      const /**SearchStore*/searchStore = getParentOfType(self, SearchStore);
+      searchStore.setCategoryId(value);
+      self.categoryId = value;
     }
   };
 }).views(self => {
@@ -85,15 +96,34 @@ const SearchPageStore = types.model('SearchPageStore', {
         return prepSelectedTrackerIds.indexOf(result.trackerId) !== -1;
       };
     },
+    getCategoryFilter() {
+      return result => {
+        const categoryId = self.categoryId;
+        if (categoryId === undefined) {
+          return true;
+        } else {
+          return result.categoryId === categoryId;
+        }
+      };
+    },
     get filteredResults() {
       const /**RootStore*/rootStore = getParentOfType(self, RootStore);
       return multiFilter(self.results, self.getFilterBySelectedTrackers(), rootStore.filters.getFilter());
     },
     get sortedAndFilteredResults() {
-      return sortResults(self.filteredResults.slice(0), self.sorts);
+      const categoryFilter = self.getCategoryFilter();
+      return sortResults(self.filteredResults.filter(categoryFilter), self.sorts);
     },
     getResultCountByTrackerId(id) {
       return self.trackerIdCountMap.get(id) || 0;
+    },
+    getResultCountByCategoryId(id) {
+      if (id === undefined) {
+        return self.filteredResults.length;
+      }
+      return self.filteredResults.filter(result => {
+        return result.categoryId === id;
+      }).length;
     },
     getVisibleResultCountByTrackerId(id) {
       return self.filteredResults.filter(result => {

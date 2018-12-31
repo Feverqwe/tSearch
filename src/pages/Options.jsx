@@ -73,6 +73,7 @@ class Options extends React.Component {
             <OptionCheckbox name={'contextMenu'}/>
             <OptionCheckbox name={'disablePopup'}/>
             <OptionCheckbox name={'invertIcon'}/>
+            <OptionCheckbox name={'defineCategory'}/>
             <OptionCheckbox name={'doNotSendStatistics'}/>
           </div>
         );

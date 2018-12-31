@@ -15,17 +15,32 @@ class SearchPage extends React.Component {
     searchPageStore: PropTypes.object,
   };
 
+  /**@return RootStore*/
+  get rootStore() {
+    return this.props.rootStore;
+  }
+
+  /**@return SearchPageStore*/
+  get searchPageStore() {
+    return this.props.searchPageStore;
+  }
+
   render() {
-    const results = this.props.searchPageStore.sortedAndFilteredResults;
-    if (!results.length) {
+    if (!this.searchPageStore.filteredResults.length) {
       return null;
     }
 
+    const categories = categoryList.map((category, index) => {
+      return (
+        <SearchPageCategoryItem key={`category-${index}`} searchPageStore={this.searchPageStore} category={category}/>
+      );
+    });
+
     const columns = ['date', 'quality', 'title', 'size', 'seeds', 'peers'];
-    if (this.props.rootStore.options.options.hidePeerRow) {
+    if (this.rootStore.options.options.hidePeerRow) {
       columns.splice(columns.indexOf('peers'), 1);
     }
-    if (this.props.rootStore.options.options.hideSeedRow) {
+    if (this.rootStore.options.options.hideSeedRow) {
       columns.splice(columns.indexOf('seeds'), 1);
     }
 
@@ -35,23 +50,28 @@ class SearchPage extends React.Component {
       )
     });
 
-    const body = results.map(result => {
+    const body = this.searchPageStore.sortedAndFilteredResults.map(result => {
       return (
         <SearchPageRow key={`result-${result.url}`} {...this.props} columns={columns} result={result}/>
       )
     });
 
     return (
-      <div className="table table-results">
-        <div className="table__head">
-          <div className="row head__row">
-            {headers}
-          </div>
-          <div className="body table__body">
-            {body}
+      <>
+        <div className="categories">
+          {categories}
+        </div>
+        <div className="table table-results">
+          <div className="table__head">
+            <div className="row head__row">
+              {headers}
+            </div>
+            <div className="body table__body">
+              {body}
+            </div>
           </div>
         </div>
-      </div>
+      </>
     );
   }
 }
@@ -97,6 +117,48 @@ class SearchPageColumn extends React.Component {
       <a className={classList.join(' ')} href={'#sort-by_' + type} onClick={this.handleClick}>
         <span className="cell__title" title={name}>{nameShort}</span>
         <i className="cell__sort"/>
+      </a>
+    );
+  }
+}
+
+@observer
+class SearchPageCategoryItem extends React.Component {
+  static propTypes = {
+    category: PropTypes.object.isRequired,
+    searchPageStore: PropTypes.object.isRequired,
+  };
+
+  /**@return SearchPageStore*/
+  get searchPageStore() {
+    return this.props.searchPageStore;
+  }
+
+  handleClick = (e) => {
+    e.preventDefault();
+    this.searchPageStore.setCategoryId(this.props.category.id);
+  };
+
+  render() {
+    const category = this.props.category;
+
+    let isSelected = this.searchPageStore.categoryId === category.id;
+
+    const count = this.searchPageStore.getResultCountByCategoryId(category.id);
+    if (!count && !isSelected) {
+      return null;
+    }
+
+    const classList = ['category'];
+    if (isSelected) {
+      classList.push('selected');
+    }
+
+    return (
+      <a onClick={this.handleClick} className={classList.join(' ')} href={'#'}>
+        {chrome.i18n.getMessage(category.name)}
+        {' '}
+        <i>{count}</i>
       </a>
     );
   }
@@ -230,5 +292,22 @@ class SearchPageRow extends React.Component {
     );
   }
 }
+
+const categoryList = [
+  {id: undefined, name: 'categoryAll'},
+  {id:  3, name: 'categoryFilms'},
+  {id:  0, name: 'categorySerials'},
+  {id:  7, name: 'categoryAnime'},
+  {id:  8, name: 'categoryDocumentary'},
+  {id: 11, name: 'categoryHumor'},
+  {id:  1, name: 'categoryMusic'},
+  {id:  2, name: 'categoryGames'},
+  {id:  5, name: 'categoryBooks'},
+  {id:  4, name: 'categoryCartoons'},
+  {id:  6, name: 'categorySoft'},
+  {id:  9, name: 'categorySport'},
+  {id: 10, name: 'categoryXXX'},
+  {id: -1, name: 'categoryOther'}
+];
 
 export default SearchPage;

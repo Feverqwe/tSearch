@@ -36,7 +36,7 @@ class ProfileTracker extends React.Component {
   get trackerSearchStore() {
     const searchStore = this.searchStore;
     if (searchStore) {
-      return searchStore.trarckerSearch.get(this.props.id);
+      return searchStore.trackerSearch.get(this.props.id);
     }
   }
 

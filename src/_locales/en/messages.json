@@ -164,6 +164,9 @@
     "invertIcon": {
         "message": "To invert the color of the icon"
     },
+    "defineCategory": {
+        "message": "Trying to define the category"
+    },
     "favorites": {
         "message": "Favorites"
     },
@@ -250,6 +253,48 @@
     },
     "login": {
         "message": "Login"
+    },
+    "categoryFilms": {
+        "message": "Films"
+    },
+    "categorySerials": {
+        "message": "Serials"
+    },
+    "categoryAnime": {
+        "message": "Anime"
+    },
+    "categoryDocumentary": {
+        "message": "Doc."
+    },
+    "categoryHumor": {
+        "message": "Humor"
+    },
+    "categoryMusic": {
+        "message": "Music"
+    },
+    "categoryGames": {
+        "message": "Games"
+    },
+    "categoryBooks": {
+        "message": "Books"
+    },
+    "categoryCartoons": {
+        "message": "Cartoons"
+    },
+    "categorySoft": {
+        "message": "Software"
+    },
+    "categorySport": {
+        "message": "Sport"
+    },
+    "categoryXXX": {
+        "message": "XXX"
+    },
+    "categoryOther": {
+        "message": "Other"
+    },
+    "categoryAll": {
+        "message": "All"
     },
     "createCode": {
         "message": "Create code"

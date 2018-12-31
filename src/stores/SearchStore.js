@@ -12,7 +12,7 @@ import SearchPageStore from "./SearchPageStore";
 const logger = getLogger('SearchStore');
 
 /**
- * @typedef {{}} TrarckerSearchStore
+ * @typedef {{}} TrackerSearchStore
  * @property {string} id
  * @property {string} [state]
  * @property {*} nextQuery
@@ -25,7 +25,7 @@ const logger = getLogger('SearchStore');
  * @property {*} queryHighlightMap
  * @property {*} queryRateScheme
  */
-const TrarckerSearchStore = types.model('TrarckerSearchStore', {
+const TrackerSearchStore = types.model('TrackerSearchStore', {
   id: types.string,
   state: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
   nextQuery: types.frozen(),
@@ -36,6 +36,8 @@ const TrarckerSearchStore = types.model('TrarckerSearchStore', {
   return {
     searchWrapper: flow(function* (searchFn) {
       const {id, queryHighlightMap, queryRateScheme} = self;
+      const /**RootStore*/rootStore = getParentOfType(self, RootStore);
+      const defineCategory = rootStore.options.options.defineCategory;
       self.state = 'pending';
       try {
         const tracker = self.tracker;
@@ -60,7 +62,7 @@ const TrarckerSearchStore = types.model('TrarckerSearchStore', {
           self.nextQuery = result.nextPageRequest;
           self.state = 'done';
         }
-        return prepSearchResults(id, queryHighlightMap, queryRateScheme, result.results);
+        return prepSearchResults(id, queryHighlightMap, queryRateScheme, result.results, defineCategory);
       } catch (err) {
         if (isAlive(self)) {
           self.state = 'error';
@@ -112,12 +114,14 @@ const TrarckerSearchStore = types.model('TrarckerSearchStore', {
  * @property {number} id
  * @property {string} [state]
  * @property {string} query
- * @property {Map<*,TrarckerSearchStore>} trarckerSearch
+ * @property {Map<*,TrackerSearchStore>} trackerSearch
  * @property {SearchPageStore[]} pages
+ * @property {number} [categoryId]
  * @property {function:Promise} searchWrapper
  * @property {function} search
  * @property {function} searchNext
  * @property {function} createTrackerSearch
+ * @property {function} setCategoryId
  * @property {*} queryHighlightMap
  * @property {*} queryRateScheme
  * @property {function} getResultCountByTrackerId
@@ -128,8 +132,9 @@ const SearchStore = types.model('SearchStore', {
   id: types.identifierNumber,
   state: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
   query: types.string,
-  trarckerSearch: types.map(TrarckerSearchStore),
+  trackerSearch: types.map(TrackerSearchStore),
   pages: types.array(SearchPageStore),
+  categoryId: types.maybe(types.number),
 }).actions(self => {
   return {
     searchWrapper: flow(function* (serachFn) {
@@ -139,6 +144,7 @@ const SearchStore = types.model('SearchStore', {
 
         const page = SearchPageStore.create({
           sorts: JSON.parse(JSON.stringify(rootStore.options.options.sorts)),
+          categoryId: self.categoryId && JSON.parse(JSON.stringify(self.categoryId)),
         });
         self.pages.push(page);
 
@@ -175,16 +181,19 @@ const SearchStore = types.model('SearchStore', {
     },
     createTrackerSearch(trackerId) {
       let nextQuery = undefined;
-      const prevTrackerSearch = self.trarckerSearch.get(trackerId);
+      const prevTrackerSearch = self.trackerSearch.get(trackerId);
       if (prevTrackerSearch && prevTrackerSearch.state === 'done') {
         nextQuery =  prevTrackerSearch.nextQuery;
       }
-      const trackerSearch = TrarckerSearchStore.create({
+      const trackerSearch = TrackerSearchStore.create({
         id: trackerId,
         nextQuery: nextQuery
       });
-      self.trarckerSearch.set(trackerId, trackerSearch);
+      self.trackerSearch.set(trackerId, trackerSearch);
       return trackerSearch;
+    },
+    setCategoryId(value) {
+      self.categoryId = value;
     }
   };
 }).views(self => {
@@ -218,7 +227,7 @@ const SearchStore = types.model('SearchStore', {
     get hasNextQuery() {
       const /**RootStore*/rootStore = getParentOfType(self, RootStore);
       const prepSelectedTrackerIds = rootStore.profiles.prepSelectedTrackerIds;
-      for (let trackerSearch of self.trarckerSearch.values()) {
+      for (let trackerSearch of self.trackerSearch.values()) {
         if (trackerSearch.nextQuery) {
           if (prepSelectedTrackerIds.indexOf(trackerSearch.id) !== -1) {
             return true;
@@ -229,7 +238,7 @@ const SearchStore = types.model('SearchStore', {
   };
 });
 
-const prepSearchResults = (trackerId, queryHighlightMap, queryRateScheme, results) => {
+const prepSearchResults = (trackerId, queryHighlightMap, queryRateScheme, results, defineCategory) => {
   return results.filter(result => {
     if (!result.url) {
       logger.warn(`[${trackerId}] Skip torrent, cause no url`, result);
@@ -239,7 +248,7 @@ const prepSearchResults = (trackerId, queryHighlightMap, queryRateScheme, result
       logger.warn(`[${trackerId}] Skip torrent cause no title`, result);
       return false;
     } else {
-      ['size', 'seeds', 'peers', 'date'].forEach(key => {
+      ['size', 'seeds', 'peers', 'date', 'categoryId'].forEach(key => {
         let value = result[key];
         if (['undefined', 'number'].indexOf(typeof value) === -1) {
           value = parseInt(value, 10);
@@ -263,6 +272,13 @@ const prepSearchResults = (trackerId, queryHighlightMap, queryRateScheme, result
       }
       result.titleLowerCase = result.title.toLowerCase();
       result.categoryTitleLowerCase = (result.categoryTitle || '').toLowerCase();
+
+      if (result.categoryId === undefined) {
+        result.categoryId = -1;
+      }
+      if (defineCategory && result.categoryId === -1) {
+        result.categoryId = rate.categoryDefine(itemRate, result.categoryTitleLowerCase);
+      }
       return true;
     }
   });
