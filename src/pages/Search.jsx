@@ -107,6 +107,9 @@ class SearchSession extends React.Component {
   componentDidMount() {
     this.searchStore.search();
     this.rootStore.history.addQuery(this.searchStore.query);
+    if (window.ga && this.searchStore.query) {
+      window.ga('send', 'event', 'Search', 'keyword', this.searchStore.query);
+    }
   }
 
   componentWillUnmount() {
