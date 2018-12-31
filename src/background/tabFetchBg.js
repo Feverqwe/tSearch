@@ -30,7 +30,7 @@ class TabFetchBg {
 
     const hasPermissions = await containsPermissions(permissions);
     if (!hasPermissions) {
-      await requsetPermissions(permissions);
+      await requestPermissions(permissions);
     }
 
     if (!this.senderTabMap.has(senderTabId)) {
@@ -403,7 +403,7 @@ const containsPermissions = (permissions) => {
   });
 };
 
-const requsetPermissions = (permissions) => {
+const requestPermissions = (permissions) => {
   return new Promise((resolve, reject) => {
     chrome.permissions.request(permissions, (result) => {
       const err = chrome.runtime.lastError;
