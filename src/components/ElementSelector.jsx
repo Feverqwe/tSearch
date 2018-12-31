@@ -164,7 +164,7 @@ class _ElementSelector extends React.Component {
         containerSelector: this.getContainerSelector(),
         skipFromStart: this.store.skipFromStart,
         skipFromEnd: this.store.skipFromEnd,
-        scrollIntoView: true
+        scrollIntoView: !this.state.selectMode
       });
     } catch (err) {
       logger.error('highlightPath error', selector, err);
