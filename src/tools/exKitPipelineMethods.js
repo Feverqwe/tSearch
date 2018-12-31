@@ -94,7 +94,18 @@ const exKitPipelineMethods = {
     out: 'number',
     getMethod() {
       return import('filesize-parser').then(module => {
-        const filesizeParser = module.default;
+        const filesizeParser = ((filesizeParser) => {
+          return (...args) => {
+            try {
+              return filesizeParser(...args);
+            } catch (err) {
+              if (typeof err === 'string') {
+                err = new Error(err);
+              }
+              throw err;
+            }
+          };
+        })(module.default);
         return assertType(isString, isNumber, value => filesizeParser(value));
       });
     }
