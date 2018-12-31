@@ -3,6 +3,10 @@ import "whatwg-fetch";
 import getLogger from "../tools/getLogger";
 import {ErrorWithCode} from "../tools/errors";
 
+window.ga = window.ga || function() {
+  (window.ga.q = window.ga.q || []).push(arguments);
+};
+
 const logger = getLogger('AnalyticsStore');
 
 /**
@@ -48,9 +52,7 @@ const AnalyticsStore = types.model('AnalyticsStore', {
 
 const initGa = () => {
   window.GoogleAnalyticsObject = 'ga';
-  const ga = window.ga = window.ga || function() {
-    (window.ga.q = window.ga.q || []).push(arguments);
-  };
+  const ga = window.ga;
 
   ga.l = Date.now();
   ga('create', 'UA-10717861-22', 'auto');
