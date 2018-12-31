@@ -3,10 +3,16 @@ import exKitPipelineMethods from "../tools/exKitPipelineMethods";
 import ReactDOM from "react-dom";
 
 class AddMethodDialog extends React.Component {
-  state = {
-    methodName: null,
-    clonedInputs: 0
-  };
+  constructor(props) {
+    super(props);
+
+    const defaultMethod = Object.keys(exKitPipelineMethods)[0] || null;
+
+    this.state = {
+      methodName: defaultMethod,
+      clonedInputs: 0
+    };
+  }
 
   select = null;
   refSelect = element => {
