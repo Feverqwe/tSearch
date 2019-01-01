@@ -108,7 +108,8 @@ class ExKitTracker {
     const errors = [];
     const cache = {};
 
-    ['categoryTitle', 'categoryUrl', 'categoryId', 'title', 'url', 'size', 'downloadUrl', 'seeds', 'peers', 'date'].forEach(key => {
+    const selectors = ['categoryTitle', 'categoryUrl', 'categoryId', 'title', 'url', 'size', 'downloadUrl', 'seeds', 'peers', 'date'];
+    for (let key, i = 0; key = selectors[i]; i++) {
       const selector = this.code.selectors[key];
       if (selector) {
         try {
@@ -121,7 +122,7 @@ class ExKitTracker {
           });
         }
       }
-    });
+    }
 
     if (!result.title) {
       const err = new Error('Title is not exists');
