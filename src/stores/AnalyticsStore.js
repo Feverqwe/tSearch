@@ -1,5 +1,4 @@
 import {flow, isAlive, types} from "mobx-state-tree";
-import "whatwg-fetch";
 import getLogger from "../tools/getLogger";
 import {ErrorWithCode} from "../tools/errors";
 
