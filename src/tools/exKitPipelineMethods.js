@@ -60,6 +60,7 @@ const exKitPipelineMethods = {
       return assertType(isString, isString, value => value.trim());
     }
   },
+
   replace: {
     in: 'string',
     args: [{
@@ -70,7 +71,23 @@ const exKitPipelineMethods = {
       type: 'string',
     }],
     out: 'string',
-    getMethod(re, replaceTo) {
+    getMethod(pattern, replaceTo) {
+      return assertType(isString, isString, value => value.replace(pattern, replaceTo));
+    }
+  },
+
+  replaceRe: {
+    in: 'string',
+    args: [{
+      name: 'Pattern',
+      type: 'string',
+    }, {
+      name: 'ReplaceTo',
+      type: 'string',
+    }],
+    out: 'string',
+    getMethod(reStr, replaceTo) {
+      const re = new RegExp(reStr, 'ig');
       return assertType(isString, isString, value => value.replace(re, replaceTo));
     }
   },

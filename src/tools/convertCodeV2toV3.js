@@ -71,7 +71,7 @@ const convertSelector = (selector, postProcess) => {
     } else
     if (item.name === 'replaceRe') {
       result.pipeline.push({
-        name: 'replace',
+        name: 'replaceRe',
         args: [item.re, item.text]
       });
     } else
