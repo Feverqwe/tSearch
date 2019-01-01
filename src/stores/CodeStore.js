@@ -367,17 +367,30 @@ const CodeStore = types.model('CodeStore', {
   };
 });
 
-const getSnapshot = (store) => {
-  const result = {};
-  Object.entries(store).forEach(([key, value]) => {
-    if (value && value.getSnapshot) {
-      value = value.getSnapshot();
+const getSnapshot = (value, level = 0) => {
+  if (value === undefined || value === null) {
+    return value;
+  }
+
+  if (typeof value !== 'object') {
+    return JSON.parse(JSON.stringify(value));
+  }
+
+  if (Array.isArray(value)) {
+    return value.map(value => getSnapshot(value, level + 1));
+  }
+
+  if (level > 0 && value.getSnapshot) {
+    return value.getSnapshot();
+  }
+
+  return Object.entries(value).reduce((result, [key, value]) => {
+    let snapshot = getSnapshot(value, level + 1);
+    if (snapshot !== undefined) {
+      result[key] = snapshot;
     }
-    if (value !== undefined) {
-      result[key] = JSON.parse(JSON.stringify(value));
-    }
-  });
-  return result;
+    return result;
+  }, {});
 };
 
 export default CodeStore;

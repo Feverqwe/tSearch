@@ -66,7 +66,7 @@ class ExKitTracker {
       this.code.hooks.onGetDoc(session, doc);
     }
 
-    if (this.code.auth.loginForm && sizzleQuerySelector(doc, this.code.auth.loginForm.selector)) {
+    if (this.code.auth && this.code.auth.loginForm && sizzleQuerySelector(doc, this.code.auth.loginForm.selector)) {
       throw new AuthError(this.code.auth.url);
     }
 

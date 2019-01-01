@@ -553,7 +553,7 @@ class CodeMakerSavePage extends React.Component {
 
   handleGetCode = e => {
     e.preventDefault();
-    this.textarea.value = JSON.stringify(this.props.codeMaker.codeJson);
+    this.textarea.value = this.props.codeMaker.codeJson;
   };
 
   textarea = null;
