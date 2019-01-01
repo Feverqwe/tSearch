@@ -34,20 +34,16 @@ let tabFetchBg = null;
 const optionsStore = OptionsStore.create();
 
 optionsStore.fetchOptions().then(() => {
-  let isResetUpdateIcon = false;
   autorun(() => {
-    updateIcon(optionsStore.options.invertIcon, isResetUpdateIcon);
-    isResetUpdateIcon = true;
+    updateIcon(optionsStore.options.invertIcon);
   });
 
   autorun(() => {
     setContextMenu(optionsStore.options.contextMenu);
   });
 
-  let isResetSetPopupMenu = false;
   autorun(() => {
-    setPopupMenu(optionsStore.options.disablePopup, isResetSetPopupMenu);
-    isResetSetPopupMenu = true;
+    setPopupMenu(optionsStore.options.disablePopup);
   });
 });
 
@@ -120,16 +116,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, response) {
   }
 });
 
-const updateIcon = (invertIcon, reset) => {
-  if (reset) {
-    chrome.browserAction.setIcon({
-      path: {
-        19: 'assets/icons/icon_19.png',
-        38: 'assets/icons/icon_38.png'
-      }
-    });
-  }
-
+const updateIcon = (invertIcon) => {
   if (invertIcon) {
     chrome.browserAction.setIcon({
       path: {
@@ -137,11 +124,17 @@ const updateIcon = (invertIcon, reset) => {
         38: 'assets/icons/icon_38_i.png'
       }
     });
+  } else {
+    chrome.browserAction.setIcon({
+      path: {
+        19: 'assets/icons/icon_19.png',
+        38: 'assets/icons/icon_38.png'
+      }
+    });
   }
 };
 
 const setContextMenu = (contextMenu) => {
-  chrome.contextMenus.onClicked.removeListener(contextMenuClickedListener);
   chrome.contextMenus.removeAll(function () {
     if (contextMenu) {
       chrome.contextMenus.create({
@@ -150,38 +143,33 @@ const setContextMenu = (contextMenu) => {
         title: chrome.i18n.getMessage('contextMenuTitle'),
         contexts: ["selection"]
       });
-      chrome.contextMenus.onClicked.addListener(contextMenuClickedListener);
     }
   });
 };
 
-const contextMenuClickedListener = (info) => {
+chrome.contextMenus.onClicked.addListener((info) => {
   if (info.menuItemId === 'tms') {
     openSearchPage(info.selectionText);
   }
-};
+});
 
-const setPopupMenu = (disablePopup, reset) => {
-  if (reset) {
-    chrome.browserAction.onClicked.removeListener(onBrowserActionClickedListener);
+const setPopupMenu = (disablePopup) => {
+  if (disablePopup) {
+    chrome.browserAction.setPopup({
+      popup: ''
+    });
+  } else {
     chrome.browserAction.setPopup({
       popup: 'popup.html'
     });
   }
-
-  if (disablePopup) {
-    chrome.browserAction.onClicked.addListener(onBrowserActionClickedListener);
-    chrome.browserAction.setPopup({
-      popup: ''
-    });
-  }
 };
 
-const onBrowserActionClickedListener = () => {
+chrome.browserAction.onClicked.addListener(() => {
   chrome.tabs.create({
     url: 'index.html'
   });
-};
+});
 
 const openSearchPage = (query) => {
   let url = 'index.html';
