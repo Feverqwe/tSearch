@@ -210,7 +210,7 @@ class QueryDescription extends React.Component {
 
     const listItems = this.queryDescription.list.map(({key, value}, index) => {
       return (
-        <div key={index}>
+        <div key={index} className="item">
           <span className="key">{key}</span>
           {' '}
           <span>{value}</span>
