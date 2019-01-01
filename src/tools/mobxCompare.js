@@ -13,7 +13,9 @@ const mobxCompare = (mobxOldValue, newValue) => {
     oldValue = mobxOldValue;
   }
   return compare(oldValue, newValue).filter((patch) => {
-    patch.path = patch.path.split('/').map(part => escapeJsonPath(unescapePathComponent(part))).join('/');
+    if (patch.path.indexOf('~') !== -1) {
+      patch.path = patch.path.split('/').map(part => escapeJsonPath(unescapePathComponent(part))).join('/');
+    }
 
     if (patch.op === 'remove') {
       const value = resolvePathFixed(mobxOldValue, patch.path);
