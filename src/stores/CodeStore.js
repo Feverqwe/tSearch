@@ -6,6 +6,7 @@ import {isNumber, isString} from "../tools/assertType";
  * @property {string} name
  * @property {*[]} args
  * @property {function} setArgs
+ * @property {function} getSnapshot
  */
 const MethodStore = types.model('MethodStore', {
   name: types.string,
@@ -36,6 +37,8 @@ const MethodStore = types.model('MethodStore', {
  * @property {function} addMethod
  * @property {function} removeMethod
  * @property {function} moveMethod
+ * @property {function} verifyType
+ * @property {function} getSnapshot
  */
 const StringSelectorStore = types.model('StringSelectorStore', {
   selector: types.string,
@@ -103,6 +106,7 @@ const StringSelectorStore = types.model('StringSelectorStore', {
  * @typedef {StringSelectorStore} NumberSelectorStore
  * @property {string} selector
  * @property {MethodStore[]} pipeline
+ * @property {function} verifyType
  */
 const NumberSelectorStore = types.compose('NumberSelectorStore', StringSelectorStore, types.model({
   selector: types.string,
@@ -117,7 +121,7 @@ const NumberSelectorStore = types.compose('NumberSelectorStore', StringSelectorS
 
 /**
  * @typedef {{}} ElementSelectorStore
- * @property {string} [selector]
+ * @property {string} selector
  * @property {function} set
  */
 const ElementSelectorStore = types.model('ElementSelectorStore', {
@@ -142,6 +146,7 @@ const ElementSelectorStore = types.model('ElementSelectorStore', {
  * @property {string} [query]
  * @property {string} [charset]
  * @property {function} set
+ * @property {function} getSnapshot
  */
 const CodeSearchStore = types.model('CodeSearchStore', {
   url: types.string,
@@ -178,6 +183,7 @@ const CodeSearchStore = types.model('CodeSearchStore', {
  * @property {string} [url]
  * @property {ElementSelectorStore|undefined} loginForm
  * @property {function} set
+ * @property {function} getSnapshot
  */
 const CodeAuthStore = types.model('CodeAuthStore', {
   url: types.optional(types.string, ''),
@@ -221,6 +227,7 @@ const CodeAuthStore = types.model('CodeAuthStore', {
  * @property {StringSelectorStore|undefined} nextPageUrl
  * @property {function} set
  * @property {function} getDefaultPipeline
+ * @property {function} getSnapshot
  */
 const CodeSelectorsStore = types.model('CodeSelectorsStore', {
   row: ElementSelectorStore,
@@ -300,6 +307,7 @@ const CodeSelectorsStore = types.model('CodeSelectorsStore', {
  * @property {string} [downloadUrl]
  * @property {string} [version]
  * @property {function} set
+ * @property {function} getSnapshot
  */
 const CodeDescriptionStore = types.model('CodeDescriptionStore', {
   icon: types.string,
