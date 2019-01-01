@@ -106,7 +106,15 @@ class SearchSession extends React.Component {
 
   componentDidMount() {
     this.searchStore.search();
+
     this.rootStore.history.addQuery(this.searchStore.query);
+
+    if (this.rootStore.options.options.requestQueryDescription) {
+      if (!this.searchStore.queryDescription) {
+        this.searchStore.requestQueryDescription();
+      }
+    }
+
     if (window.ga && this.searchStore.query) {
       window.ga('send', 'event', 'Search', 'keyword', this.searchStore.query);
     }
@@ -124,6 +132,13 @@ class SearchSession extends React.Component {
   };
 
   render() {
+    let queryDescription = null;
+    if (this.searchStore.queryDescription) {
+      queryDescription = (
+        <QueryDescription queryDescription={this.searchStore.queryDescription}/>
+      );
+    }
+
     const pages = this.searchStore.pages.map((searchPageStore, index) => {
       return (
         <SearchPage key={`page-${index}`} searchStore={this.searchStore} searchPageStore={searchPageStore}/>
@@ -147,10 +162,88 @@ class SearchSession extends React.Component {
 
     return (
       <>
+        {queryDescription}
         {pages}
         {moreBtn}
       </>
     )
+  }
+}
+
+class QueryDescription extends React.Component {
+  static propTypes = {
+    queryDescription: PropTypes.object.isRequired,
+  };
+
+  state = {
+    imageIndex: 0
+  };
+
+  /**@return QueryDescriptionStore*/
+  get queryDescription() {
+    return this.props.queryDescription;
+  }
+
+  handleImageError() {
+    this.setState({
+      imageIndex: this.state.imageIndex + 1
+    });
+  }
+
+  render() {
+    let type = null;
+    if (this.queryDescription.type) {
+      type = (
+        <div className="type">{this.queryDescription.type}</div>
+      );
+    }
+
+    let image = null;
+    const imageUrl = this.queryDescription.images[this.state.imageIndex];
+    if (imageUrl) {
+      image = (
+        <div className="poster">
+          <img onError={this.handleImageError} src={imageUrl} alt=""/>
+        </div>
+      );
+    }
+
+    const listItems = this.queryDescription.list.map(({key, value}, index) => {
+      return (
+        <div key={index}>
+          <span className="key">{key}</span>
+          {' '}
+          <span>{value}</span>
+        </div>
+      );
+    });
+
+    let list = null;
+    if (listItems.length) {
+      list = (
+        <div className="table">
+          {listItems}
+        </div>
+      );
+    }
+
+    const {wikiUrl, wikiUrlText} = this.queryDescription;
+    let wikiLink = null;
+    if (wikiUrl &&wikiUrlText) {
+      wikiLink = (
+        <a href={wikiUrl} target="_blank">{wikiUrlText}</a>
+      );
+    }
+
+    return (
+      <div className="query-description">
+        {image}
+        <h1 className="title">{this.queryDescription.title}</h1>
+        {type}
+        <div className="desc">{this.queryDescription.description} {wikiLink}</div>
+        {list}
+      </div>
+    );
   }
 }
 

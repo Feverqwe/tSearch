@@ -167,6 +167,9 @@
     "defineCategory": {
         "message": "Trying to define the category"
     },
+    "requestQueryDescription": {
+        "message": "Find description of a search query via Google"
+    },
     "favorites": {
         "message": "Favorites"
     },

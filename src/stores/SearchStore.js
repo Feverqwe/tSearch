@@ -8,6 +8,7 @@ import {unixTimeToFromNow, unixTimeToString} from "../tools/unixTimeTo";
 import filesize from "filesize";
 import {ErrorWithCode} from "../tools/errors";
 import SearchPageStore from "./SearchPageStore";
+import requestQueryDescription from "../tools/requestQueryDescription";
 
 const logger = getLogger('SearchStore');
 
@@ -110,18 +111,44 @@ const TrackerSearchStore = types.model('TrackerSearchStore', {
 });
 
 /**
+ * @typedef {{}} QueryDescriptionStore
+ * @property {string} title
+ * @property {string} type
+ * @property {string} description
+ * @property {{key:string,value:string}[]} list
+ * @property {string|undefined|null} wikiUrl
+ * @property {string|undefined|null} wikiUrlText
+ * @property {string[]} images
+ */
+const QueryDescriptionStore = types.model('QueryDescriptionStore', {
+  title: types.string,
+  type: types.string,
+  description: types.string,
+  list: types.array(types.model({
+    key: types.string,
+    value: types.string,
+  })),
+  wikiUrl: types.maybeNull(types.string),
+  wikiUrlText: types.maybeNull(types.string),
+  images: types.array(types.string),
+});
+
+/**
  * @typedef {{}} SearchStore
  * @property {number} id
  * @property {string} [state]
  * @property {string} query
+ * @property {QueryDescriptionStore|undefined} queryDescription
  * @property {Map<*,TrackerSearchStore>} trackerSearch
  * @property {SearchPageStore[]} pages
- * @property {number} [categoryId]
+ * @property {number|undefined} categoryId
  * @property {function:Promise} searchWrapper
  * @property {function} search
  * @property {function} searchNext
+ * @property {function} requestQueryDescription
  * @property {function} createTrackerSearch
  * @property {function} setCategoryId
+ * @property {function} setQueryDescription
  * @property {*} queryHighlightMap
  * @property {*} queryRateScheme
  * @property {function} getResultCountByTrackerId
@@ -132,6 +159,7 @@ const SearchStore = types.model('SearchStore', {
   id: types.identifierNumber,
   state: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
   query: types.string,
+  queryDescription: types.maybe(QueryDescriptionStore),
   trackerSearch: types.map(TrackerSearchStore),
   pages: types.array(SearchPageStore),
   categoryId: types.maybe(types.number),
@@ -179,6 +207,17 @@ const SearchStore = types.model('SearchStore', {
         return trackerSearch.searchNext();
       });
     },
+    requestQueryDescription() {
+      return requestQueryDescription(self.query).then((result) => {
+        if (isAlive(self)) {
+          self.setQueryDescription(result);
+        }
+      }, (err) => {
+        if (err.code !== 'NOT_FOUND') {
+          logger.error('requestQueryDescription error', err);
+        }
+      });
+    },
     createTrackerSearch(trackerId) {
       let nextQuery = undefined;
       const prevTrackerSearch = self.trackerSearch.get(trackerId);
@@ -194,6 +233,9 @@ const SearchStore = types.model('SearchStore', {
     },
     setCategoryId(value) {
       self.categoryId = value;
+    },
+    setQueryDescription(value) {
+      self.queryDescription = value;
     }
   };
 }).views(self => {

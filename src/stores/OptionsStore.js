@@ -55,6 +55,7 @@ const ExplorerSectionsStore = types.model('ExplorerSectionsStore', {
  * @property {boolean} [disablePopup]
  * @property {boolean} [invertIcon]
  * @property {boolean} [defineCategory]
+ * @property {boolean} [requestQueryDescription]
  * @property {boolean} [doNotSendStatistics]
  * @property {boolean} [originalPosterName]
  * @property {string} [kpFolderId]
@@ -71,6 +72,7 @@ const OptionsValueStore = types.model('OptionsValueStore', {
   disablePopup: types.optional(types.boolean, false),
   invertIcon: types.optional(types.boolean, false),
   defineCategory: types.optional(types.boolean, true),
+  requestQueryDescription: types.optional(types.boolean, true),
   doNotSendStatistics: types.optional(types.boolean, false),
   originalPosterName: types.optional(types.boolean, false),
   kpFolderId: types.optional(types.string, '1'),

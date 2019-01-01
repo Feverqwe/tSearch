@@ -167,6 +167,9 @@
   "defineCategory": {
     "message": "Автоматически определять категорию раздачи"
   },
+  "requestQueryDescription": {
+    "message": "Получать описание поискового запроса из Google"
+  },
   "favorites": {
     "message": "Избранное"
   },
