@@ -12,142 +12,33 @@
 const code = {
     "version": 3,
     "type": "kit",
-    "search": {
-        "url": "http://kinozal.tv/browse.php",
-        "method": "GET",
-        "baseUrl": "",
-        "originUrl": "",
-        "headers": "",
-        "body": "",
-        "encoding": "",
-        "query": "s=%search%",
-        "charset": ""
-    },
-    "auth": {
-        "url": ""
-    },
+    "search": {"url": "http://kinozal.tv/browse.php", "method": "GET", "query": "s=%search%"},
+    "auth": {},
     "selectors": {
-        "row": {
-            "selector": "table.t_peer tbody tr"
-        },
+        "row": {"selector": "table.t_peer tbody tr"},
         "skipFromStart": 1,
-        "skipFromEnd": 0,
-        "categoryTitle": {
-            "selector": "td.bt img",
-            "pipeline": [
-                {
-                    "name": "getAttr",
-                    "args": [
-                        "src"
-                    ]
-                }
-            ]
-        },
-        "categoryUrl": {
-            "selector": "td.bt img",
-            "pipeline": [
-                {
-                    "name": "getAttr",
-                    "args": [
-                        "src"
-                    ]
-                }
-            ]
-        },
-        "title": {
-            "selector": "td.nam > a",
-            "pipeline": [
-                {
-                    "name": "getText",
-                    "args": []
-                }
-            ]
-        },
-        "url": {
-            "selector": "td.nam > a",
-            "pipeline": [
-                {
-                    "name": "getProp",
-                    "args": [
-                        "href"
-                    ]
-                }
-            ]
-        },
-        "size": {
-            "selector": "td:eq(3)",
-            "pipeline": [
-                {
-                    "name": "getText",
-                    "args": []
-                },
-                {
-                    "name": "legacySizeFormat",
-                    "args": []
-                }
-            ]
-        },
-        "seeds": {
-            "selector": "td.sl_s",
-            "pipeline": [
-                {
-                    "name": "getText",
-                    "args": []
-                },
-                {
-                    "name": "toInt",
-                    "args": []
-                }
-            ]
-        },
-        "peers": {
-            "selector": "td.sl_p",
-            "pipeline": [
-                {
-                    "name": "getText",
-                    "args": []
-                },
-                {
-                    "name": "toInt",
-                    "args": []
-                }
-            ]
-        },
+        "categoryTitle": {"selector": "td.bt img", "pipeline": [{"name": "getAttr", "args": ["src"]}]},
+        "categoryUrl": {"selector": "td.bt img", "pipeline": [{"name": "getAttr", "args": ["src"]}]},
+        "title": {"selector": "td.nam > a", "pipeline": [{"name": "getText"}]},
+        "url": {"selector": "td.nam > a", "pipeline": [{"name": "getProp", "args": ["href"]}]},
+        "size": {"selector": "td:eq(3)", "pipeline": [{"name": "getText"}, {"name": "legacySizeFormat"}]},
+        "seeds": {"selector": "td.sl_s", "pipeline": [{"name": "getText"}, {"name": "toInt"}]},
+        "peers": {"selector": "td.sl_p", "pipeline": [{"name": "getText"}, {"name": "toInt"}]},
         "date": {
             "selector": "td:eq(6)",
-            "pipeline": [
-                {
-                    "name": "getText",
-                    "args": []
-                },
-                {
-                    "name": "legacyReplaceToday",
-                    "args": []
-                },
-                {
-                    "name": "legacyParseDate",
-                    "args": [
-                        "1"
-                    ]
-                }
-            ]
+            "pipeline": [{"name": "getText"}, {"name": "legacyReplaceToday"}, {
+                "name": "legacyParseDate",
+                "args": ["1"]
+            }]
         },
         "nextPageUrl": {
             "selector": "div.paginator a[rel=\"next\"]",
-            "pipeline": [
-                {
-                    "name": "getProp",
-                    "args": [
-                        "href"
-                    ]
-                }
-            ]
+            "pipeline": [{"name": "getProp", "args": ["href"]}]
         }
     },
     "description": {
         "icon": "data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAQAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgEc7/4BHO/8AAAAAAAAAAAAAAACARzv/gEc7/4BHO/8AAAAAAAAAAAAAAACARzv/gEc7/wAAAAAAAAAAgEc7/4BHO//8+/n/gEc7/4BHO/+ARzv/9/Tt//Xy6v/08Ob/gEc7/4BHO/+ARzv/7efX/4BHO/+ARzv/AAAAAIBHO//8+/n/+/r3//r49P/59vH/9/Tu//by6v/08Of/8u7j//Hs3//v6dv/7efY/+vk1P/q4tD/gEc7/wAAAAAAAAAAgEc7//r49P/O7/3/zu/9/87v/f/O7/3/zu/9/87v/f/O7/3/zu/9/87v/f/q4tD/gEc7/wAAAAAAAAAAAAAAAIBHO//59/H/AACA/wAAgP8AAID/AACA/87v/f8AAID/AACA/wAAgP8AAID/6ODM/4BHO/8AAAAAAAAAAAAAAACARzv/9/Xu/87v/f8AAID/AACA/87v/f/O7/3/zu/9/wAAgP8AAID/zu/9/+beyf+ARzv/AAAAAAAAAACARzv/+PXv//bz6//O7/3/AACA/wAAgP/O7/3/zu/9/wAAgP8AAID/zu/9/87v/f/l3MX/49nB/4BHO/8AAAAAgEc7//bz6//18ej/zu/9/wAAgP8AAID/AACA/wAAgP/O7/3/zu/9/87v/f/O7/3/49nC/+HXvv+ARzv/AAAAAIBHO//18ej/8+/l/87v/f8AAID/AACA/wAAgP8AAID/zu/9/87v/f/O7/3/zu/9/+LXvv/g1bv/gEc7/wAAAACARzv/gEc7//Ht4f/O7/3/AACA/wAAgP/O7/3/zu/9/wAAgP/O7/3/zu/9/87v/f/g1bv/gEc7/4BHO/8AAAAAAAAAAIBHO//w6t7/zu/9/wAAgP8AAID/zu/9/87v/f/O7/3/AACA/87v/f/O7/3/39O4/4BHO/8AAAAAAAAAAAAAAACARzv/7uja/wAAgP8AAID/AACA/wAAgP/O7/3/zu/9/wAAgP8AAID/AACA/93Stf+ARzv/AAAAAAAAAAAAAAAAgEc7//r49P/O7/3/zu/9/87v/f/O7/3/zu/9/87v/f/O7/3/zu/9/87v/f/q4tD/gEc7/wAAAAAAAAAAgEc7//z7+f/7+vf/+vj0//n28f/39O7/9vLq//Tw5//y7uP/8ezf/+/p2//t59j/6+TU/+ri0P+ARzv/AAAAAIBHO/+ARzv//Pv5/4BHO/+ARzv/gEc7//f07f/18ur/9PDm/4BHO/+ARzv/gEc7/+3n1/+ARzv/gEc7/wAAAAAAAAAAgEc7/4BHO/8AAAAAAAAAAAAAAACARzv/gEc7/4BHO/8AAAAAAAAAAAAAAACARzv/gEc7/wAAAAAAAAAAnHMAAAABAAAAAQAAgAMAAIADAACAAwAAAAEAAAABAAAAAQAAAAEAAIADAACAAwAAgAMAAAABAAAAAQAAnHMAAA%3D%3D",
         "name": "Кинозал",
-        "url": "",
         "description": "Торрент трекер Кинозал.ТВ - фильмы, новинки кино, скачать фильмы, афиша кино.",
         "downloadUrl": "https://github.com/Feverqwe/tSearch/raw/master/src/trackers/kinozal.js",
         "version": "1.0.3"
