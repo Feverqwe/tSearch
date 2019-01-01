@@ -57,12 +57,6 @@ const config = {
           loader: 'babel-loader',
           options: {
             plugins: [
-              ['@babel/plugin-transform-runtime', {
-                'corejs': false,
-                'helpers': true,
-                'regenerator': true,
-                'useESModules': true
-              }],
               ['@babel/plugin-proposal-decorators', {'legacy': true}],
               '@babel/plugin-syntax-dynamic-import',
               '@babel/plugin-proposal-class-properties'
@@ -167,15 +161,16 @@ if (mode === 'production') {
       canPrint: true
     }),
   );
-  /*Object.keys(config.entry).forEach(entryName => {
+  Object.keys(config.entry).forEach(entryName => {
     let value = config.entry[entryName];
     if (!Array.isArray(value)) {
       value = [value];
     }
-    value.unshift('babel-polyfill');
+    // value.unshift('babel-polyfill');
+    value.unshift('whatwg-fetch');
 
     config.entry[entryName] = value;
-  });*/
+  });
 }
 
 module.exports = config;

@@ -10,8 +10,9 @@ global.BUILD_ENV = {
   version: require('../src/manifest').version,
   babelEnvOptions: {
     targets: {
-      chrome: mode === 'development' ? '71' : '49'
-    }
+      chrome: mode === 'development' ? '71' : '49',
+    },
+    useBuiltIns: mode === 'development' ? false : 'usage',
   },
   FLAG_ENABLE_LOGGER: true,
 };
