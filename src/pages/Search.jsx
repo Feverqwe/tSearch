@@ -184,11 +184,11 @@ class QueryDescription extends React.Component {
     return this.props.queryDescription;
   }
 
-  handleImageError() {
+  handleImageError = () => {
     this.setState({
       imageIndex: this.state.imageIndex + 1
     });
-  }
+  };
 
   render() {
     let type = null;
