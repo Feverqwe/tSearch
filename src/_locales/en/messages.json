@@ -356,6 +356,9 @@
     "kitSearchUrl": {
         "message": "Search page URL"
     },
+    "kitSearchMethod": {
+        "message": "Method"
+    },
     "kitOpen": {
         "message": "Open"
     },

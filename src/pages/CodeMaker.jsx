@@ -158,6 +158,7 @@ class CodeMakerSearchPage extends React.Component {
     return this.props.rootStore.codeMaker.frame;
   }
 
+  /**@return CodeSearchStore*/
   get codeSearchStore() {
     return this.props.codeStore.search;
   }
@@ -191,10 +192,29 @@ class CodeMakerSearchPage extends React.Component {
     this.searchQuery = element;
   };
 
+  handleMethodChange = e => {
+    this.codeSearchStore.set('method', this.method.value);
+  };
+
+  method = null;
+  refMethod = (element) => {
+    this.method = element;
+  };
+
   render() {
     const requestPageClassList = [];
     if (this.frameStore.state === 'error') {
       requestPageClassList.push('error')
+    }
+
+    let postBody = null;
+    if (this.codeSearchStore.method === 'POST' || this.codeSearchStore.body) {
+      postBody = (
+        <div className="field">
+          <span className="field-name">{chrome.i18n.getMessage('kitPostBody')}</span>
+          <BindInput store={this.codeSearchStore} id={'body'} type="text" placeholder="key=value&key2=value2"/>
+        </div>
+      );
     }
 
     return (
@@ -210,9 +230,17 @@ class CodeMakerSearchPage extends React.Component {
           </form>
         </div>
         <div className="field">
+          <span className="field-name">{chrome.i18n.getMessage('kitSearchMethod')}</span>
+          <select onChange={this.handleMethodChange} ref={this.refMethod} defaultValue={this.codeSearchStore.method}>
+            <option value="GET">GET</option>
+            <option value="POST">POST</option>
+          </select>
+        </div>
+        <div className="field">
           <span className="field-name">{chrome.i18n.getMessage('kitQuery')}</span>
           <BindInput store={this.codeSearchStore} id={'query'} type="text"/>
         </div>
+        {postBody}
         <div className="field">
           <span className="field-name">{chrome.i18n.getMessage('kitSearchQueryEncoding')}</span>
           <select onChange={this.handleEncodingChange} ref={this.refEncoding} defaultValue={this.codeSearchStore.encoding}>
@@ -223,10 +251,6 @@ class CodeMakerSearchPage extends React.Component {
         <div className="field">
           <span className="field-name">{chrome.i18n.getMessage('kitPageCharset')}</span>
           <BindInput store={this.codeSearchStore} id={'charset'} type="text" placeholder="auto"/>
-        </div>
-        <div className="field">
-          <span className="field-name">{chrome.i18n.getMessage('kitPostBody')}</span>
-          <BindInput store={this.codeSearchStore} id={'body'} type="text" placeholder="key=value&key2=value2"/>
         </div>
       </div>
     );
@@ -529,7 +553,7 @@ class CodeMakerSavePage extends React.Component {
 
   handleGetCode = e => {
     e.preventDefault();
-    this.textarea.value = JSON.stringify(this.props.codeMaker.code);
+    this.textarea.value = JSON.stringify(this.props.codeMaker.codeJson);
   };
 
   textarea = null;
@@ -548,7 +572,7 @@ class CodeMakerSavePage extends React.Component {
                  value={chrome.i18n.getMessage('kitReadCode')}/>
         </div>
         <label>
-          <textarea ref={this.refTextarea} data-id="save_code_textarea" defaultValue={JSON.stringify(this.props.codeMaker.code)}/>
+          <textarea ref={this.refTextarea} data-id="save_code_textarea" defaultValue={this.props.codeMaker.codeJson}/>
         </label>
       </div>
     );

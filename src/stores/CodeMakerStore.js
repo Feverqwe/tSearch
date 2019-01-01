@@ -115,7 +115,13 @@ const CodeMakerStore = types.model('CodeMakerStore', {
     setCode(data) {
       const code = CodeStore.create(data);
       self.code = code;
-    },
+    }
+  };
+}).views((self) => {
+  return {
+    get codeJson() {
+      return JSON.stringify(self.code.getSnapshot());
+    }
   };
 });
 

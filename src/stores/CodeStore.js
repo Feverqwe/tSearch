@@ -16,6 +16,16 @@ const MethodStore = types.model('MethodStore', {
       self.args = args;
     }
   };
+}).views((self) => {
+  return {
+    getSnapshot() {
+      const result = getSnapshot(self);
+      if (!result.args.length) {
+        delete result.args;
+      }
+      return result;
+    }
+  };
 });
 
 /**
@@ -78,6 +88,13 @@ const StringSelectorStore = types.model('StringSelectorStore', {
   return {
     verifyType(value) {
       return isString(value);
+    },
+    getSnapshot() {
+      const result = getSnapshot(self);
+      if (!result.pipeline.length) {
+        delete result.pipeline;
+      }
+      return result;
     }
   };
 });
@@ -104,7 +121,7 @@ const NumberSelectorStore = types.compose('NumberSelectorStore', StringSelectorS
  * @property {function} set
  */
 const ElementSelectorStore = types.model('ElementSelectorStore', {
-  selector: types.optional(types.string, ''),
+  selector: types.string,
 }).actions(self => {
   return {
     set(key, value) {
@@ -142,6 +159,18 @@ const CodeSearchStore = types.model('CodeSearchStore', {
       self[key] = value;
     },
   };
+}).views((self) => {
+  return {
+    getSnapshot() {
+      const result = getSnapshot(self);
+      ['baseUrl', 'originUrl', 'headers', 'body', 'encoding', 'query', 'charset'].forEach((key) => {
+        if (!result[key]) {
+          delete result[key];
+        }
+      });
+      return result;
+    }
+  };
 });
 
 /**
@@ -158,6 +187,19 @@ const CodeAuthStore = types.model('CodeAuthStore', {
     set(key, value) {
       self[key] = value;
     },
+  };
+}).views((self) => {
+  return {
+    getSnapshot() {
+      const result = getSnapshot(self);
+      if (!result.url) {
+        delete result.url;
+      }
+      if (result.loginForm && !result.loginForm.selector) {
+        delete result.loginForm;
+      }
+      return result;
+    }
   };
 });
 
@@ -230,6 +272,21 @@ const CodeSelectorsStore = types.model('CodeSelectorsStore', {
         }];
       }
       return pipeline;
+    },
+    getSnapshot() {
+      const result = getSnapshot(self);
+      if (!result.skipFromStart) {
+        delete result.skipFromStart;
+      }
+      if (!result.skipFromEnd) {
+        delete result.skipFromEnd;
+      }
+      ['categoryTitle', 'categoryUrl', 'categoryId', 'size', 'downloadUrl', 'seeds', 'peers', 'date', 'nextPageUrl'].forEach((key) => {
+        if (result[key] && !result[key].selector) {
+          delete result[key];
+        }
+      });
+      return result;
     }
   };
 });
@@ -257,6 +314,18 @@ const CodeDescriptionStore = types.model('CodeDescriptionStore', {
       self[key] = value;
     },
   };
+}).views(self => {
+  return {
+    getSnapshot() {
+      const result = getSnapshot(self);
+      ['url', 'description', 'downloadUrl'].forEach((key) => {
+        if (!result[key]) {
+          delete result[key];
+        }
+      });
+      return result;
+    }
+  };
 });
 
 /**
@@ -281,10 +350,27 @@ const CodeStore = types.model('CodeStore', {
 }).views(self => {
   return {
     getSnapshot() {
-      return JSON.parse(JSON.stringify(self));
+      const result = getSnapshot(self);
+      if (Object.keys(result.auth).length === 0) {
+        delete result.auth;
+      }
+      return result;
     }
   };
 });
+
+const getSnapshot = (store) => {
+  const result = {};
+  Object.entries(store).forEach(([key, value]) => {
+    if (value && value.getSnapshot) {
+      value = value.getSnapshot();
+    }
+    if (value !== undefined) {
+      result[key] = JSON.parse(JSON.stringify(value));
+    }
+  });
+  return result;
+};
 
 export default CodeStore;
 export {MethodStore};
