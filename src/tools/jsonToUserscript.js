@@ -1,3 +1,5 @@
+const stringify = require("json-stringify-pretty-compact");
+
 const jsonToUserscript = json => {
   const meta = [];
   meta.push('==UserScript==');
@@ -39,7 +41,7 @@ const jsonToUserscript = json => {
   const code = [];
   code.push(...meta.map(line => `// ${line}`));
   code.push('');
-  code.push(`const code = ${JSON.stringify(json, null, 2)};`);
+  code.push(`const code = ${stringify(json)};`);
   code.push('');
   code.push('API_exKit(code);');
   return code.join('\n');

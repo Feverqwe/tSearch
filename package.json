@@ -23,6 +23,7 @@
     "filesize": "^3.6.1",
     "filesize-parser": "^1.5.0",
     "jquery": "^3.3.1",
+    "json-stringify-pretty-compact": "^1.2.0",
     "jszip": "^3.1.5",
     "lodash.debounce": "^4.0.8",
     "lodash.difference": "^4.5.0",
