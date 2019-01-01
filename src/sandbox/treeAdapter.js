@@ -43,15 +43,22 @@ class TreeAdapter extends Adapter {
       }
     }
 
-    const element = super.createElement(tagName, nameSpaceUri, attrs);
+    const element = document.createElementNS(nameSpaceUri, tagName);
+    attrs.forEach(pair => {
+      try {
+        return element.setAttribute(pair.name, pair.value);
+      } catch (err) {
+        logger.error('setAttribute error', pair);
+      }
+    });
+
     if (tagNameU === 'A') {
       element.addEventListener('click', e => {
         e.preventDefault();
         e.stopPropagation();
         logger.warn('Event: click blocked');
       });
-    } else
-    if (tagNameU === 'FORM') {
+    } else if (tagNameU === 'FORM') {
       element.addEventListener('submit', e => {
         e.preventDefault();
         e.stopPropagation();
