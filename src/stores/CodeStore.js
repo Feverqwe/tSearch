@@ -351,10 +351,10 @@ const CodeStore = types.model('CodeStore', {
   id: types.maybe(types.string),
   version: types.optional(types.refinement(types.number, value => value === 3), 3),
   type: types.optional(types.refinement(types.string, value => value === 'kit'), 'kit'),
+  description: CodeDescriptionStore,
   search: CodeSearchStore,
   auth: types.optional(CodeAuthStore, {}),
   selectors: CodeSelectorsStore,
-  description: CodeDescriptionStore,
 }).views(self => {
   return {
     getSnapshot() {
