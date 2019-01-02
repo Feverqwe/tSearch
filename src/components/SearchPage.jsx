@@ -137,7 +137,7 @@ class SearchPageCategoryItem extends React.Component {
 
     let isSelected = this.searchPageStore.categoryId === category.id;
 
-    const count = this.searchPageStore.getResultCountByCategoryId(category.id);
+    const count = this.searchPageStore.getVisibleResultCountByCategoryId(category.id);
     if (!count && !isSelected) {
       return null;
     }

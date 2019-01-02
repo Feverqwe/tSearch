@@ -9,18 +9,22 @@ import SearchStore from "./SearchStore";
  * @typedef {{}} SearchPageStore
  * @property {ResultPageItemStore[]} results
  * @property {{by:string,[direction]:number}[]} sorts
+ * @property {number|undefined} categoryId
  * @property {Map<*,number>} trackerIdCountMap
  * @property {function} sortBy
  * @property {function} appendSortBy
  * @property {function} appendResults
  * @property {function} incTrackerCount
+ * @property {function} setCategoryId
+ * @property {*} columns
  * @property {function} getSortBy
  * @property {function} getFilterBySelectedTrackers
  * @property {function} getCategoryFilter
  * @property {*} filteredResults
  * @property {*} sortedAndFilteredResults
+ * @property {*} counters
  * @property {function} getResultCountByTrackerId
- * @property {function} getResultCountByCategoryId
+ * @property {function} getVisibleResultCountByCategoryId
  * @property {function} getVisibleResultCountByTrackerId
  */
 const SearchPageStore = types.model('SearchPageStore', {
@@ -142,7 +146,7 @@ const SearchPageStore = types.model('SearchPageStore', {
     getResultCountByTrackerId(id) {
       return self.trackerIdCountMap.get(id) || 0;
     },
-    getResultCountByCategoryId(id) {
+    getVisibleResultCountByCategoryId(id) {
       if (id === undefined) {
         return self.filteredResults.length;
       }
