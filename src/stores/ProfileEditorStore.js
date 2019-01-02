@@ -59,7 +59,7 @@ const ProfileEditorProfileStore = types.compose('ProfileEditorProfileStore', Pro
   if (!snapshot.selectedTrackerIds && snapshot.trackers) {
     snapshot.selectedTrackerIds = snapshot.trackers.map(tracker => tracker.id);
   }
-  if (!snapshot.selectedTrackerIds.length) {
+  if (!snapshot.selectedTrackerIds || !snapshot.selectedTrackerIds.length) {
     snapshot.category = 'all';
   }
   return snapshot;
