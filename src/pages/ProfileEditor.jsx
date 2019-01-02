@@ -5,10 +5,11 @@ import ScrollTop from "../components/ScrollTop";
 import Filters from "../components/Filters";
 import {inject, observer} from "mobx-react";
 import PropTypes from "prop-types";
-import EditProfiles from "../components/EditProfiles";
-import EditProfile from "../components/EditProfile";
+import ProfileEditorProfiles from "../components/ProfileEditorProfiles";
+import ProfileEditorProfile from "../components/ProfileEditorProfile";
 import getLogger from "../tools/getLogger";
 import getTitle from "../tools/getTitle";
+import {Redirect} from "react-router-dom";
 
 const logger = getLogger('ProfileEditor');
 
@@ -36,10 +37,24 @@ class ProfileEditor extends React.Component {
     document.title = getTitle('Profile editor');
   }
 
+  /**@return RootStore*/
+  get rootStore() {
+    return this.props.rootStore;
+  }
+
+  /**@return ProfilesStore*/
+  get profilesStore() {
+    return this.rootStore.profiles;
+  }
+
+  /**@return TrackersStore*/
+  get trackersStore() {
+    return this.rootStore.trackers;
+  }
+
   render() {
-    const rootStore = this.props.rootStore;
-    const profilesStore = rootStore.profiles;
-    const trackersStore = rootStore.trackers;
+    const profilesStore = this.profilesStore;
+    const trackersStore = this.trackersStore;
 
     if (profilesStore.state !== 'done') {
       return (`Loading profiles: ${profilesStore.state}`);
@@ -57,7 +72,7 @@ class ProfileEditor extends React.Component {
             <Filters/>
           </div>
           <div className="main">
-            <ProfileEditorPage {...this.props}/>
+            <ProfileEditorPage id={this.props.id}/>
           </div>
         </div>
         <ScrollTop/>
@@ -65,7 +80,6 @@ class ProfileEditor extends React.Component {
     );
   }
 }
-
 
 @inject('rootStore')
 @observer
@@ -78,23 +92,40 @@ class ProfileEditorPage extends React.Component {
   constructor(props) {
     super(props);
 
-    if (!this.props.rootStore.profileEditor) {
-      this.props.rootStore.createProfileEditor();
+    if (!this.profileEditorStore) {
+      this.rootStore.createProfileEditor();
     }
   }
 
+  /**@return RootStore*/
+  get rootStore() {
+    return this.props.rootStore;
+  }
+
+  /**@return ProfileEditorStore*/
+  get profileEditorStore() {
+    return this.rootStore.profileEditor;
+  }
+
   componentWillUnmount() {
-    this.props.rootStore.destroyProfileEditor();
+    this.rootStore.destroyProfileEditor();
   }
 
   render() {
+    const profile = this.profileEditorStore.getProfileById(this.props.id);
+
+    if (profile) {
+      return (
+        <ProfileEditorProfile profileEditorStore={this.profileEditorStore} profileEditorProfileStore={profile}/>
+      );
+    } else
     if (this.props.id) {
       return (
-        <EditProfile key={this.props.id} id={this.props.id}/>
+        <Redirect to={`/profileEditor`}/>
       );
     } else {
       return (
-        <EditProfiles/>
+        <ProfileEditorProfiles profileEditorStore={this.profileEditorStore}/>
       );
     }
   }

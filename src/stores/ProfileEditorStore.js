@@ -1,39 +1,211 @@
-import {flow, isAlive, types} from 'mobx-state-tree';
+import {flow, getParentOfType, isAlive, resolveIdentifier, types} from 'mobx-state-tree';
 import getLogger from "../tools/getLogger";
-import ProfileStore from "./ProfileStore";
-import EditProfileStore from "./EditProfileStore";
+import ProfileStore, {ProfileTrackerStore} from "./ProfileStore";
 import storageSet from "../tools/storageSet";
+import TrackerStore from "./TrackerStore";
+import RootStore from "./RootStore";
+
+const escapeStringRegexp = require('escape-string-regexp');
 
 const logger = getLogger('ProfileEditorStore');
 
 /**
- * @typedef {ProfileStore} ProfileEditorProfileStore
+ * @typedef {ProfileTrackerStore} ProfileEditorProfileTrackerStore
+ * @property {*} isEditorProfileTrackerStore
  */
-const ProfileEditorProfileStore = types.compose('ProfileEditorProfileStore', ProfileStore);
+const ProfileEditorProfileTrackerStore = types.compose('ProfileEditorProfileTrackerStore', ProfileTrackerStore).views((self) => {
+  return {
+    get isEditorProfileTrackerStore() {
+      return true;
+    },
+    getIconUrl() {
+      if (self.meta.icon64) {
+        return self.meta.icon64;
+      } else
+      if (self.meta.icon) {
+        return self.meta.icon;
+      }
+      return '';
+    },
+  };
+});
+
+/**
+ * @typedef {ProfileStore} ProfileEditorProfileStore
+ * @property {ProfileEditorProfileTrackerStore[]} trackers
+ * @property {string[]} selectedTrackerIds
+ * @property {string} [category]
+ * @property {string} [filterText]
+ * @property {function} setName
+ * @property {function} setCategory
+ * @property {function} setFilterText
+ * @property {function} addTracker
+ * @property {function} moveTracker
+ * @property {function} removeTracker
+ * @property {*} trackersMap
+ * @property {*} categoryTrackers
+ * @property {*} allTrackerIds
+ * @property {*} filterTextRe
+ * @property {function} getCategoryTrackers
+ * @property {function} getTrackerCountByCategory
+ * @property {function} getSnapshot
+ */
+const ProfileEditorProfileStore = types.compose('ProfileEditorProfileStore', ProfileStore, types.model({
+  trackers: types.array(ProfileEditorProfileTrackerStore),
+  selectedTrackerIds: types.array(types.string),
+  category: types.optional(types.enumeration(['all', 'withoutList', 'selected']), 'selected'),
+  filterText: types.optional(types.string, ''),
+})).preProcessSnapshot((snapshot) => {
+  if (!snapshot.selectedTrackerIds && snapshot.trackers) {
+    snapshot.selectedTrackerIds = snapshot.trackers.map(tracker => tracker.id);
+  }
+  if (!snapshot.selectedTrackerIds.length) {
+    snapshot.category = 'all';
+  }
+  return snapshot;
+}).actions((self) => {
+  return {
+    setName(value) {
+      self.name = value;
+    },
+    setCategory(value) {
+      self.category = value;
+    },
+    setFilterText(value) {
+      self.filterText = value;
+    },
+    addTracker(trackerId) {
+      self.selectedTrackerIds.push(trackerId);
+    },
+    removeTracker(trackerId) {
+      self.selectedTrackerIds = self.selectedTrackerIds.filter(id => id !== trackerId);
+    },
+    moveTracker(id, prevId, nextId) {
+      const items = self.selectedTrackerIds.slice(0);
+
+      const pos = items.indexOf(id);
+      if (pos === -1) {
+        return;
+      }
+
+      items.splice(pos, 1);
+
+      if (prevId) {
+        const pos = items.indexOf(prevId);
+        if (pos !== -1) {
+          items.splice(pos + 1, 0, id);
+        }
+      } else
+      if (nextId) {
+        const pos = items.indexOf(nextId);
+        if (pos !== -1) {
+          items.splice(pos, 0, id);
+        }
+      } else {
+        items.push(id);
+      }
+
+      self.selectedTrackerIds = items;
+    },
+  };
+}).views((self) => {
+  return {
+    get trackersMap() {
+      const map = new Map();
+      self.trackers.forEach((tracker) => {
+        map.set(tracker.id, tracker);
+      });
+      return map;
+    },
+    get categoryTrackers() {
+      return self.getCategoryTrackers(self.category);
+    },
+    get allTrackerIds() {
+      const rootStore = getParentOfType(self, RootStore);
+      return self.selectedTrackerIds.concat(Array.from(rootStore.trackers.trackers.keys())).filter((id, index, arr) => {
+        return arr.indexOf(id) === index;
+      });
+    },
+    get filterTextRe() {
+      return new RegExp(escapeStringRegexp(self.filterText), 'i');
+    },
+    getCategoryTrackers(value, withoutFilter) {
+      let ids = null;
+      switch (value) {
+        case 'all': {
+          ids = self.allTrackerIds;
+          break;
+        }
+        case 'withoutList': {
+          /**@return ProfileEditorStore*/
+          const profileEditorStore = getParentOfType(self, ProfileEditorStore);
+          ids = self.allTrackerIds.filter((trackerId) => {
+            return !profileEditorStore.profiles.some((profile) => {
+              return profile.selectedTrackerIds.indexOf(trackerId) !== -1;
+            });
+          });
+          break;
+        }
+        case 'selected': {
+          ids = self.selectedTrackerIds;
+          break;
+        }
+      }
+
+      let trackers = ids.map((trackerId) => {
+        return self.getTrackerById(trackerId);
+      });
+      if (!withoutFilter && self.filterText) {
+        trackers = trackers.filter(tracker => {
+          return self.filterTextRe.test([
+            tracker.id,
+            tracker.meta.name,
+            tracker.meta.author,
+            tracker.meta.description,
+            tracker.meta.homepageURL,
+            tracker.meta.trackerURL,
+            tracker.meta.downloadURL,
+            tracker.meta.supportURL,
+          ].join(' '));
+        })
+      }
+      return trackers;
+    },
+    getTrackerById(trackerId) {
+      return resolveIdentifier(TrackerStore, self, trackerId) || self.trackersMap.get(trackerId);
+    },
+    getTrackerCountByCategory(value) {
+      return self.getCategoryTrackers(value).length;
+    },
+    getSnapshot() {
+      const snapshot = JSON.parse(JSON.stringify(self));
+      snapshot.trackers = JSON.parse(JSON.stringify(self.getCategoryTrackers('selected')));
+      return snapshot;
+    }
+  };
+});
 
 /**
  * @typedef {{}} ProfileEditorStore
  * @property {string} [saveState]
  * @property {ProfileEditorProfileStore[]} profiles
- * @property {Map<*,EditProfileStore>} profilePages
  * @property {function:Promise} save
  * @property {function} moveProfile
- * @property {function} getProfilePage
- * @property {function} removeProfilePage
- * @property {function} saveProfilePage
  * @property {function} removeProfileById
+ * @property {function} createProfile
  * @property {function} getProfileById
  */
 const ProfileEditorStore = types.model('ProfileEditorStore', {
   saveState: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
   profiles: types.array(ProfileEditorProfileStore),
-  profilePages: types.map(EditProfileStore),
 }).actions(self => {
   return {
     save: flow(function* () {
       self.saveState = 'pending';
       try {
-        const profiles = JSON.parse(JSON.stringify(self.profiles));
+        const profiles = self.profiles.map(profile => {
+          return ProfileStore.create(profile.getSnapshot()).toJSON();
+        });
         yield storageSet({profiles}, 'sync');
         if (isAlive(self)) {
           self.saveState = 'done';
@@ -73,46 +245,23 @@ const ProfileEditorStore = types.model('ProfileEditorStore', {
 
       self.profiles = items;
     },
-    createProfilePage(id) {
-      if (!self.profilePages.has(id)) {
-        const profile = self.getProfileById(id) || {id};
-        const snapshot = JSON.parse(JSON.stringify(profile));
-        snapshot.selectedTrackerIds = snapshot.trackers && snapshot.trackers.map(tracker => tracker.id) || [];
-        self.profilePages.set(id, snapshot);
-      }
-    },
-    removeProfilePage(id) {
-      self.profilePages.delete(id);
-    },
-    saveProfilePage(id) {
-      const profile = JSON.parse(JSON.stringify(self.profilePages.get(id)));
-      const prevProfile = self.getProfileById(id);
-      if (prevProfile) {
-        const profiles = self.profiles.slice(0);
-        const pos = profiles.indexOf(prevProfile);
-        if (pos !== -1) {
-          profiles.splice(pos, 1, profile);
-          self.profiles = profiles;
-        }
-      } else {
-        self.profiles.push(profile);
-      }
-    },
     removeProfileById(id) {
-      const profiles = self.profiles.slice(0);
-      const profile = self.getProfileById(id);
-      const pos = profiles.indexOf(profile);
-      if (pos !== -1) {
-        profiles.splice(pos, 1);
-        self.profiles = profiles;
-      }
-    }
+      self.profiles = self.profiles.filter((profile) => {
+        return profile.id !== id;
+      });
+    },
+    createProfile(id) {
+      self.profiles.push({
+        id,
+        name: 'New'
+      });
+    },
   };
-}).views(self => {
+}).views((self) => {
   return {
     getProfileById(id) {
       let result = null;
-      self.profiles.forEach(profile => {
+      self.profiles.some(profile => {
         if (profile.id === id) {
           return result = profile;
         }

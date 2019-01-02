@@ -1,4 +1,4 @@
-import {inject, observer} from "mobx-react";
+import {observer} from "mobx-react";
 import React from "react";
 import PropTypes from "prop-types";
 import {Link, withRouter} from "react-router-dom";
@@ -7,28 +7,23 @@ import getLogger from "../tools/getLogger";
 const uuid = require('uuid/v4');
 const Sortable = require('sortablejs');
 
-const logger = getLogger('EditProfiles');
+const logger = getLogger('ProfileEditorProfiles');
 
 
 @withRouter
-@inject('rootStore')
 @observer
-class EditProfiles extends React.Component {
+class ProfileEditorProfiles extends React.Component {
   static propTypes = {
-    rootStore: PropTypes.object,
+    profileEditorStore: PropTypes.object.isRequired,
     history: PropTypes.object,
   };
 
-  constructor(props) {
-    super(props);
-
-    this.sortable = null;
-  }
-
+  /**@return ProfileEditorStore*/
   get profileEditorStore() {
-    return this.props.rootStore.profileEditor;
+    return this.props.profileEditorStore;
   }
 
+  sortable = null;
   refProfiles = (node) => {
     if (!node) {
       if (this.sortable) {
@@ -63,20 +58,20 @@ class EditProfiles extends React.Component {
 
   handleSave = (e) => {
     e.preventDefault();
-    const profileEditor = this.profileEditorStore;
-    profileEditor.save();
+    this.profileEditorStore.save();
   };
 
   handleCreate = (e) => {
     e.preventDefault();
-    this.props.history.push(`/profileEditor/${uuid()}`);
+    const id = uuid();
+    this.profileEditorStore.createProfile(id);
+    this.props.history.push(`/profileEditor/${id}`);
   };
 
   render() {
-    const profileEditorStore = this.profileEditorStore;
-    const profiles = profileEditorStore.profiles.map((profileStore, index) => {
+    const profiles = this.profileEditorStore.profiles.map((profileEditorProfileStore) => {
       return (
-        <ProfileItem key={profileStore.id} index={index} profileStore={profileStore}/>
+        <ProfileEditorProfileItem key={profileEditorProfileStore.id} profileEditorStore={this.profileEditorStore} profileEditorProfileStore={profileEditorProfileStore}/>
       );
     });
 
@@ -84,7 +79,7 @@ class EditProfiles extends React.Component {
       <div className="manager">
         <div className="manager__body">
           <div className="manager__sub_header manager__sub_header-profiles">
-            <Link className="manager__new_profile" to={`/profileEditor/new`} onClick={this.handleCreate}>{chrome.i18n.getMessage('newProfile')}</Link>
+            <a className="manager__new_profile" href={"#create"} onClick={this.handleCreate}>{chrome.i18n.getMessage('newProfile')}</a>
           </div>
           <div ref={this.refProfiles} className="manager__profiles">
             {profiles}
@@ -99,52 +94,51 @@ class EditProfiles extends React.Component {
 }
 
 @withRouter
-@inject('rootStore')
 @observer
-class ProfileItem extends React.Component {
+class ProfileEditorProfileItem extends React.Component {
   static propTypes = {
-    rootStore: PropTypes.object,
-    index: PropTypes.number,
-    profileStore: PropTypes.object,
+    profileEditorStore: PropTypes.object.isRequired,
+    profileEditorProfileStore: PropTypes.object.isRequired,
     history: PropTypes.object,
   };
 
-  constructor(props) {
-    super(props);
-
-    this.item = null;
+  /**@return ProfileEditorStore*/
+  get profileEditorStore() {
+    return this.props.profileEditorStore;
   }
 
-  get profileEditorStore() {
-    return this.props.rootStore.profileEditor;
+  /**@return ProfileEditorProfileStore*/
+  get profileEditorProfileStore() {
+    return this.props.profileEditorProfileStore;
   }
 
   handleRemove = (e) => {
     e.preventDefault();
-    this.profileEditorStore.removeProfileById(this.props.profileStore.id);
+    this.profileEditorStore.removeProfileById(this.profileEditorProfileStore.id);
   };
 
-  handleNameClick = (e) => {
+  handleClick = (e) => {
     if (
       e.target === this.item ||
       e.target.classList.contains('item__name')
     ) {
-      this.props.history.push(`/profileEditor/${this.props.profileStore.id}`);
+      this.props.history.push(`/profileEditor/${this.profileEditorProfileStore.id}`);
     }
   };
 
+  item = null;
   refItem = (element) => {
     this.item = element;
   };
 
   render() {
-    const profileStore = this.props.profileStore;
+    const profileEditorProfileStore = this.profileEditorProfileStore;
 
     return (
-      <div ref={this.refItem} onClick={this.handleNameClick} data-id={profileStore.id} className="item">
+      <div ref={this.refItem} onClick={this.handleClick} data-id={profileEditorProfileStore.id} className="item">
         <div className="item__move"/>
-        <div className="item__name">{profileStore.name}</div>
-        <Link to={`/profileEditor/${profileStore.id}`}
+        <div className="item__name">{profileEditorProfileStore.name}</div>
+        <Link to={`/profileEditor/${profileEditorProfileStore.id}`}
               className="item__cell item__button button-edit"
               title={chrome.i18n.getMessage('edit')}/>
         <a onClick={this.handleRemove}
@@ -155,4 +149,4 @@ class ProfileItem extends React.Component {
   }
 }
 
-export default EditProfiles;
+export default ProfileEditorProfiles;
