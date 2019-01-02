@@ -155,7 +155,7 @@ const ProfilesStore = types.model('ProfilesStore', {
 
 const getDefaultProfile = () => {
   return {
-    id: uuid(),
+    id: 'default',
     name: 'Default',
     trackers: [{
       id: 'rutracker'
