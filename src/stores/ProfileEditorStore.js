@@ -73,9 +73,6 @@ const ProfileEditorProfileStore = types.compose('ProfileEditorProfileStore', Pro
     },
     setFilterText(value) {
       self.filterText = value;
-      if (value) {
-        self.category = 'all';
-      }
     },
     addTracker(trackerId) {
       self.selectedTrackerIds.push(trackerId);

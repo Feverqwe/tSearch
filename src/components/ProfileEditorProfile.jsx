@@ -38,6 +38,7 @@ class ProfileEditorProfile extends React.Component {
 
   handleSearchChange = () => {
     this.profileEditorProfileStore.setFilterText(this.search.value);
+    this.profileEditorProfileStore.setCategory('all');
   };
 
   handleSave = (e) => {
