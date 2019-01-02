@@ -5,6 +5,7 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require('path');
 
 const outputPath = BUILD_ENV.outputPath;
 const mode = BUILD_ENV.mode;
@@ -24,7 +25,7 @@ const config = {
     magic: './src/js/magic',*/
   },
   output: {
-    path: outputPath,
+    path: path.join(outputPath, 'dist'),
     filename: '[name].js',
     chunkFilename: 'chunk-[name].js',
   },
@@ -139,8 +140,8 @@ const config = {
       chunks: ['commons', 'magic']
     }),*/
     new DefinePlugin({
-      'BUILD_ENV': Object.keys(BUILD_ENV).reduce((obj, key) => {
-        obj[key] = JSON.stringify(BUILD_ENV[key]);
+      'BUILD_ENV': Object.entries(BUILD_ENV).reduce((obj, [key, value]) => {
+        obj[key] = JSON.stringify(value);
         return obj;
       }, {}),
     })

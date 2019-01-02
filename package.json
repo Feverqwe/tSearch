@@ -4,9 +4,10 @@
   "scripts": {
     "buildExplorersJson": "node ./builder/buildExplorersJson.js",
     "buildTrackersJson": "node ./builder/buildTrackersJson.js",
+    "compress": "node ./builder/compressDist",
     "watch": "webpack --mode development --watch --config webpack.config.js",
     "build": "webpack --mode development --config webpack.config.js",
-    "release": "webpack --mode production --config webpack.config.js"
+    "release": "webpack --mode production --config webpack.config.js && npm run compress"
   },
   "dependencies": {
     "abortcontroller-polyfill": "^1.2.1",
@@ -62,6 +63,7 @@
     "@babel/preset-env": "^7.2.3",
     "@babel/preset-react": "^7.0.0",
     "@babel/register": "^7.0.0",
+    "archiver": "^3.0.0",
     "babel-loader": "^8.0.4",
     "clean-css-loader": "^1.1.0",
     "clean-webpack-plugin": "^1.0.0",
