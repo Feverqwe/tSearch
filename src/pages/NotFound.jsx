@@ -5,7 +5,7 @@ class NotFound extends React.Component {
   render() {
     return (
       <div className="page-ctr">
-        <Header {...this.props}/>
+        <Header/>
         <div className="content content-row">
           <div className="main">
             Not found

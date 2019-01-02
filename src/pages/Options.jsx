@@ -117,7 +117,7 @@ class Options extends React.Component {
 
     return (
       <div className="page-ctr">
-        <Header {...this.props}/>
+        <Header/>
         <div className="main options-ctr">
           <div className="sections">
             <Link to="/options/main" className="sections__item" data-page="basic">{chrome.i18n.getMessage('basic')}</Link>

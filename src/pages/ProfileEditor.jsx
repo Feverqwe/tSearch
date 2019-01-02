@@ -50,7 +50,7 @@ class ProfileEditor extends React.Component {
 
     return (
       <div className="page-ctr profile-editor">
-        <Header {...this.props}/>
+        <Header/>
         <div className="content content-row">
           <div className="parameter_box">
             <Profiles/>
