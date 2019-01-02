@@ -231,11 +231,12 @@ class SearchPageRow extends React.PureComponent {
 
           return (
             <div key={type} className={`cell row__cell cell-${type}`}>
-              <div className="cell__title" onMouseUp={this.handleClick}>
+              <div className="cell__title">
                 {highlight.getReactComponent('a', {
                   className: 'title',
                   target: '_blank',
-                  href: result.url
+                  href: result.url,
+                  onMouseUp: this.handleClick
                 }, result.title, result.titleHighlightMap)}
                 {titleIcon}
               </div>
