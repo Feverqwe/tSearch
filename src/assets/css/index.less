@@ -500,16 +500,23 @@ a.simple_select__menu__item {
 }
 
 .tracker__list {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+
   overflow: auto;
   height: 100%;
+
+  * {
+    flex-shrink: 0;
+  }
 }
 
 .tracker {
   display: flex;
   flex-direction: row;
   align-items: center;
-  width: 166px;
-  max-width: 166px;
+  width: 100%;
   margin: 1px 0;
   cursor: pointer;
 }
