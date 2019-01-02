@@ -2,7 +2,6 @@ import {inject, observer} from "mobx-react";
 import React from "react";
 import PropTypes from "prop-types";
 import getLogger from "../tools/getLogger";
-import {autorun} from "mobx";
 
 const logger = getLogger('ElementSelector');
 
