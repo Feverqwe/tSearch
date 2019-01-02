@@ -179,7 +179,7 @@ const ProfileEditorProfileStore = types.compose('ProfileEditorProfileStore', Pro
     },
     getSnapshot() {
       const snapshot = JSON.parse(JSON.stringify(self));
-      snapshot.trackers = JSON.parse(JSON.stringify(self.getCategoryTrackers('selected')));
+      snapshot.trackers = JSON.parse(JSON.stringify(self.getCategoryTrackers('selected', true)));
       return snapshot;
     }
   };
