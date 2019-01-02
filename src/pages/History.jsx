@@ -68,7 +68,7 @@ class History extends React.Component {
 
 @inject('rootStore')
 @observer
-class HistoryQuery extends React.PureComponent {
+class HistoryQuery extends React.Component {
   static propTypes = {
     rootStore: PropTypes.object,
     query: PropTypes.object.isRequired,
@@ -114,7 +114,7 @@ class HistoryQuery extends React.PureComponent {
 
 @inject('rootStore')
 @observer
-class HistoryQueryLink extends React.PureComponent {
+class HistoryQueryLink extends React.Component {
   static propTypes = {
     rootStore: PropTypes.object,
     query: PropTypes.object.isRequired,
