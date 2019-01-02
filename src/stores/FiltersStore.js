@@ -67,26 +67,6 @@ const FiltersStore = types.model('FiltersStore', {
     },
   };
 }).views(/**FiltersStore*/self => {
-  const textToWords = function (text) {
-    const result = [];
-    const isSpace = /\s/;
-    let word = '';
-    for (let i = 0, symbol; symbol = text[i]; i++) {
-      if (isSpace.test(symbol)) {
-        if (text[i - 1] !== '\\') {
-          word && result.push(word);
-          word = '';
-        } else {
-          word = word.substr(0, word.length - 1) + symbol;
-        }
-      } else {
-        word += symbol;
-      }
-    }
-    word && result.push(word);
-    return result;
-  };
-
   return {
     get textFilterRe() {
       const text = self.text;
@@ -181,6 +161,26 @@ const testText = (textFilter, text) => {
     }
   }
   return true;
+};
+
+const textToWords = function (text) {
+  const result = [];
+  const isSpace = /\s/;
+  let word = '';
+  for (let i = 0, symbol; symbol = text[i]; i++) {
+    if (isSpace.test(symbol)) {
+      if (text[i - 1] !== '\\') {
+        word && result.push(word);
+        word = '';
+      } else {
+        word = word.substr(0, word.length - 1) + symbol;
+      }
+    } else {
+      word += symbol;
+    }
+  }
+  word && result.push(word);
+  return result;
 };
 
 export default FiltersStore;
