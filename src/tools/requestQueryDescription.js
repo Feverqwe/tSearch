@@ -30,7 +30,7 @@ const requestQueryDescription = (query) => {
       }, []);
 
       const proxyImages = images.map((url) => {
-        return 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=pos&resize_w=400&rewriteMime=image/jpeg&url=' + encodeURIComponent(url);
+        return 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=focus&resize_w=400&rewriteMime=image/jpeg&url=' + encodeURIComponent(url);
       });
 
       const allImages = proxyImages.concat(images);
@@ -82,9 +82,9 @@ const requestQueryDescription = (query) => {
 
         const lastEl = node.lastElementChild;
         if (lastEl && lastEl.tagName === 'A' && lastEl.firstChild.nodeType === 1) {
-          let lPP, lP;
-          if ((lP = lastEl.previousElementSibling) && lP.textContent === ' ' &&
-            (lPP = lP.previousElementSibling) && lPP.textContent === ',') {
+          const lP = lastEl.previousElementSibling;
+          const lPP = lP && lP.previousElementSibling;
+          if (lP && lP.textContent === ' ' && lPP && lPP.textContent === ',') {
             node.removeChild(lastEl);
             node.removeChild(lPP);
             node.removeChild(lP);
