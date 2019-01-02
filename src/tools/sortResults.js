@@ -7,15 +7,16 @@ const typeSortMap = {
 const sortResults = (results, sorts) => {
   const sortFns = sorts.map(({by, direction}) => {
     const info = typeSortMap[by];
+    const isReverse = info && info.reverse;
     return (aa, bb) => {
-      let a = aa[by];
-      let b = bb[by];
-      if (info && info.reverse) {
-        [a, b] = [b, a];
+      const ab = [aa[by], bb[by]];
+      if (isReverse) {
+        ab.reverse();
       }
       if (direction === 1) {
-        [a, b] = [b, a];
+        ab.reverse();
       }
+      const [a, b] = ab;
       return a === b ? 0 : a > b ? -1 : 1;
     };
   });

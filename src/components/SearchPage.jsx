@@ -36,23 +36,18 @@ class SearchPage extends React.Component {
       );
     });
 
-    const columns = ['date', 'quality', 'title', 'size', 'seeds', 'peers'];
-    if (this.rootStore.options.options.hidePeerRow) {
-      columns.splice(columns.indexOf('peers'), 1);
-    }
-    if (this.rootStore.options.options.hideSeedRow) {
-      columns.splice(columns.indexOf('seeds'), 1);
-    }
+    const columns = this.searchPageStore.columns;
 
     const headers = columns.map(column => {
       return (
-        <SearchPageColumn key={`column-${column}`} {...this.props} type={column}/>
+        <SearchPageColumn key={`column-${column}`} searchPageStore={this.searchPageStore} type={column}/>
       )
     });
 
     const body = this.searchPageStore.sortedAndFilteredResults.map(result => {
+      const tracker = this.rootStore.trackers.trackers.get(result.trackerId);
       return (
-        <SearchPageRow key={`result-${result.url}`} {...this.props} columns={columns} result={result}/>
+        <SearchPageRow key={`result-${result.url}`} searchStore={this.props.searchStore} tracker={tracker} columns={columns} result={result}/>
       )
     });
 
@@ -76,13 +71,11 @@ class SearchPage extends React.Component {
   }
 }
 
-
 @observer
 class SearchPageColumn extends React.Component {
   static propTypes = {
-    searchStore: PropTypes.object,
-    searchPageStore: PropTypes.object,
-    type: PropTypes.string,
+    searchPageStore: PropTypes.object.isRequired,
+    type: PropTypes.string.isRequired,
   };
 
   handleClick = (e) => {
@@ -165,14 +158,13 @@ class SearchPageCategoryItem extends React.Component {
 }
 
 @inject('rootStore')
-@observer
-class SearchPageRow extends React.Component {
+class SearchPageRow extends React.PureComponent {
   static propTypes = {
     rootStore: PropTypes.object,
-    searchStore: PropTypes.object,
-    searchPageStore: PropTypes.object,
-    row: PropTypes.object,
-    columns: PropTypes.arrayOf(PropTypes.string)
+    tracker: PropTypes.object.isRequired,
+    searchStore: PropTypes.object.isRequired,
+    columns: PropTypes.arrayOf(PropTypes.string).isRequired,
+    result: PropTypes.object.isRequired,
   };
 
   handleClick = () => {
@@ -184,7 +176,7 @@ class SearchPageRow extends React.Component {
 
   render() {
     const result = this.props.result;
-    const tracker = this.props.rootStore.trackers.trackers.get(result.trackerId);
+    const tracker = this.props.tracker;
     const cells = this.props.columns.map(type => {
       switch (type) {
         case 'date': {

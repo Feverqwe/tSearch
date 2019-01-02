@@ -79,6 +79,17 @@ const SearchPageStore = types.model('SearchPageStore', {
   };
 }).views(self => {
   return {
+    get columns() {
+      const columns = ['date', 'quality', 'title', 'size', 'seeds', 'peers'];
+      const /**RootStore*/rootStore = getParentOfType(self, RootStore);
+      if (rootStore.options.options.hidePeerRow) {
+        columns.splice(columns.indexOf('peers'), 1);
+      }
+      if (rootStore.options.options.hideSeedRow) {
+        columns.splice(columns.indexOf('seeds'), 1);
+      }
+      return columns;
+    },
     getSortBy(by) {
       let result = null;
       self.sorts.some(sort => {
@@ -114,6 +125,20 @@ const SearchPageStore = types.model('SearchPageStore', {
       const categoryFilter = self.getCategoryFilter();
       return sortResults(self.filteredResults.filter(categoryFilter), self.sorts);
     },
+    get counters() {
+      const trackerIdCountMap = new Map();
+      const categoryCountMap = new Map();
+      self.filteredResults.forEach((result) => {
+        const {trackerId, categoryId} = result;
+
+        const trackerCount = trackerIdCountMap.get(trackerId) || 0;
+        trackerIdCountMap.set(trackerId, trackerCount + 1);
+
+        const categoryCount = categoryCountMap.get(categoryId) || 0;
+        categoryCountMap.set(categoryId, categoryCount + 1);
+      });
+      return {trackerIdCountMap, categoryCountMap};
+    },
     getResultCountByTrackerId(id) {
       return self.trackerIdCountMap.get(id) || 0;
     },
@@ -121,14 +146,10 @@ const SearchPageStore = types.model('SearchPageStore', {
       if (id === undefined) {
         return self.filteredResults.length;
       }
-      return self.filteredResults.filter(result => {
-        return result.categoryId === id;
-      }).length;
+      return self.counters.categoryCountMap.get(id) || 0;
     },
     getVisibleResultCountByTrackerId(id) {
-      return self.filteredResults.filter(result => {
-        return result.trackerId === id;
-      }).length;
+      return self.counters.trackerIdCountMap.get(id) || 0;
     }
   };
 });
