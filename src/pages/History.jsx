@@ -42,7 +42,7 @@ class History extends React.Component {
 
     const queries = historyStore.getHistorySortByTime().map(query => {
       return (
-        <HistoryQuery key={query.query} query={query} {...this.props}/>
+        <HistoryQuery key={query.query} query={query}/>
       );
     });
 
@@ -54,7 +54,7 @@ class History extends React.Component {
 
     return (
       <div className="page-ctr">
-        <Header {...this.props}/>
+        <Header/>
         <div className="content content-row">
           <div className="main history-ctr">
             {body}
@@ -68,10 +68,10 @@ class History extends React.Component {
 
 @inject('rootStore')
 @observer
-class HistoryQuery extends React.Component {
+class HistoryQuery extends React.PureComponent {
   static propTypes = {
     rootStore: PropTypes.object,
-    query: PropTypes.object,
+    query: PropTypes.object.isRequired,
   };
 
   handleRemove = (e) => {
@@ -87,7 +87,7 @@ class HistoryQuery extends React.Component {
 
     const links = query.getClicksSortByTime().map(link => {
       return (
-        <HistoryQueryLink key={link.url} link={link} {...this.props}/>
+        <HistoryQueryLink key={link.url} query={query} link={link}/>
       );
     });
 
@@ -114,11 +114,11 @@ class HistoryQuery extends React.Component {
 
 @inject('rootStore')
 @observer
-class HistoryQueryLink extends React.Component {
+class HistoryQueryLink extends React.PureComponent {
   static propTypes = {
     rootStore: PropTypes.object,
-    query: PropTypes.object,
-    link: PropTypes.object,
+    query: PropTypes.object.isRequired,
+    link: PropTypes.object.isRequired,
   };
 
   handleRemove = (e) => {
