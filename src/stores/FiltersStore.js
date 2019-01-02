@@ -88,7 +88,7 @@ const FiltersStore = types.model('FiltersStore', {
   };
 
   return {
-    getTextFilterRe() {
+    get textFilterRe() {
       const text = self.text;
       const words = textToWords(text);
       let i;
@@ -127,50 +127,29 @@ const FiltersStore = types.model('FiltersStore', {
       }
       return result
     },
-    testText(text) {
-      const textFilter = self.getTextFilterRe();
-      if (textFilter.excludeRe && textFilter.excludeRe.test(text)) {
-        return false;
-      }
-      if (textFilter.includeRe) {
-        const m = text.match(textFilter.includeRe);
-        if (!m || uniq(m).length !== textFilter.includeCount) {
-          return false;
-        }
-      }
-      return true;
-    },
-    testRange(value, min, max) {
-      if (min !== 0 && value < min) {
-        return false;
-      }
-      if (max !== 0 && value > max) {
-        return false;
-      }
-      return true;
-    },
     getFilter() {
+      const /**RootStore*/rootStore = getParentOfType(self, RootStore);
+      const useCategoryWordFilter = rootStore.options.options.categoryWordFilter;
       return result => {
-        if (!self.testRange(result.size, self.minSize, self.maxSize)) {
+        if (!testRange(result.size, self.minSize, self.maxSize)) {
           return false;
         } else
-        if (!self.testRange(result.seeds, self.minSeed, self.maxSeed)) {
+        if (!testRange(result.seeds, self.minSeed, self.maxSeed)) {
           return false;
         } else
-        if (!self.testRange(result.peers, self.minPeer, self.maxPeer)) {
+        if (!testRange(result.peers, self.minPeer, self.maxPeer)) {
           return false;
         } else
-        if (!self.testRange(result.date, self.minTime, self.maxTime)) {
+        if (!testRange(result.date, self.minTime, self.maxTime)) {
           return false;
         } else {
-          const /**RootStore*/rootStore = getParentOfType(self, RootStore);
           let text = null;
-          if (rootStore.options.options.categoryWordFilter) {
+          if (useCategoryWordFilter) {
             text = result.categoryTitleLowerCase + ' ' + result.titleLowerCase;
           } else {
             text = result.titleLowerCase
           }
-          if (!self.testText(text)) {
+          if (!testText(self.textFilterRe, text)) {
             return false;
           } else {
             return true;
@@ -180,5 +159,28 @@ const FiltersStore = types.model('FiltersStore', {
     },
   };
 });
+
+const testRange = (value, min, max) => {
+  if (min !== 0 && value < min) {
+    return false;
+  }
+  if (max !== 0 && value > max) {
+    return false;
+  }
+  return true;
+};
+
+const testText = (textFilter, text) => {
+  if (textFilter.excludeRe && textFilter.excludeRe.test(text)) {
+    return false;
+  }
+  if (textFilter.includeRe) {
+    const m = text.match(textFilter.includeRe);
+    if (!m || uniq(m).length !== textFilter.includeCount) {
+      return false;
+    }
+  }
+  return true;
+};
 
 export default FiltersStore;
