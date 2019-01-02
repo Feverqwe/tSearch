@@ -201,7 +201,7 @@ class ExplorerItem extends React.Component {
       } else {
         quickSearchLabel = quickSearchItem.label;
       }
-      if (this.state.showQuickSearch && quickSearchItem.results.length) {
+      if (this.state.showQuickSearch) {
         quickSearchResults = (
           <QuickSearchResults quickSearchItemStore={quickSearchItem}/>
         );
@@ -234,27 +234,32 @@ class ExplorerItem extends React.Component {
   }
 }
 
+@observer
 class QuickSearchResults extends React.Component {
   static propTypes = {
     quickSearchItemStore: PropTypes.object.isRequired
   };
-
-  constructor(props) {
-    super(props);
-  }
 
   /**@return ExplorerQuickSearchItemStore*/
   get quickSearchItemStore() {
     return this.props.quickSearchItemStore;
   }
 
-  componentDidMount() {
-    setPosition(this.popupNode.parentNode, this.popupNode, this.angleNode);
+  updatePosition() {
+    const popupNode = this.popupNode;
+    if (popupNode) {
+      const labelNode = popupNode.parentNode;
+      const angleNode = this.angleNode;
+      if (labelNode && popupNode && angleNode) {
+        setPosition(labelNode, popupNode, this.angleNode);
+      }
+    }
   }
 
   popupNode = null;
   refPopupNode = (element) => {
     this.popupNode = element;
+    this.updatePosition();
   };
 
   angleNode = null;
@@ -275,6 +280,11 @@ class QuickSearchResults extends React.Component {
         </li>
       );
     });
+
+    if (!results.length) {
+      return null;
+    }
+
     return (
       <div ref={this.refPopupNode} title="" className="quick_search quick_search__visible">
         <div className="popup">
