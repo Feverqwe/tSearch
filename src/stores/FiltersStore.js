@@ -51,7 +51,7 @@ const FiltersStore = types.model('FiltersStore', {
       self.minSize = min * factor;
       self.maxSize = max * factor;
       self.minSizeGb = min;
-      self.minSizeGb = max;
+      self.maxSizeGb = max;
     },
     setSeed(min, max) {
       self.minSeed = min;
