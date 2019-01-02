@@ -247,19 +247,19 @@ class QuickSearchResults extends React.Component {
 
   updatePosition() {
     const popupNode = this.popupNode;
-    if (popupNode) {
-      const labelNode = popupNode.parentNode;
-      const angleNode = this.angleNode;
-      if (labelNode && popupNode && angleNode) {
-        setPosition(labelNode, popupNode, this.angleNode);
-      }
+    const labelNode = popupNode.parentNode;
+    const angleNode = this.angleNode;
+    if (labelNode && angleNode) {
+      setPosition(labelNode, popupNode, this.angleNode);
     }
   }
 
   popupNode = null;
   refPopupNode = (element) => {
     this.popupNode = element;
-    this.updatePosition();
+    if (element) {
+      this.updatePosition();
+    }
   };
 
   angleNode = null;
