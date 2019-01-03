@@ -5,7 +5,10 @@ import getTrackers from "../tools/getTrackers";
 import storageSet from "../tools/storageSet";
 import mobxCompare from "../tools/mobxCompare";
 
+const promiseLimit = require('promise-limit');
+
 const logger = getLogger('TrackersStore');
+const oneLimit = promiseLimit(1);
 
 /**
  * @typedef {{}} TrackersStore
@@ -74,7 +77,9 @@ const TrackersStore = types.model('TrackersStore', {
       return resolveIdentifier(TrackerStore, self, id);
     },
     saveTrackers() {
-      return storageSet({trackers: self.getTrackersSnapshot()});
+      return oneLimit(() => {
+        return storageSet({trackers: self.getTrackersSnapshot()});
+      });
     },
     getTrackersSnapshot() {
       return self.trackers.toJSON();
