@@ -13,7 +13,9 @@ const logger = getLogger('ProfileEditorStore');
  * @typedef {ProfileTrackerStore} ProfileEditorProfileTrackerStore
  * @property {*} isEditorProfileTrackerStore
  */
-const ProfileEditorProfileTrackerStore = types.compose('ProfileEditorProfileTrackerStore', ProfileTrackerStore).views((self) => {
+const ProfileEditorProfileTrackerStore = types.compose('ProfileEditorProfileTrackerStore', ProfileTrackerStore, types.model({
+  updateState: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
+})).views((self) => {
   return {
     get isEditorProfileTrackerStore() {
       return true;
@@ -27,6 +29,40 @@ const ProfileEditorProfileTrackerStore = types.compose('ProfileEditorProfileTrac
       }
       return '';
     },
+    update: flow(function* () {
+      self.updateState = 'pending';
+      try {
+        const result = yield new Promise((resolve, reject) => {
+          chrome.runtime.sendMessage({
+            action: 'downloadTracker',
+            id: self.id,
+            url: self.meta.downloadURL
+          }, response => {
+            let err = chrome.runtime.lastError;
+            err ? reject(err) : resolve(response);
+          });
+        }).then((response) => {
+          if (!response) {
+            throw new Error('Response is empty');
+          }
+          if (response.error) {
+            throw Object.assign(new Error(), response.error);
+          }
+          return response.result;
+        });
+
+        logger('download response', result);
+
+        if (isAlive(self)) {
+          self.updateState = 'done';
+        }
+      } catch (err) {
+        logger.error('download error', err);
+        if (isAlive(self)) {
+          self.updateState = 'error';
+        }
+      }
+    })
   };
 });
 

@@ -56,6 +56,10 @@ chrome.runtime.onMessage.addListener(function (message, sender, response) {
 
   let promise = null;
   switch (message.action) {
+    case 'downloadTracker': {
+      promise = downloadTracker(message.id, message.url);
+      break;
+    }
     case 'updateTracker': {
       promise = updateTracker(message.id);
       break;
@@ -229,6 +233,32 @@ const update = () => {
     ]).then(([trackers, explorerModules]) => {
       return {trackers, explorerModules};
     });
+  });
+};
+
+const downloadTracker = (id, downloadURL) => {
+  return oneLimit(() => {
+    return fetch(downloadURL).then(response => {
+      if (!response.ok) {
+        throw new ErrorWithCode('bad response', 'BAD_RESPONSE');
+      }
+      return response.text();
+    }).then(code => {
+      const trackerStore = TrackerStore.create({
+        id: id,
+        meta: getTrackerCodeMeta(code),
+        code: code,
+      });
+      const tracker = trackerStore.getSnapshot();
+      destroy(trackerStore);
+
+      tracker.options.lastUpdate = getNow();
+
+      return storageGet({trackers: {}}).then(storage => {
+        storage.trackers[id] = tracker;
+        return storageSet(storage);
+      });
+    }).then(() => true);
   });
 };
 
