@@ -6,8 +6,6 @@ import storageSet from "../tools/storageSet";
 import reOrderStoreItems from "../tools/reOrderStoreItems";
 import mobxCompare from "../tools/mobxCompare";
 
-const uuid = require('uuid/v4');
-
 const logger = getLogger('ProfilesStore');
 
 
