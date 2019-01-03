@@ -83,6 +83,7 @@ const ProfileEditorProfileTrackerStore = types.compose('ProfileEditorProfileTrac
  * @property {*} allTrackerIds
  * @property {*} filterTextRe
  * @property {function} getCategoryTrackers
+ * @property {function} getCategoryTrackersWithFilter
  * @property {function} getTrackerCountByCategory
  * @property {function} getSnapshot
  */
@@ -160,7 +161,7 @@ const ProfileEditorProfileStore = types.compose('ProfileEditorProfileStore', Pro
       return map;
     },
     get categoryTrackers() {
-      return self.getCategoryTrackers(self.category);
+      return self.getCategoryTrackersWithFilter(self.category);
     },
     get allTrackerIds() {
       const rootStore = getParentOfType(self, RootStore);
@@ -171,7 +172,7 @@ const ProfileEditorProfileStore = types.compose('ProfileEditorProfileStore', Pro
     get filterTextRe() {
       return new RegExp(escapeStringRegexp(self.filterText), 'i');
     },
-    getCategoryTrackers(value, withoutFilter) {
+    getCategoryTrackers(value) {
       let ids = null;
       switch (value) {
         case 'all': {
@@ -197,7 +198,12 @@ const ProfileEditorProfileStore = types.compose('ProfileEditorProfileStore', Pro
       let trackers = ids.map((trackerId) => {
         return self.getTrackerById(trackerId);
       });
-      if (!withoutFilter && self.filterText) {
+      
+      return trackers;
+    },
+    getCategoryTrackersWithFilter(value) {
+      let trackers = self.getCategoryTrackers(value);
+      if (self.filterText) {
         trackers = trackers.filter(tracker => {
           return self.filterTextRe.test([
             tracker.id,
@@ -217,11 +223,11 @@ const ProfileEditorProfileStore = types.compose('ProfileEditorProfileStore', Pro
       return resolveIdentifier(TrackerStore, self, trackerId) || self.trackersMap.get(trackerId);
     },
     getTrackerCountByCategory(value) {
-      return self.getCategoryTrackers(value).length;
+      return self.getCategoryTrackersWithFilter(value).length;
     },
     getSnapshot() {
       const snapshot = JSON.parse(JSON.stringify(self));
-      snapshot.trackers = JSON.parse(JSON.stringify(self.getCategoryTrackers('selected', true)));
+      snapshot.trackers = JSON.parse(JSON.stringify(self.getCategoryTrackers('selected')));
       return snapshot;
     }
   };
