@@ -28,6 +28,9 @@ const PageStore = types.model('PageStore', {
     init() {
       onResize();
     },
+    updateSize() {
+      onResize();
+    },
     afterCreate() {
       window.addEventListener('resize', onResizeThrottled);
     },

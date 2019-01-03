@@ -27,14 +27,29 @@ class Explorer extends React.Component {
     }
   }
 
+  /**@return {RootStore}*/
+  get rootStore() {
+    return this.props.rootStore;
+  }
+
   /**@return {OptionsStore}*/
   get optionsStore() {
-    return this.props.rootStore.options;
+    return this.rootStore.options;
   }
 
   /**@return {ExplorerStore}*/
   get explorerStore() {
-    return this.props.rootStore.explorer;
+    return this.rootStore.explorer;
+  }
+
+  componentDidMount() {
+    document.body.classList.add('force-y-scroll');
+    this.rootStore.page.updateSize();
+  }
+
+  componentWillUnmount() {
+    document.body.classList.remove('force-y-scroll');
+    this.rootStore.page.updateSize();
   }
 
   sortable = null;

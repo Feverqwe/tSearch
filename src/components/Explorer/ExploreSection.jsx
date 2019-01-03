@@ -349,7 +349,7 @@ class ExplorerSectionBody extends React.Component {
   getDisplayItemCount() {
     const section = this.sectionStore;
 
-    const itemCount = Math.ceil((section.page.width - 175) / (120 * section.zoom / 100 + 10 * 2)) - 1;
+    const itemCount = Math.floor((section.page.width - 176) / (120 * section.zoom / 100 + 10 * 2));
 
     return itemCount * section.rowCount;
   }
