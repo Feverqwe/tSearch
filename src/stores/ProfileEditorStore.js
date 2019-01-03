@@ -75,7 +75,13 @@ const ProfileEditorProfileStore = types.compose('ProfileEditorProfileStore', Pro
       self.filterText = value;
     },
     addTracker(trackerId) {
-      self.selectedTrackerIds.push(trackerId);
+      const tracker = self.getTrackerById(trackerId);
+      if (tracker) {
+        if (!self.trackersMap.has(trackerId)) {
+          self.trackers.push(JSON.parse(JSON.stringify(tracker)));
+        }
+        self.selectedTrackerIds.push(trackerId);
+      }
     },
     removeTracker(trackerId) {
       self.selectedTrackerIds = self.selectedTrackerIds.filter(id => id !== trackerId);
