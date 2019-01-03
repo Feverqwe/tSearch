@@ -176,7 +176,7 @@ const TrackerStore = types.model('TrackerStore', {
     },
     afterCreate() {
       onPatch(self, (patch) => {
-        if (/^\/(code|options\/enableProxy)$/.test(patch.path)) {
+        if (/^\/(code|meta\/connect\/\d+|options\/enableProxy)$/.test(patch.path)) {
           self.reloadWorker();
         }
       });
