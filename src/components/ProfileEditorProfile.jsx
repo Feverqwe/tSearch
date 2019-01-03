@@ -267,9 +267,7 @@ class ProfileEditorTrackerItem extends React.Component {
 
   handleUpdate = (e) => {
     e.preventDefault();
-    if (!this.trackersStore.isEditorProfileTrackerStore) {
-      this.trackersStore.update();
-    }
+    this.trackerStore.update();
   };
 
   render() {

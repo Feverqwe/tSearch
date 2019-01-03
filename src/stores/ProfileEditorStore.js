@@ -15,20 +15,8 @@ const logger = getLogger('ProfileEditorStore');
  */
 const ProfileEditorProfileTrackerStore = types.compose('ProfileEditorProfileTrackerStore', ProfileTrackerStore, types.model({
   updateState: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
-})).views((self) => {
+})).actions((self) => {
   return {
-    get isEditorProfileTrackerStore() {
-      return true;
-    },
-    getIconUrl() {
-      if (self.meta.icon64) {
-        return self.meta.icon64;
-      } else
-      if (self.meta.icon) {
-        return self.meta.icon;
-      }
-      return '';
-    },
     update: flow(function* () {
       self.updateState = 'pending';
       try {
@@ -63,6 +51,21 @@ const ProfileEditorProfileTrackerStore = types.compose('ProfileEditorProfileTrac
         }
       }
     })
+  };
+}).views((self) => {
+  return {
+    get isEditorProfileTrackerStore() {
+      return true;
+    },
+    getIconUrl() {
+      if (self.meta.icon64) {
+        return self.meta.icon64;
+      } else
+      if (self.meta.icon) {
+        return self.meta.icon;
+      }
+      return '';
+    }
   };
 });
 
