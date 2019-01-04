@@ -1,0 +1,500 @@
+{
+   "add": {
+      "message": "Додати"
+   },
+   "addInFavorite": {
+      "message": "В обране"
+   },
+   "addTrackerCode": {
+      "message": "Додати код"
+   },
+   "autoUpdate": {
+      "message": "Оновлювати автоматично"
+   },
+   "backupRestore": {
+      "message": "Архівація / Відновлення"
+   },
+   "basic": {
+      "message": "Основні"
+   },
+   "cancel": {
+      "message": "Скасувати"
+   },
+   "categoryAll": {
+      "message": "Все"
+   },
+   "categoryAnime": {
+      "message": "Аніме"
+   },
+   "categoryBooks": {
+      "message": "Книги"
+   },
+   "categoryCartoons": {
+      "message": "Мультфільми"
+   },
+   "categoryDocumentary": {
+      "message": "Докум."
+   },
+   "categoryFilms": {
+      "message": "Фільми"
+   },
+   "categoryGames": {
+      "message": "Ігри"
+   },
+   "categoryHumor": {
+      "message": "Гумор"
+   },
+   "categoryMusic": {
+      "message": "Музика"
+   },
+   "categoryOther": {
+      "message": "Інше"
+   },
+   "categorySerials": {
+      "message": "Серіали"
+   },
+   "categorySoft": {
+      "message": "ПЗ"
+   },
+   "categorySport": {
+      "message": "Спорт"
+   },
+   "categoryWordFilter": {
+      "message": "Враховувати категорію при фільтрації слів"
+   },
+   "categoryXXX": {
+      "message": "XXX"
+   },
+   "change": {
+      "message": "Змінити"
+   },
+   "clear": {
+      "message": "Очистити"
+   },
+   "close": {
+      "message": "Закрити"
+   },
+   "contextMenu": {
+      "message": "Додати пошук в контекстне меню"
+   },
+   "contextMenuTitle": {
+      "message": "Знайти торрент"
+   },
+   "createCode": {
+      "message": "Створити код"
+   },
+   "default": {
+      "message": "За замовчуванням"
+   },
+   "defaultProfileName": {
+      "message": "Стандартний"
+   },
+   "defineCategory": {
+      "message": "Автоматично визначати категорію роздачі"
+   },
+   "descUrl": {
+      "message": "URL опису"
+   },
+   "disablePopup": {
+      "message": "Не відображати вікно пошуку при натисканні на іконку розширення"
+   },
+   "doNotSendStatistics": {
+      "message": "Не відправляти статистику"
+   },
+   "edit": {
+      "message": "Редагувати"
+   },
+   "enableProxy": {
+      "message": "Включити підтримку проксі"
+   },
+   "enterTrackerCode": {
+      "message": "Вставте код трекера:"
+   },
+   "exportZip": {
+      "message": "Експорт в ZIP-файл"
+   },
+   "extDesc": {
+      "message": "Torrents MultiSearch - пошук на декількох трекерах відразу!"
+   },
+   "extName": {
+      "message": "TMS - Пошук торрентів"
+   },
+   "favoriteSync": {
+      "message": "Синхронізувати список обраного"
+   },
+   "favorites": {
+      "message": "Вибране"
+   },
+   "filter_all": {
+      "message": "Все"
+   },
+   "filter_selected": {
+      "message": "Обрані"
+   },
+   "filter_withoutList": {
+      "message": "Без списку"
+   },
+   "ggGamesNew": {
+      "message": "Ігри: Нові"
+   },
+   "ggGamesTop": {
+      "message": "Ігри: Кращі"
+   },
+   "goToTheWebsite": {
+      "message": "Перейти на сайт"
+   },
+   "hidePeerRow": {
+      "message": "Приховати стовпець \"піри\" (скачують)"
+   },
+   "hideSeedRow": {
+      "message": "Приховати стовпець \"сіди\" (роздають)"
+   },
+   "history": {
+      "message": "Історія"
+   },
+   "historyEmpty": {
+      "message": "Поки що тут порожньо..."
+   },
+   "imageUrl": {
+      "message": "URL зображення"
+   },
+   "imdbInCinema": {
+      "message": "IMDB: Зараз в кіно"
+   },
+   "imdbPopular": {
+      "message": "IMDB: Фільми"
+   },
+   "imdbSeries": {
+      "message": "IMDB: Серіали"
+   },
+   "importZip": {
+      "message": "Імпорт з ZIP-файлу"
+   },
+   "invertIcon": {
+      "message": "Інвертувати колір іконки розширення"
+   },
+   "kitAddTime": {
+      "message": "Час додавання"
+   },
+   "kitAttribute": {
+      "message": "Атрибут"
+   },
+   "kitBaseUrl": {
+      "message": "Основний URL"
+   },
+   "kitCategoryLink": {
+      "message": "Посилання на категорію"
+   },
+   "kitCategoryName": {
+      "message": "Категорія"
+   },
+   "kitConvert": {
+      "message": "Конвертація"
+   },
+   "kitConvertToNumber": {
+      "message": "Конвертувати в число"
+   },
+   "kitConvertedString": {
+      "message": "Конвертований рядок"
+   },
+   "kitDesc": {
+      "message": "Опис"
+   },
+   "kitGetCode": {
+      "message": "Отримати код"
+   },
+   "kitIcon": {
+      "message": "Іконка трекера (16x16)"
+   },
+   "kitLogin": {
+      "message": "Авторизація"
+   },
+   "kitLoginFormSelector": {
+      "message": "Селектор форми авторизації"
+   },
+   "kitLoginUrl": {
+      "message": "URL сторінки авторизації"
+   },
+   "kitNextPageLink": {
+      "message": "Посилання на наступну сторінку"
+   },
+   "kitOpen": {
+      "message": "Відкрити"
+   },
+   "kitOpenQuery": {
+      "message": "Пошуковий запит"
+   },
+   "kitPageCharset": {
+      "message": "Кодування сторінки"
+   },
+   "kitPeerCount": {
+      "message": "Кількість пірів"
+   },
+   "kitPostBody": {
+      "message": "POST запит"
+   },
+   "kitQuery": {
+      "message": "Пошуковий запит (використовуйте %search% як шаблон для пошукового запиту)"
+   },
+   "kitReadCode": {
+      "message": "Прочитати код"
+   },
+   "kitRegexpPattern": {
+      "message": "Regexp шаблон"
+   },
+   "kitReplaceMonth": {
+      "message": "Замінювати назву місяця на число"
+   },
+   "kitReplaceString": {
+      "message": "замінюється рядком"
+   },
+   "kitReplaceToday": {
+      "message": "Замінювати слова зараз\\сьогодні\\вчора на дату"
+   },
+   "kitResult": {
+      "message": "Результат"
+   },
+   "kitRowSelector": {
+      "message": "Селектор рядка"
+   },
+   "kitSaveLoad": {
+      "message": "Зберегти / Завантажити"
+   },
+   "kitSearch": {
+      "message": "Пошук"
+   },
+   "kitSearchMethod": {
+      "message": "Метод"
+   },
+   "kitSearchQueryEncoding": {
+      "message": "Кодування пошукового запиту"
+   },
+   "kitSearchUrl": {
+      "message": "URL сторінки пошуку"
+   },
+   "kitSeedCount": {
+      "message": "Кількість сідів"
+   },
+   "kitSelect": {
+      "message": "Вибрати"
+   },
+   "kitSelectors": {
+      "message": "Селектори"
+   },
+   "kitSkip": {
+      "message": "Пропуск рядків"
+   },
+   "kitSkipEnd": {
+      "message": "З кінця"
+   },
+   "kitSkipFirstRows": {
+      "message": "Пропустити перші N рядків"
+   },
+   "kitSkipLastRows": {
+      "message": "Пропустити останні N рядків"
+   },
+   "kitSkipTop": {
+      "message": "З початку"
+   },
+   "kitSourceString": {
+      "message": "Початковий рядок"
+   },
+   "kitTableRow": {
+      "message": "Рядок таблиці"
+   },
+   "kitTorrentDownloadLink": {
+      "message": "URL завантаження"
+   },
+   "kitTorrentLink": {
+      "message": "Посилання на роздачу"
+   },
+   "kitTorrentSize": {
+      "message": "Розмір торрента"
+   },
+   "kitTorrentTitle": {
+      "message": "Назва торрента"
+   },
+   "kitTrackerCodeReadError": {
+      "message": "Помилка розбору коду трекера"
+   },
+   "kitTrackerDesc": {
+      "message": "Опис трекера"
+   },
+   "kitTrackerDownloadUrl": {
+      "message": "Url оновлення коду"
+   },
+   "kitTrackerTitle": {
+      "message": "Назва трекера"
+   },
+   "kitTrackerUrl": {
+      "message": "URL"
+   },
+   "kitTrackerVersion": {
+      "message": "Версія"
+   },
+   "kitUseTemplate": {
+      "message": "Застосувати шаблон до рядка"
+   },
+   "kpFavorites": {
+      "message": "КіноПошук: Вибране"
+   },
+   "kpFolderId": {
+      "message": "ID категорії  КіноПошука"
+   },
+   "kpInCinema": {
+      "message": "Зараз в кіно"
+   },
+   "kpPopular": {
+      "message": "Фільми"
+   },
+   "kpSeries": {
+      "message": "Серіали"
+   },
+   "loadMore": {
+      "message": "Завантажити ще"
+   },
+   "login": {
+      "message": "Увійти"
+   },
+   "main": {
+      "message": "Головна"
+   },
+   "mainPage": {
+      "message": "Головна сторінка"
+   },
+   "manageProfile": {
+      "message": "Редагування списку"
+   },
+   "manageProfiles": {
+      "message": "Управління списками"
+   },
+   "move": {
+      "message": "Перемістити"
+   },
+   "newProfile": {
+      "message": "Створити список"
+   },
+   "options": {
+      "message": "Налаштування"
+   },
+   "originalPosterName": {
+      "message": "Відображати оригінальні назви"
+   },
+   "originalTitle": {
+      "message": "Оригінальний заголовок"
+   },
+   "peerFilterLabel": {
+      "message": "Піри"
+   },
+   "quickSearch": {
+      "message": "Швидкий пошук"
+   },
+   "rangeFromPlaceholder": {
+      "message": "від"
+   },
+   "rangeToPlaceholder": {
+      "message": "до"
+   },
+   "readMore": {
+      "message": "Детальніше"
+   },
+   "remove": {
+      "message": "Видалити"
+   },
+   "removeFromFavorite": {
+      "message": "Видалити з обраного"
+   },
+   "requestQueryDescription": {
+      "message": "Отримувати опис пошукового запиту з Google"
+   },
+   "row_date": {
+      "message": "Додано"
+   },
+   "row_peers": {
+      "message": "Піри (скачують)"
+   },
+   "row_peers__short": {
+      "message": "П"
+   },
+   "row_quality": {
+      "message": "Якість"
+   },
+   "row_quality__short": {
+      "message": "Я"
+   },
+   "row_seeds": {
+      "message": "Сіди (роздають)"
+   },
+   "row_seeds__short": {
+      "message": "С"
+   },
+   "row_size": {
+      "message": "Розмір"
+   },
+   "row_title": {
+      "message": "Назва"
+   },
+   "save": {
+      "message": "Зберегти"
+   },
+   "scrollTop": {
+      "message": "Вгору!"
+   },
+   "search": {
+      "message": "Знайти"
+   },
+   "searchPlaceholder": {
+      "message": "Введіть пошуковий запит"
+   },
+   "seedFilterLabel": {
+      "message": "Сіди"
+   },
+   "setupView": {
+      "message": "Налаштувати вигляд"
+   },
+   "showSections": {
+      "message": "Відображати секції:"
+   },
+   "sizeFilterLabel": {
+      "message": "Розмір ГБ"
+   },
+   "syncProfiles": {
+      "message": "Синхронізувати списки трекерів"
+   },
+   "timeFilter1h": {
+      "message": "За годину"
+   },
+   "timeFilter1m": {
+      "message": "За місяць"
+   },
+   "timeFilter1w": {
+      "message": "За тиждень"
+   },
+   "timeFilter1y": {
+      "message": "За рік"
+   },
+   "timeFilter24h": {
+      "message": "За добу"
+   },
+   "timeFilter72h": {
+      "message": "За 3 доби"
+   },
+   "timeFilterAll": {
+      "message": "За весь час"
+   },
+   "timeFilterLabel": {
+      "message": "Дата"
+   },
+   "timeFilterRange": {
+      "message": "За період..."
+   },
+   "title": {
+      "message": "Заголовок"
+   },
+   "update": {
+      "message": "Оновити"
+   },
+   "wordFilterLabel": {
+      "message": "Фільтр слів"
+   }
+}
