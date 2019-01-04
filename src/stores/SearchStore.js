@@ -213,6 +213,8 @@ const SearchStore = types.model('SearchStore', {
       });
     },
     requestQueryDescription() {
+      if (!self.query) return Promise.resolve();
+
       return requestQueryDescription(self.query).then((result) => {
         if (isAlive(self)) {
           self.setQueryDescription(result);
