@@ -63,9 +63,6 @@ const HistoryQueryStore = types.model('HistoryQueryStore', {
     incCount() {
       self.count++;
     },
-    setTime(value) {
-      self.time = value;
-    },
     setClick(query, title, url, trackerId) {
       self.clicks.set(url, {
         url: url,
@@ -130,7 +127,6 @@ const HistoryStore = types.model('HistoryStore', {
     addQuery(query) {
       const q = self.getOrCreateQuery(query);
       q.incCount();
-      q.setTime(getNow());
 
       self.save();
     },
@@ -167,7 +163,8 @@ const HistoryStore = types.model('HistoryStore', {
       let q = self.history.get(query);
       if (!q) {
         q = self.history.put({
-          query: query
+          query: query,
+          time: getNow()
         });
         if (self.history.size > 150) {
           self.getHistorySortByTime().slice(100).forEach((query) => {
