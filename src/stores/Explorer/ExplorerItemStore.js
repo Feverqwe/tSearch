@@ -2,6 +2,7 @@ import {clone, getParent, getParentOfType, resolveIdentifier, types} from "mobx-
 import ExplorerStore from "./ExplorerStore";
 import RootStore from "../RootStore";
 import {ExplorerQuickSearchItemStore} from "./ExplorerQuickSearchStore";
+import getNow from "../../tools/getNow";
 
 /**
  * @typedef {{}} ExplorerItemStore
@@ -65,7 +66,8 @@ const ExplorerItemStore = types.model('ExplorerItemStore', {
         /**@type ExplorerStore*/
         const explorerStore = getParentOfType(self, ExplorerStore);
         explorerStore.quickSearch.addItem({
-          query: self.query
+          query: self.query,
+          time: getNow()
         });
       }
       self.quickSearchItem.search();
