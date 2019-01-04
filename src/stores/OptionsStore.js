@@ -5,7 +5,6 @@ import storageSet from "../tools/storageSet";
 import downloadBlob from "../tools/downloadBlob";
 import mobxCompare from "../tools/mobxCompare";
 
-const JSZip = require("jszip");
 const promiseLimit = require('promise-limit');
 
 const logger = getLogger('OptionsStore');
@@ -164,28 +163,30 @@ const OptionsStore = types.model('OptionsStore', {
       });
     },
     exportZip() {
-      return Promise.all([
-        storageGet(null, 'local'),
-        storageGet(null, 'sync'),
-      ]).then(([localStorage, syncStorage]) => {
-        const zip = new JSZip();
+      return import('jszip').then(({default: JSZip}) => {
+        return Promise.all([
+          storageGet(null, 'local'),
+          storageGet(null, 'sync'),
+        ]).then(([localStorage, syncStorage]) => {
+          const zip = new JSZip();
 
-        Object.entries({
-          local: localStorage,
-          sync: syncStorage
-        }).forEach(([type, storage]) => {
-          const folder = zip.folder(type);
-          Object.entries(storage).forEach(([key, value]) => {
-            folder.file(key + '.json', JSON.stringify(value));
+          Object.entries({
+            local: localStorage,
+            sync: syncStorage
+          }).forEach(([type, storage]) => {
+            const folder = zip.folder(type);
+            Object.entries(storage).forEach(([key, value]) => {
+              folder.file(key + '.json', JSON.stringify(value));
+            });
           });
-        });
 
-        return zip.generateAsync({
-          type:"blob",
-          compression: 'DEFLATE',
-          compressionOptions: {
-            level: 9
-          }
+          return zip.generateAsync({
+            type: "blob",
+            compression: 'DEFLATE',
+            compressionOptions: {
+              level: 9
+            }
+          });
         });
       }).then((blob) => {
         const nowDate = new Date();
@@ -203,41 +204,43 @@ const OptionsStore = types.model('OptionsStore', {
       });
     },
     importZip() {
-      return selectFile().then((file) => {
-        return JSZip.loadAsync(file).then((zip) => {
-          const typeStorage = {
-            local: {},
-            sync: {}
-          };
-          const promiseList = [];
-          zip.forEach((path, zipEntry) => {
-            if (zipEntry.dir) return;
+      return import('jszip').then(({default: JSZip}) => {
+        return selectFile().then((file) => {
+          return JSZip.loadAsync(file).then((zip) => {
+            const typeStorage = {
+              local: {},
+              sync: {}
+            };
+            const promiseList = [];
+            zip.forEach((path, zipEntry) => {
+              if (zipEntry.dir) return;
 
-            const m = /^(?:(.+)\/)?([^\/]+)\.json$/.exec(zipEntry.name);
-            if (m) {
-              const [, type = 'local', key] = m;
-              if (!typeStorage[type]) {
-                logger.error('Storage type is not found!', zipEntry.name);
-                return;
-              }
-
-              const promise = zip.file(path).async("string").then((value) => {
-                try {
-                  typeStorage[type][key] = JSON.parse(value);
-                } catch (err) {
-                  logger.error('Read file error!', path, err);
+              const m = /^(?:(.+)\/)?([^\/]+)\.json$/.exec(zipEntry.name);
+              if (m) {
+                const [, type = 'local', key] = m;
+                if (!typeStorage[type]) {
+                  logger.error('Storage type is not found!', zipEntry.name);
+                  return;
                 }
-              });
-              promiseList.push(promise);
-            } else {
-              logger.error('Math key name error!', zipEntry.name);
-            }
-          });
-          return Promise.all(promiseList).then(() => {
-            return Promise.all([
-              storageSet(typeStorage.local, 'local'),
-              storageSet(typeStorage.sync, 'sync'),
-            ]);
+
+                const promise = zip.file(path).async("string").then((value) => {
+                  try {
+                    typeStorage[type][key] = JSON.parse(value);
+                  } catch (err) {
+                    logger.error('Read file error!', path, err);
+                  }
+                });
+                promiseList.push(promise);
+              } else {
+                logger.error('Math key name error!', zipEntry.name);
+              }
+            });
+            return Promise.all(promiseList).then(() => {
+              return Promise.all([
+                storageSet(typeStorage.local, 'local'),
+                storageSet(typeStorage.sync, 'sync'),
+              ]);
+            });
           });
         }).catch((err) => {
           logger.error('Read file error', err);
