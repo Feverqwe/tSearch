@@ -15,9 +15,19 @@ const serializeError = require('serialize-error');
     ];
   };
 
+  const isHttp = (protocol) => {
+    return /^https?:/.test(protocol);
+  };
+
   window.tabFetch = (id, url, fetchOptions) => {
     return Promise.resolve().then(() => {
       const controller = new AbortController();
+
+      const uri = new URL(url);
+      if (uri.protocol !== location.protocol && isHttp(uri.protocol) && isHttp(location.protocol)) {
+        uri.protocol = location.protocol;
+        url = uri.toString();
+      }
 
       const request = fetch(url, {
         method: fetchOptions.method,
