@@ -60,6 +60,12 @@ const HistoryQueryStore = types.model('HistoryQueryStore', {
   clicks: types.map(HistoryClickStore),
 }).actions(self => {
   return {
+    incCount() {
+      self.count++;
+    },
+    setTime(value) {
+      self.time = value;
+    },
     setClick(query, title, url, trackerId) {
       self.clicks.set(url, {
         url: url,
@@ -123,8 +129,8 @@ const HistoryStore = types.model('HistoryStore', {
     },
     addQuery(query) {
       const q = self.getOrCreateQuery(query);
-      q.count++;
-      q.time = getNow();
+      q.incCount();
+      q.setTime(getNow());
 
       self.save();
     },
