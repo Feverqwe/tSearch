@@ -361,7 +361,9 @@ const legacyExKit = {
     } else {
       Object.assign(requestOptions, {
         method: 'GET',
-        url: _details.url
+        url: _details.url,
+        charset: charset,
+        headers: headers,
       });
     }
 
