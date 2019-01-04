@@ -7,7 +7,8 @@
     "compress": "node ./builder/compressDist",
     "watch": "webpack --mode development --watch --config webpack.config.js",
     "build": "webpack --mode development --config webpack.config.js",
-    "release": "npm run buildExplorersJson && npm run buildTrackersJson && webpack --mode production --config webpack.config.js && npm run compress"
+    "buildRelease": "webpack --mode production --config webpack.config.js",
+    "release": "npm run buildExplorersJson && npm run buildTrackersJson && npm run buildRelease && npm run compress"
   },
   "dependencies": {
     "abortcontroller-polyfill": "^1.2.1",
