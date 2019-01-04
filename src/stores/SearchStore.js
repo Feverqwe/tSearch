@@ -170,11 +170,16 @@ const SearchStore = types.model('SearchStore', {
       try {
         const /**RootStore*/rootStore = getParentOfType(self, RootStore);
 
-        const page = SearchPageStore.create({
-          sorts: JSON.parse(JSON.stringify(rootStore.options.options.sorts)),
-          categoryId: self.categoryId && JSON.parse(JSON.stringify(self.categoryId)),
-        });
-        self.pages.push(page);
+        let page = null;
+        if (!self.pages.length || !rootStore.options.options.singleResultTable) {
+          page = SearchPageStore.create({
+            sorts: JSON.parse(JSON.stringify(rootStore.options.options.sorts)),
+            categoryId: self.categoryId && JSON.parse(JSON.stringify(self.categoryId)),
+          });
+          self.pages.push(page);
+        } else {
+          page = self.pages[0];
+        }
 
         yield Promise.all(rootStore.profiles.prepSelectedTrackerIds.map(trackerId => {
           const trackerSearch = self.createTrackerSearch(trackerId);

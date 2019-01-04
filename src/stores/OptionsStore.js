@@ -72,6 +72,7 @@ const OptionsValueStore = types.model('OptionsValueStore', {
   disablePopup: types.optional(types.boolean, false),
   invertIcon: types.optional(types.boolean, false),
   defineCategory: types.optional(types.boolean, true),
+  singleResultTable: types.optional(types.boolean, false),
   requestQueryDescription: types.optional(types.boolean, true),
   doNotSendStatistics: types.optional(types.boolean, false),
   originalPosterName: types.optional(types.boolean, false),

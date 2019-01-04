@@ -170,6 +170,9 @@
   "requestQueryDescription": {
     "message": "Получать описание поискового запроса из Google"
   },
+  "singleResultTable": {
+    "message": "Объединить результаты поиска в одну таблицу"
+  },
   "favorites": {
     "message": "Избранное"
   },

@@ -75,6 +75,7 @@ class Options extends React.Component {
             <OptionCheckbox name={'invertIcon'}/>
             <OptionCheckbox name={'defineCategory'}/>
             <OptionCheckbox name={'requestQueryDescription'}/>
+            <OptionCheckbox name={'singleResultTable'}/>
             <OptionCheckbox name={'doNotSendStatistics'}/>
           </div>
         );

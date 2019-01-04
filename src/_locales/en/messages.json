@@ -170,6 +170,9 @@
     "requestQueryDescription": {
         "message": "Find description of a search query via Google"
     },
+    "singleResultTable": {
+        "message": "Join search results in single table"
+    },
     "favorites": {
         "message": "Favorites"
     },
