@@ -69,7 +69,7 @@ class ProfileTracker extends React.Component {
       if (trackerSearchStore.state === 'pending') {
         iconClassList.push('tracker__icon-loading');
       } else
-      if (trackerSearchStore.state === 'error') {
+      if (!trackerSearchStore.authRequired && trackerSearchStore.state === 'error') {
         iconClassList.push('tracker__icon-error');
       }
     }
