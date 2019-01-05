@@ -34,6 +34,7 @@ const TrackerSearchStore = types.model('TrackerSearchStore', {
     url: types.maybeNull(types.string)
   })),
 }).actions((self) => {
+  let urlSet = null;
   return {
     searchWrapper: flow(function* (searchFn) {
       const {id, queryHighlightMap, queryRateScheme} = self;
@@ -63,7 +64,7 @@ const TrackerSearchStore = types.model('TrackerSearchStore', {
           self.nextQuery = result.nextPageRequest;
           self.state = 'done';
         }
-        return prepSearchResults(id, queryHighlightMap, queryRateScheme, result.results, defineCategory);
+        return prepSearchResults(id, queryHighlightMap, queryRateScheme, result.results, defineCategory, urlSet);
       } catch (err) {
         if (isAlive(self)) {
           self.state = 'error';
@@ -91,6 +92,9 @@ const TrackerSearchStore = types.model('TrackerSearchStore', {
       return self.searchWrapper(() => {
         return self.tracker.worker.searchNext(nextQuery);
       });
+    },
+    setUrlSet(value) {
+      urlSet = value;
     },
   };
 }).views((self) => {
@@ -164,6 +168,7 @@ const SearchStore = types.model('SearchStore', {
   pages: types.array(SearchPageStore),
   categoryId: types.maybe(types.number),
 }).actions(self => {
+  const urlSet = new Set();
   return {
     searchWrapper: flow(function* (serachFn) {
       self.state = 'pending';
@@ -235,6 +240,7 @@ const SearchStore = types.model('SearchStore', {
         id: trackerId,
         nextQuery: nextQuery
       });
+      trackerSearch.setUrlSet(urlSet);
       self.trackerSearch.set(trackerId, trackerSearch);
       return trackerSearch;
     },
@@ -287,16 +293,21 @@ const SearchStore = types.model('SearchStore', {
   };
 });
 
-const prepSearchResults = (trackerId, queryHighlightMap, queryRateScheme, results, defineCategory) => {
+const prepSearchResults = (trackerId, queryHighlightMap, queryRateScheme, results, defineCategory, urlSet) => {
   return results.filter(result => {
     if (!result.url) {
       logger.warn(`[${trackerId}] Skip torrent, cause no url`, result);
+      return false;
+    } else
+    if (urlSet.has(result.url)) {
+      logger.warn(`[${trackerId}] Skip torrent cause url exists`, result);
       return false;
     } else
     if (!result.title) {
       logger.warn(`[${trackerId}] Skip torrent cause no title`, result);
       return false;
     } else {
+      urlSet.add(result.url);
       ['size', 'seeds', 'peers', 'date', 'categoryId'].forEach(key => {
         let value = result[key];
         if (['undefined', 'number'].indexOf(typeof value) === -1) {
