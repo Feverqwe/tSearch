@@ -1,8 +1,8 @@
 import ModuleWorker from "./moduleWorker";
 
 class TrackerWorker extends ModuleWorker {
-  constructor(module) {
-    super(module);
+  constructor(...args) {
+    super(...args);
 
     this.initPromise = null;
   }

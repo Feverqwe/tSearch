@@ -2,8 +2,8 @@ import ModuleWorker from "./moduleWorker";
 import {ErrorWithCode} from "./errors";
 
 class ExplorerModuleWorker extends ModuleWorker {
-  constructor(module) {
-    super(module);
+  constructor(...args) {
+    super(...args);
 
     this.initPromise = null;
   }
