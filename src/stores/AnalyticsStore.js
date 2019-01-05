@@ -1,6 +1,7 @@
 import {flow, isAlive, types} from "mobx-state-tree";
 import getLogger from "../tools/getLogger";
 import {ErrorWithCode} from "../tools/errors";
+import getUserId from "../tools/getUserId";
 
 window.ga = window.ga || function() {
   (window.ga.q = window.ga.q || []).push(arguments);
@@ -29,7 +30,9 @@ const AnalyticsStore = types.model('AnalyticsStore', {
             throw new ErrorWithCode('Head is not ok', 'HEAD_ERROR');
           }
 
-          initGa();
+          return getUserId().then((uuid) => {
+            initGa(uuid);
+          });
         });
 
         if (isAlive(self)) {
@@ -49,7 +52,7 @@ const AnalyticsStore = types.model('AnalyticsStore', {
   };
 });
 
-const initGa = () => {
+const initGa = (uuid) => {
   window.GoogleAnalyticsObject = 'ga';
   const ga = window.ga;
 
@@ -62,6 +65,7 @@ const initGa = () => {
   ga('set', 'appVersion', BUILD_ENV.version);
   ga('require', 'displayfeatures');
   ga('send', 'pageview');
+  ga('set', 'userId', uuid);
 
   const gas = document.createElement('script');
   gas.src = 'https://www.google-analytics.com/analytics.js';

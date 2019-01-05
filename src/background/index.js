@@ -14,6 +14,7 @@ import storageSet from "../tools/storageSet";
 import TabFetchBg from "./tabFetchBg";
 import migrate from "../tools/migrate";
 import errorTracker from "../tools/errorTracker";
+import getUserId from "../tools/getUserId";
 
 errorTracker.bindExceptions();
 
@@ -342,25 +343,8 @@ const updateExplorerModule = (id) => {
   });
 };
 
-let uuidCache = null;
-const getUuid = () => {
-  if (uuidCache) {
-    return Promise.resolve(uuidCache);
-  }
-  return storageGet('uuid').then(storage => {
-    if (!storage.uuid) {
-      storage.uuid = uuid();
-      return storageSet(storage).then(() => storage.uuid);
-    } else {
-      return storage.uuid;
-    }
-  }).then(uuid => {
-    return uuidCache = uuid;
-  });
-};
-
 const track = params => {
-  return getUuid().then(uuid => {
+  return getUserId().then(uuid => {
     const defaultParams = {
       v: 1,
       ul: navigator.language,
