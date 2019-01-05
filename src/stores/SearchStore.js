@@ -171,14 +171,14 @@ const SearchStore = types.model('SearchStore', {
         const /**RootStore*/rootStore = getParentOfType(self, RootStore);
 
         let page = null;
-        if (!self.pages.length || !rootStore.options.options.singleResultTable) {
+        if (self.pages.length && rootStore.options.options.singleResultTable) {
+          page = self.pages[0];
+        } else {
           page = SearchPageStore.create({
             sorts: JSON.parse(JSON.stringify(rootStore.options.options.sorts)),
             categoryId: self.categoryId && JSON.parse(JSON.stringify(self.categoryId)),
           });
           self.pages.push(page);
-        } else {
-          page = self.pages[0];
         }
 
         yield Promise.all(rootStore.profiles.prepSelectedTrackerIds.map(trackerId => {
