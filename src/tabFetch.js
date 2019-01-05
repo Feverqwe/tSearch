@@ -25,12 +25,7 @@ const serializeError = require('serialize-error');
 
       const uri = new URL(url);
       if (isSameOrigin && uri.origin !== location.origin) {
-        uri.protocol = location.protocol;
-        uri.host = location.host;
-        uri.hostname = location.hostname;
-        uri.port = location.port;
-        uri.origin = location.origin;
-        url = uri.toString();
+        url = location.origin + url.substr(uri.origin.length);
       } else
       if (uri.protocol !== location.protocol && isHttp(uri.protocol) && isHttp(location.protocol)) {
         uri.protocol = location.protocol;
