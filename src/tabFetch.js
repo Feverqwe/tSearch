@@ -15,24 +15,26 @@ const serializeError = require('serialize-error');
     ];
   };
 
-  const isAbsoluteUrl = (url) => {
-    return /^[^:\/]+:/.test(url);
-  };
-
   const isHttp = (protocol) => {
     return /^https?:/.test(protocol);
   };
 
-  window.tabFetch = (id, url, fetchOptions) => {
+  window.tabFetch = (id, url, fetchOptions, isSameOrigin) => {
     return Promise.resolve().then(() => {
       const controller = new AbortController();
 
-      if (isAbsoluteUrl(url)) {
-        const uri = new URL(url);
-        if (uri.protocol !== location.protocol && isHttp(uri.protocol) && isHttp(location.protocol)) {
-          uri.protocol = location.protocol;
-          url = uri.toString();
-        }
+      const uri = new URL(url);
+      if (isSameOrigin && uri.origin !== location.origin) {
+        uri.protocol = location.protocol;
+        uri.host = location.host;
+        uri.hostname = location.hostname;
+        uri.port = location.port;
+        uri.origin = location.origin;
+        url = uri.toString();
+      } else
+      if (uri.protocol !== location.protocol && isHttp(uri.protocol) && isHttp(location.protocol)) {
+        uri.protocol = location.protocol;
+        url = uri.toString();
       }
 
       const request = fetch(url, {

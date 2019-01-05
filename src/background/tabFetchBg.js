@@ -299,15 +299,19 @@ class Request extends Events {
     }).then(() => {
       if (sessionId !== this.sessionIndex) return;
 
+      const {origin: originTabOrigin} = new URL(this.originTab.originUrl);
+      const {origin: urlOrigin} = new URL(this.url);
+      const isSameOrigin = urlOrigin === originTabOrigin;
+
       return executeScriptPromise(this.originTab.tabId, {
-        code: `(${function (id, url, options) {
+        code: `(${function (id, url, options, isSameOrigin) {
           try {
-            window.tabFetch(id, url, options);
+            window.tabFetch(id, url, options, isSameOrigin);
             return {result: true};
           } catch (err) {
             return {error: {message: err.message, stack: err.stack}};
           }
-        }})(${strArgs(this.id, this.url, this.options)})`,
+        }})(${strArgs(this.id, this.url, this.options, isSameOrigin)})`,
         runAt: 'document_start',
       }).then(results => results[0]);
     }).then((result) => {
