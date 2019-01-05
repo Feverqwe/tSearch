@@ -8,12 +8,10 @@ const logger = getLogger('TrackerStore');
  * @typedef {{}} TrackerOptionsStore
  * @property {number} [lastUpdate]
  * @property {boolean} [autoUpdate]
- * @property {boolean} [enableProxy]
  */
 const TrackerOptionsStore = types.model('TrackerOptionsStore', {
   lastUpdate: types.optional(types.number, 0),
   autoUpdate: types.optional(types.boolean, true),
-  enableProxy: types.optional(types.boolean, false),
 });
 
 /**
@@ -120,6 +118,7 @@ const TrackerStore = types.model('TrackerStore', {
 }).views(self => {
   let attached = 0;
   let worker = null;
+  let profileOptions = null;
   return {
     getSnapshot() {
       const snapshot = JSON.parse(JSON.stringify(self));
@@ -140,6 +139,12 @@ const TrackerStore = types.model('TrackerStore', {
     get worker() {
       return worker;
     },
+    setProfileOptions(options) {
+      profileOptions = JSON.parse(JSON.stringify(options));
+      if (worker) {
+        worker.setProfileOptions(profileOptions);
+      }
+    },
     attach() {
       attached++;
       self.handleAttachedChange();
@@ -159,7 +164,7 @@ const TrackerStore = types.model('TrackerStore', {
     },
     createWorker() {
       if (!worker) {
-        worker = new TrackerWorker(self.toJSON());
+        worker = new TrackerWorker(self.toJSON(), profileOptions);
       }
     },
     destroyWorker() {
@@ -176,7 +181,7 @@ const TrackerStore = types.model('TrackerStore', {
     },
     afterCreate() {
       onPatch(self, (patch) => {
-        if (/^\/(code|meta\/connect\/\d+|options\/enableProxy)$/.test(patch.path)) {
+        if (/^\/(code|meta\/connect\/\d+)$/.test(patch.path)) {
           self.reloadWorker();
         }
       });

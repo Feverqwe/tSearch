@@ -13,13 +13,20 @@ class ProfileTracker extends React.Component {
     profileTrackerStore: PropTypes.object.isRequired,
   };
 
+  /**@return ProfileTrackerStore*/
+  get profileTrackerStore() {
+    return this.props.profileTrackerStore;
+  }
+
+  /**@return TrackerStore*/
   get trackerStore() {
-    return this.props.profileTrackerStore.tracker;
+    return this.profileTrackerStore.tracker;
   }
 
   componentDidMount() {
     if (this.trackerStore) {
       this.trackerStore.attach();
+      this.trackerStore.setProfileOptions(this.profileTrackerStore.options);
     }
   }
 

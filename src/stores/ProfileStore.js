@@ -19,14 +19,31 @@ const ProfileTrackerMetaStore = types.model('ProfileTrackerMetaStore', {
 });
 
 /**
+ * @typedef {{}} ProfileTrackerOptionsStore
+ * @property {boolean} [enableProxy]
+ * @property {function} setEnableProxy
+ */
+const ProfileTrackerOptionsStore = types.model('ProfileTrackerOptionsStore', {
+  enableProxy: types.optional(types.boolean, false),
+}).actions((self) => {
+  return {
+    setEnableProxy(value) {
+      self.enableProxy = value;
+    }
+  };
+});
+
+/**
  * @typedef {{}} ProfileTrackerStore
  * @property {string} id
  * @property {ProfileTrackerMetaStore} [meta]
+ * @property {ProfileTrackerOptionsStore} [options]
  * @property {*} tracker
  */
 const ProfileTrackerStore = types.model('ProfileTrackerStore', {
   id: types.string,
   meta: types.optional(ProfileTrackerMetaStore, {}),
+  options: types.optional(ProfileTrackerOptionsStore, {}),
 }).views(self => {
   return {
     get tracker() {
@@ -37,13 +54,11 @@ const ProfileTrackerStore = types.model('ProfileTrackerStore', {
   };
 });
 
-
 /**
  * @typedef {{}} ProfileStore
  * @property {string} id
  * @property {string} name
  * @property {ProfileTrackerStore[]} trackers
- * @property {*} trackersIsReady
  */
 const ProfileStore = types.model('ProfileStore', {
   id: types.identifier,

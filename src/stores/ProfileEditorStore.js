@@ -223,7 +223,10 @@ const ProfileEditorProfileStore = types.compose('ProfileEditorProfileStore', Pro
       return trackers;
     },
     getTrackerById(trackerId) {
-      return resolveIdentifier(TrackerStore, self, trackerId) || self.trackersMap.get(trackerId);
+      return resolveIdentifier(TrackerStore, self, trackerId) || self.getProfileTracker(trackerId);
+    },
+    getProfileTracker(trackerId) {
+      return self.trackersMap.get(trackerId);
     },
     getTrackerCountByCategory(value) {
       return self.getCategoryTrackersWithFilter(value).length;
@@ -231,6 +234,12 @@ const ProfileEditorProfileStore = types.compose('ProfileEditorProfileStore', Pro
     getSnapshot() {
       const snapshot = JSON.parse(JSON.stringify(self));
       snapshot.trackers = JSON.parse(JSON.stringify(self.getCategoryTrackers('selected')));
+      snapshot.trackers.forEach((tracker) => {
+        const profileTracker = self.getProfileTracker(tracker.id);
+        if (profileTracker) {
+          tracker.options = JSON.parse(JSON.stringify(profileTracker.options));
+        }
+      });
       return snapshot;
     }
   };

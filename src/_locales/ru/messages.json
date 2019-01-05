@@ -83,6 +83,9 @@
   "remove": {
     "message": "Удалить"
   },
+  "advanced_options": {
+    "message": "Расширенные опции"
+  },
   "save": {
     "message": "Сохранить"
   },

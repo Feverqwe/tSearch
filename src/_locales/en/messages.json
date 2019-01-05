@@ -83,6 +83,9 @@
     "remove": {
         "message": "Delete"
     },
+    "advanced_options": {
+        "message": "Advanced view"
+    },
     "save": {
         "message": "Save"
     },

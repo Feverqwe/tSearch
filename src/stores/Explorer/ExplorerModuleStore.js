@@ -81,7 +81,7 @@ const ExplorerModuleStore = types.model('ExplorerModuleStore', {
     },
     afterCreate() {
       onPatch(self, (patch) => {
-        if (/^\/(code|options\/enableProxy)$/.test(patch.path)) {
+        if (/^\/(code)$/.test(patch.path)) {
           self.reloadWorker();
         }
       });

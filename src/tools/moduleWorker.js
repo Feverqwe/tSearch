@@ -6,27 +6,27 @@ import getLogger from "./getLogger";
 const logger = getLogger('moduleWorker');
 
 class ModuleWorker {
-  constructor(module) {
+  constructor(module, profileOptions) {
     this.module = module;
+    this.profileOptions = null;
 
     this.worker = null;
 
     this.requests = [];
 
     this.connectRe = null;
-    this.enableProxy = false;
 
-    const self = this;
+    this.setProfileOptions(profileOptions);
+
     this.api = {
       request: (details) => {
-        return exKitRequest(self, details);
+        return exKitRequest(this, details);
       }
     };
   }
   init() {
     const module = this.module;
     this.connectRe = exKitBuildConnectRe(module.meta.connect);
-    this.enableProxy = module.options.enableProxy;
     this.worker = new FrameWorker({
       moduleId: module.id
     }, this.api);
@@ -37,6 +37,9 @@ class ModuleWorker {
       this.destroyWorker();
       throw err;
     });
+  }
+  setProfileOptions(profileOptions) {
+    this.profileOptions = profileOptions || {};
   }
   callFn(event, args) {
     return this.worker.callFn(event, args);

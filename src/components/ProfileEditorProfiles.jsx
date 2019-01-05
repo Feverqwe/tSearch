@@ -86,6 +86,7 @@ class ProfileEditorProfiles extends React.Component {
           </div>
         </div>
         <div className="manager__footer">
+          <div className="space"/>
           <a className="button manager__footer__btn" href="#save" onClick={this.handleSave}>{chrome.i18n.getMessage('save')}</a>
         </div>
       </div>

@@ -40,7 +40,7 @@ const exKitRequest = (tracker, options) => {
   }
 
   let request = null;
-  if (tracker.enableProxy) {
+  if (tracker.profileOptions.enableProxy) {
     const fetchOriginUrl = originUrl || origin;
     const {origin: fetchOriginUrlOrigin} = new URL(fetchOriginUrl);
     let fetchUrl = url;

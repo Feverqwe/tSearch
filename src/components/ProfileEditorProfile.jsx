@@ -17,6 +17,10 @@ class ProfileEditorProfile extends React.Component {
     profileEditorProfileStore: PropTypes.object.isRequired,
   };
 
+  state = {
+    showOptions: false
+  };
+
   /**@return ProfileEditorStore*/
   get profileEditorStore() {
     return this.props.profileEditorStore;
@@ -51,6 +55,13 @@ class ProfileEditorProfile extends React.Component {
     this.search = element;
   };
 
+  handleShowOptions = (e) => {
+    e.preventDefault();
+    this.setState({
+      showOptions: !this.state.showOptions
+    });
+  };
+
   render() {
     const categories = ['all', 'withoutList', 'selected'].map(type => {
       const isActive = type === this.profileEditorProfileStore.category;
@@ -58,6 +69,11 @@ class ProfileEditorProfile extends React.Component {
         <ProfileEditorFilterButton key={`category-${type}`} profileEditorProfileStore={this.profileEditorProfileStore} isActive={isActive} type={type}/>
       );
     });
+
+    const showOptionsClassList = ['button manager__footer__btn show-options'];
+    if (this.state.showOptions) {
+      showOptionsClassList.push('active');
+    }
 
     return (
       <div className="manager">
@@ -76,12 +92,14 @@ class ProfileEditorProfile extends React.Component {
               />
             </div>
           </div>
-          <ProfileEditorTackerList key={this.profileEditorProfileStore.category} profileEditorProfileStore={this.profileEditorProfileStore}/>
+          <ProfileEditorTackerList key={this.profileEditorProfileStore.category} profileEditorProfileStore={this.profileEditorProfileStore} showOptions={this.state.showOptions}/>
         </div>
         <div className="manager__footer">
-          <a href="#save" className="button manager__footer__btn" onClick={this.handleSave}>{chrome.i18n.getMessage('save')}</a>
-          <Link to={'/editor/tracker'} target="_blank" className="button manager__footer__btn">{chrome.i18n.getMessage('add')}</Link>
+          <a onClick={this.handleShowOptions} href="#show-options" className={showOptionsClassList.join(' ')} title={chrome.i18n.getMessage('advanced_options')}/>
+          <div className="space"/>
           <Link to={'/codeMaker'} target="_blank" className="button manager__footer__btn">{chrome.i18n.getMessage('createCode')}</Link>
+          <Link to={'/editor/tracker'} target="_blank" className="button manager__footer__btn">{chrome.i18n.getMessage('add')}</Link>
+          <a href="#save" className="button manager__footer__btn" onClick={this.handleSave}>{chrome.i18n.getMessage('save')}</a>
         </div>
       </div>
     );
@@ -92,6 +110,7 @@ class ProfileEditorProfile extends React.Component {
 class ProfileEditorTackerList extends React.Component {
   static propTypes = {
     profileEditorProfileStore: PropTypes.object.isRequired,
+    showOptions: PropTypes.bool.isRequired,
   };
 
   /**@return ProfileEditorProfileStore*/
@@ -161,7 +180,7 @@ class ProfileEditorTackerList extends React.Component {
   render() {
     const trackers = this.profileEditorProfileStore.categoryTrackers.map((trackerStore) => {
       return (
-        <ProfileEditorTrackerItem key={`tracker-${trackerStore.id}`} profileEditorProfileStore={this.profileEditorProfileStore} trackerStore={trackerStore}/>
+        <ProfileEditorTrackerItem key={`tracker-${trackerStore.id}`} profileEditorProfileStore={this.profileEditorProfileStore} trackerStore={trackerStore} showOptions={this.props.showOptions}/>
       );
     });
 
@@ -218,6 +237,7 @@ class ProfileEditorTrackerItem extends React.Component {
     rootStore: PropTypes.object,
     profileEditorProfileStore: PropTypes.object.isRequired,
     trackerStore: PropTypes.object.isRequired,
+    showOptions: PropTypes.bool.isRequired,
   };
 
   /**@return RootStore*/
@@ -235,9 +255,14 @@ class ProfileEditorTrackerItem extends React.Component {
     return this.props.profileEditorProfileStore;
   }
 
-  /**@return ProfileEditorProfileTrackerStore*/
+  /**@return {ProfileEditorProfileTrackerStore|TrackerStore}*/
   get trackerStore() {
     return this.props.trackerStore;
+  }
+
+  /**@return ProfileEditorProfileTrackerStore*/
+  get profileTrackerStore() {
+    return this.props.profileEditorProfileStore.getProfileTracker(this.trackerStore.id);
   }
 
   handleChecked = () => {
@@ -270,6 +295,19 @@ class ProfileEditorTrackerItem extends React.Component {
     this.trackerStore.update();
   };
 
+  stopPropagation = (e) => {
+    e.stopPropagation();
+  };
+
+  handleProxyChange = (e) => {
+    this.profileTrackerStore.options.setEnableProxy(this.enableProxy.checked);
+  };
+
+  enableProxy = null;
+  refEnableProxy = (element) => {
+    this.enableProxy = element;
+  };
+
   render() {
     const tracker = this.trackerStore;
 
@@ -297,20 +335,20 @@ class ProfileEditorTrackerItem extends React.Component {
 
     if (tracker.meta.supportURL) {
       supportBtn = (
-        <a href={tracker.meta.supportURL} className="item__cell item__button button-support" target="_blank"/>
+        <a href={tracker.meta.supportURL} className="item__button button-support" target="_blank"/>
       );
     }
 
     if (tracker.meta.downloadURL) {
       updateBtn = (
-        <a onClick={this.handleUpdate} className="item__cell item__button button-update" href="#update"
+        <a onClick={this.handleUpdate} className="item__button button-update" href="#update"
            title={chrome.i18n.getMessage('update')}/>
       );
     }
 
     if (tracker.meta.homepageURL) {
       homepageBtn = (
-        <a href={tracker.meta.homepageURL} className="item__cell item__button button-home" target="_blank"/>
+        <a href={tracker.meta.homepageURL} className="item__button button-home" target="_blank"/>
       );
     }
 
@@ -322,27 +360,58 @@ class ProfileEditorTrackerItem extends React.Component {
 
     if (!tracker.isEditorProfileTrackerStore) {
       deleteBtn = (
-        <a onClick={this.handleRemove} className="item__cell item__button button-remove" href="#remove"
+        <a onClick={this.handleRemove} className="item__button button-remove" href="#remove"
            title={chrome.i18n.getMessage('remove')}/>
+      );
+    }
+
+    const optionList = [];
+    if (this.props.showOptions) {
+      if (checked && this.profileTrackerStore) {
+        optionList.push(
+          <div key={'enableProxy'} className="option__item">
+            <label>
+              <input ref={this.refEnableProxy} defaultChecked={this.profileTrackerStore.options.enableProxy} onChange={this.handleProxyChange} type="checkbox"/>
+              <span>{chrome.i18n.getMessage('enableProxy')}</span>
+            </label>
+          </div>
+        );
+      }
+    }
+
+    let options = null;
+    if (optionList.length) {
+      options = (
+        <div onClick={this.stopPropagation} className="options">
+          {optionList}
+        </div>
       );
     }
 
     return (
       <div className={classList.join(' ')} data-id={tracker.id}>
-        <div className="item__move"/>
-        <div className="item__checkbox">
+        <div className="item__cell item__move"/>
+        <div className="item__cell item__checkbox">
           <input ref={this.refCheckbox} onChange={this.handleChecked} type="checkbox" defaultChecked={checked}/>
         </div>
-        <img src={icon} className="item__icon" alt=""/>
-        <div onClick={this.handleClick} className="item__name">{name}</div>
+        <div className="item__cell item__icon">
+          <img src={icon} alt=""/>
+        </div>
+        <div onClick={this.handleClick} className="item__cell item__name">{name}</div>
+        <div onClick={this.handleClick} className="item__cell item__desc">
+          <div className="desc">{tracker.meta.description || null}</div>
+          {options}
+        </div>
         <div className="item__cell item__version">{version}</div>
-        {updateBtn}
-        {supportBtn}
-        {homepageBtn}
         {author}
-        <Link to={`/editor/tracker/${tracker.id}`} className="item__cell item__button button-edit" target="_blank"
-              title={chrome.i18n.getMessage('edit')}/>
-        {deleteBtn}
+        <div className="item__cell item__actions">
+          {updateBtn}
+          {supportBtn}
+          {homepageBtn}
+          <Link to={`/editor/tracker/${tracker.id}`} className="item__cell item__button button-edit" target="_blank"
+                title={chrome.i18n.getMessage('edit')}/>
+          {deleteBtn}
+        </div>
       </div>
     );
   }

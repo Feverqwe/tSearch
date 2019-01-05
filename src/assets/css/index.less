@@ -653,19 +653,38 @@ a.tracker__name {
   border-top: 1px dashed #ccc;
   height: 46px;
   display: flex;
-  flex-direction: row-reverse;
+  flex-direction: row;
   align-items: center;
   flex-shrink: 0;
+
+  .space {
+    flex-grow: 1;
+  }
 }
 
 .manager__footer__btn {
   padding: 4px 8px;
   margin-right: 8px;
-}
 
-.manager__profiles {
-  flex-grow: 1;
-  border-top: 1px dashed #ccc;
+  &.show-options {
+    display: inline-block;
+    width: 18px;
+    height: 16px;
+
+    margin-left: 8px;
+
+    opacity: 0.6;
+    transition: opacity 0.2s;
+
+    background: url(../img/view.svg) center no-repeat;
+    background-size: 16px;
+    &.active {
+      background-color: #f5f5f5;
+    }
+    &:hover {
+      opacity: 1;
+    }
+  }
 }
 
 .manager__trackers .item__move,
@@ -679,7 +698,7 @@ a.tracker__name {
   opacity: 0.5;
 }
 
-.manager__trackers .item__move,
+.manager__trackers .item__move:hover,
 .manager__profiles .item__move:hover {
   opacity: 1;
 }
@@ -700,6 +719,92 @@ a.tracker__name {
 
 .manager .item__cell {
   padding: 4px;
+}
+
+.manager__trackers {
+  display: flex;
+  border-top: 1px dashed #ccc;
+  overflow: auto;
+  flex-grow: 1;
+  min-height: 100%;
+  height: 100%;
+  flex-direction: column;
+
+  * {
+    flex-shrink: 0;
+  }
+
+  .item {
+    display: flex;
+    flex-direction: row;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+
+    &.item__selected {
+      background-color: #337AF8;
+      color: #fff;
+    }
+
+    .item__cell {
+      align-items: center;
+      display: flex;
+    }
+
+    .item__move {
+      height: auto;
+      padding: 0;
+    }
+
+    .item__checkbox {
+      align-items: center;
+      display: flex;
+      padding: 0;
+    }
+
+    .item__icon {
+      align-items: center;
+      display: flex;
+      img {
+        width: 16px;
+        height: 16px;
+        background-color: #fff;
+        border-radius: 4px;
+        padding: 2px;
+      }
+    }
+
+    .item__name {
+      align-items: center;
+      display: flex;
+
+      cursor: pointer;
+      width: 100px;
+    }
+
+    .item__desc {
+      flex-grow: 1;
+      flex-shrink: 1;
+      cursor: default;
+      flex-direction: column;
+      align-items: normal;
+
+      * {
+        flex-shrink: 1;
+      }
+
+      .options {
+        .option__item {
+          display: flex;
+          align-items: center;
+          input, span {
+            vertical-align: middle;
+          }
+        }
+      }
+    }
+  }
 }
 
 .manager__trackers .button-home {
@@ -762,19 +867,19 @@ a.tracker__name {
   text-decoration: none;
   border-radius: 3px;
   color: #000;
-}
 
-.manager .filter__item .item__count {
-  color: #949494;
-}
+  &.item__selected {
+    background-color: #337AF8;
+    color: #fff;
 
-.manager .filter__item.item__selected {
-  background-color: #337AF8;
-  color: #fff;
-}
+    .item__count {
+      color: #fff;
+    }
+  }
 
-.manager .filter__item.item__selected .item__count {
-  color: #fff;
+  .item__count {
+    color: #949494;
+  }
 }
 
 .manager .filter__input {
@@ -789,48 +894,40 @@ a.tracker__name {
   flex-grow: 1;
 }
 
-.manager__trackers {
-  display: block;
+.manager__profiles {
+  flex-grow: 1;
   border-top: 1px dashed #ccc;
-  overflow: auto;
-  flex-grow: 1;
-  min-height: 100%;
-  height: 100%;
-}
 
-.manager .item {
-  display: flex;
-  flex-direction: row;
-  height: 34px;
-  align-items: center;
-}
+  .item {
+    display: flex;
+    flex-direction: row;
+    height: 34px;
+    align-items: center;
 
-.manager .item:hover {
-  background-color: rgba(0, 0, 0, 0.1);
-}
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.1);
+    }
 
-.manager__trackers .item.item__selected {
-  background-color: #337AF8;
-  color: #fff;
-}
+    &.item__selected {
+      background-color: #337AF8;
+      color: #fff;
+    }
 
-.manager__trackers .item.item__filtered {
-  display: none;
-}
+    .item__icon {
+      margin-left: 8px;
+      width: 16px;
+      height: 16px;
+      background-color: #fff;
+      border-radius: 4px;
+      padding: 2px;
+    }
 
-.manager .item__icon {
-  margin-left: 8px;
-  width: 16px;
-  height: 16px;
-  background-color: #fff;
-  border-radius: 4px;
-  padding: 2px;
-}
-
-.manager .item__name {
-  flex-grow: 1;
-  padding: 9px 8px;
-  cursor: pointer;
+    .item__name {
+      flex-grow: 1;
+      padding: 9px 8px;
+      cursor: pointer;
+    }
+  }
 }
 
 .query-description {

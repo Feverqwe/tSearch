@@ -21,9 +21,6 @@ const EditorTrackerOptionsStore = types.compose('EditorTrackerOptionsStore', Tra
     setAutoUpdate(value) {
       self.autoUpdate = value;
     },
-    setEnableProxy(value) {
-      self.enableProxy = value;
-    }
   };
 });
 
