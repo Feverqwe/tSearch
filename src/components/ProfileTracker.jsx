@@ -9,19 +9,23 @@ import PropTypes from "prop-types";
 class ProfileTracker extends React.Component {
   static propTypes = {
     rootStore: PropTypes.object,
-    id: PropTypes.string,
-    profileTrackerStore: PropTypes.object,
+    id: PropTypes.string.isRequired,
+    profileTrackerStore: PropTypes.object.isRequired,
   };
 
+  get trackerStore() {
+    return this.props.profileTrackerStore.tracker;
+  }
+
   componentDidMount() {
-    if (this.props.profileTrackerStore.tracker) {
-      this.props.profileTrackerStore.tracker.attach();
+    if (this.trackerStore) {
+      this.trackerStore.attach();
     }
   }
 
   componentWillUnmount() {
-    if (this.props.profileTrackerStore.tracker) {
-      this.props.profileTrackerStore.tracker.deattach();
+    if (this.trackerStore) {
+      this.trackerStore.deattach();
     }
   }
 
@@ -51,7 +55,7 @@ class ProfileTracker extends React.Component {
   };
 
   render() {
-    const tracker = this.props.profileTrackerStore.tracker;
+    const tracker = this.trackerStore;
     if (!tracker) {
       return (
         <div className="tracker">
