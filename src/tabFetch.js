@@ -15,6 +15,10 @@ const serializeError = require('serialize-error');
     ];
   };
 
+  const isAbsoluteUrl = (url) => {
+    return /^[a-z][a-z0-9+.-]*:/.test(url);
+  };
+
   const isHttp = (protocol) => {
     return /^https?:/.test(protocol);
   };
@@ -23,10 +27,12 @@ const serializeError = require('serialize-error');
     return Promise.resolve().then(() => {
       const controller = new AbortController();
 
-      const uri = new URL(url);
-      if (uri.protocol !== location.protocol && isHttp(uri.protocol) && isHttp(location.protocol)) {
-        uri.protocol = location.protocol;
-        url = uri.toString();
+      if (isAbsoluteUrl(url)) {
+        const uri = new URL(url);
+        if (uri.protocol !== location.protocol && isHttp(uri.protocol) && isHttp(location.protocol)) {
+          uri.protocol = location.protocol;
+          url = uri.toString();
+        }
       }
 
       const request = fetch(url, {

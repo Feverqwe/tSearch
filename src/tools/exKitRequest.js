@@ -41,7 +41,14 @@ const exKitRequest = (tracker, options) => {
 
   let request = null;
   if (tracker.enableProxy) {
-    request = tabFetchRequest(originUrl || origin, url, fetchOptions);
+    const fetchOriginUrl = originUrl || origin;
+    const {origin: fetchOriginUrlOrigin} = new URL(fetchOriginUrl);
+    let fetchUrl = url;
+    if (fetchOriginUrlOrigin === fetchOriginUrl) {
+      fetchUrl = url.substr(origin.length);
+    }
+
+    request = tabFetchRequest(fetchOriginUrl, fetchUrl, fetchOptions);
   } else {
     request = fetchRequest(url, fetchOptions);
   }
