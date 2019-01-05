@@ -16,7 +16,7 @@ const serializeError = require('serialize-error');
   };
 
   const isAbsoluteUrl = (url) => {
-    return /^[a-z][a-z0-9+.-]*:/.test(url);
+    return /^[^:]+:/.test(url);
   };
 
   const isHttp = (protocol) => {
