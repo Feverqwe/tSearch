@@ -4,12 +4,9 @@ import getTrackerIconClassName from "../tools/getTrackerIconClassName";
 import blankSvg from "../assets/img/blank.svg";
 import PropTypes from "prop-types";
 
-@inject('rootStore')
 @observer
 class ProfileTracker extends React.Component {
   static propTypes = {
-    rootStore: PropTypes.object,
-    id: PropTypes.string.isRequired,
     profileTrackerStore: PropTypes.object.isRequired,
   };
 
@@ -23,53 +20,86 @@ class ProfileTracker extends React.Component {
     return this.profileTrackerStore.tracker;
   }
 
-  componentDidMount() {
-    if (this.trackerStore) {
-      this.trackerStore.attach();
-      this.trackerStore.setProfileOptions(this.profileTrackerStore.options);
+  render() {
+    if (!this.trackerStore) {
+      const name = this.profileTrackerStore.meta.name || 'Not found';
+      return (
+        <div className="tracker">
+          <div className="tracker__icon tracker__icon-error"/>
+          {name}
+        </div>
+      );
     }
+
+    return (
+      <Tracker id={this.trackerStore.id} profileTrackerStore={this.profileTrackerStore}
+               trackerStore={this.trackerStore}/>
+    );
+  }
+}
+
+@inject('rootStore')
+@observer
+class Tracker extends React.Component {
+  static propTypes = {
+    rootStore: PropTypes.object,
+    trackerStore: PropTypes.object.isRequired,
+    profileTrackerStore: PropTypes.object.isRequired,
+  };
+
+  /**@return RootStore*/
+  get rootStore() {
+    return this.props.rootStore;
   }
 
-  componentWillUnmount() {
-    if (this.trackerStore) {
-      this.trackerStore.deattach();
-    }
+  /**@return ProfileTrackerStore*/
+  get profileTrackerStore() {
+    return this.props.profileTrackerStore;
   }
 
+  /**@return TrackerStore*/
+  get trackerStore() {
+    return this.props.trackerStore;
+  }
+
+  /**@return SearchStore*/
   get searchStore() {
-    const searches = this.props.rootStore.searches;
+    const searches = this.rootStore.searches;
     const len = searches.length;
     if (len) {
       return searches[len - 1];
     }
   }
 
+  /**@return TrackerSearchStore*/
   get trackerSearchStore() {
     const searchStore = this.searchStore;
     if (searchStore) {
-      return searchStore.trackerSearch.get(this.props.id);
+      return searchStore.trackerSearch.get(this.trackerStore.id);
     }
+  }
+
+  componentDidMount() {
+    this.trackerStore.attach();
+    this.trackerStore.setProfileOptions(this.profileTrackerStore.options);
+  }
+
+  componentWillUnmount() {
+    this.trackerStore.deattach();
   }
 
   handleClick = (e) => {
     e.preventDefault();
 
-    const wasSelected = this.props.rootStore.profiles.isSelectedTracker(this.props.id);
-    this.props.rootStore.profiles.clearSelectedTrackers();
+    const wasSelected = this.rootStore.profiles.isSelectedTracker(this.trackerStore.id);
+    this.rootStore.profiles.clearSelectedTrackers();
     if (!wasSelected) {
-      this.props.rootStore.profiles.addSelectedTracker(this.props.id);
+      this.rootStore.profiles.addSelectedTracker(this.trackerStore.id);
     }
   };
 
   render() {
     const tracker = this.trackerStore;
-    if (!tracker) {
-      return (
-        <div className="tracker">
-          Not found
-        </div>
-      );
-    }
 
     const iconClassList = ['tracker__icon'];
 
@@ -123,7 +153,7 @@ class ProfileTracker extends React.Component {
     const iconUrl = tracker.getIconUrl() || blankSvg;
 
     const classList = ['tracker'];
-    if (this.props.rootStore.profiles.isSelectedTracker(this.props.id)) {
+    if (this.rootStore.profiles.isSelectedTracker(tracker.id)) {
       classList.push('tracker-selected');
     }
 

@@ -62,7 +62,7 @@ class Profile extends React.Component {
     const trackers = [];
     this.profileStore.trackers.forEach(profileTracker => {
       trackers.push(
-        <ProfileTracker key={profileTracker.id} id={profileTracker.id} profileTrackerStore={profileTracker}/>
+        <ProfileTracker key={profileTracker.id} profileTrackerStore={profileTracker}/>
       );
     });
 
