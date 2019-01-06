@@ -28,8 +28,7 @@ const serializeError = require('serialize-error');
         url = location.origin + url.substr(uri.origin.length);
       } else
       if (uri.protocol !== location.protocol && isHttp(uri.protocol) && isHttp(location.protocol)) {
-        uri.protocol = location.protocol;
-        url = uri.toString();
+        url = location.protocol + url.substr(uri.protocol.length);
       }
 
       const request = fetch(url, {
