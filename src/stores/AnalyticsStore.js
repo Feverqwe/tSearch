@@ -30,9 +30,7 @@ const AnalyticsStore = types.model('AnalyticsStore', {
             throw new ErrorWithCode('Head is not ok', 'HEAD_ERROR');
           }
 
-          return getUserId().then((uuid) => {
-            initGa(uuid);
-          });
+          initGa();
         });
 
         if (isAlive(self)) {
@@ -52,7 +50,7 @@ const AnalyticsStore = types.model('AnalyticsStore', {
   };
 });
 
-const initGa = (uuid) => {
+const initGa = () => {
   window.GoogleAnalyticsObject = 'ga';
   const ga = window.ga;
 
@@ -65,7 +63,6 @@ const initGa = (uuid) => {
   ga('set', 'appVersion', BUILD_ENV.version);
   ga('require', 'displayfeatures');
   ga('send', 'pageview');
-  ga('set', 'userId', uuid);
 
   const gas = document.createElement('script');
   gas.src = 'https://www.google-analytics.com/analytics.js';
