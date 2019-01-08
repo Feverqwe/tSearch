@@ -50,6 +50,7 @@ class CodeMakerFrame extends React.Component {
   reqTracker = {
     connectRe: /.+/,
     requests: [],
+    profileOptions: {}
   };
 
   requestPage(options) {
