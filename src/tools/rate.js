@@ -759,8 +759,11 @@ const rate = {
         videoQuality: 0,
         audioFormat: 0,
         gameQuality: 0,
+        serials: 0,
+        cartoons: 0,
         soft: 0,
-        book: 0
+        book: 0,
+        xxx: 0,
       },
       sum: 0
     };
@@ -902,7 +905,7 @@ const rate = {
     if (titleRate.xxx) {
       return 10;
     } else
-    if (titleRate.books) {
+    if (titleRate.book) {
       return 5;
     } else
     if (titleRate.serials) {
@@ -911,13 +914,13 @@ const rate = {
     if (titleRate.cartoons) {
       return 4;
     } else
-    if (titleRate.video > titleRate.music && titleRate.video > titleRate.games) {
+    if (titleRate.videoFormat > titleRate.audioFormat && titleRate.videoFormat > titleRate.gameQuality) {
       return 3;
     } else
-    if (titleRate.music > titleRate.video && titleRate.music > titleRate.games) {
+    if (titleRate.audioFormat > titleRate.videoFormat && titleRate.audioFormat > titleRate.gameQuality) {
       return 1;
     } else
-    if (titleRate.games > titleRate.music && titleRate.games > titleRate.video) {
+    if (titleRate.gameQuality > titleRate.audioFormat && titleRate.gameQuality > titleRate.videoFormat) {
       return 2;
     }
     return -1;
