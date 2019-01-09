@@ -57,7 +57,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, response) {
   let promise = null;
   switch (message.action) {
     case 'downloadTracker': {
-      promise = downloadTracker(message.id, message.updateUrl, message.downloadUrl);
+      promise = downloadTracker(message.id, message.updateURL, message.downloadURL);
       break;
     }
     case 'updateTracker': {

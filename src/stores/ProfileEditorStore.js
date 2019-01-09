@@ -24,8 +24,8 @@ const ProfileEditorProfileTrackerStore = types.compose('ProfileEditorProfileTrac
           chrome.runtime.sendMessage({
             action: 'downloadTracker',
             id: self.id,
-            updateUrl: self.meta.updateURL,
-            downloadUrl: self.meta.downloadURL,
+            updateURL: self.meta.updateURL,
+            downloadURL: self.meta.downloadURL,
           }, response => {
             let err = chrome.runtime.lastError;
             err ? reject(err) : resolve(response);
