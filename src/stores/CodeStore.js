@@ -304,6 +304,7 @@ const CodeSelectorsStore = types.model('CodeSelectorsStore', {
  * @property {string} name
  * @property {string} [url]
  * @property {string} [description]
+ * @property {string} [updateUrl]
  * @property {string} [downloadUrl]
  * @property {string} [version]
  * @property {function} set
@@ -314,6 +315,7 @@ const CodeDescriptionStore = types.model('CodeDescriptionStore', {
   name: types.string,
   url: types.optional(types.string, ''),
   description: types.optional(types.string, ''),
+  updateUrl: types.optional(types.string, ''),
   downloadUrl: types.optional(types.string, ''),
   version: types.optional(types.string, '1.0'),
 }).actions(self => {
@@ -326,7 +328,7 @@ const CodeDescriptionStore = types.model('CodeDescriptionStore', {
   return {
     getSnapshot() {
       const result = getSnapshot(self);
-      ['url', 'description', 'downloadUrl'].forEach((key) => {
+      ['url', 'description', 'updateUrl', 'downloadUrl'].forEach((key) => {
         if (!result[key]) {
           delete result[key];
         }

@@ -8,6 +8,7 @@ import TrackerStore from "./TrackerStore";
  * @property {string|undefined} author
  * @property {string|undefined} homepageURL
  * @property {string|undefined} trackerURL
+ * @property {string|undefined} updateURL
  * @property {string|undefined} downloadURL
  */
 const ProfileTrackerMetaStore = types.model('ProfileTrackerMetaStore', {
@@ -15,6 +16,7 @@ const ProfileTrackerMetaStore = types.model('ProfileTrackerMetaStore', {
   author: types.maybe(types.string),
   homepageURL: types.maybe(types.string),
   trackerURL: types.maybe(types.string),
+  updateURL: types.maybe(types.string),
   downloadURL: types.maybe(types.string),
 });
 

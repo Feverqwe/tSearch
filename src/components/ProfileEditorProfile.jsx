@@ -339,7 +339,7 @@ class ProfileEditorTrackerItem extends React.Component {
       );
     }
 
-    if (tracker.meta.downloadURL) {
+    if (tracker.meta.updateURL || tracker.meta.downloadURL) {
       updateBtn = (
         <a onClick={this.handleUpdate} className="item__button button-update" href="#update"
            title={chrome.i18n.getMessage('update')}/>

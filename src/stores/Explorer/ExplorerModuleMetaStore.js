@@ -13,6 +13,7 @@ import processLocale from "../../tools/processLocale";
  * @property {string|undefined} icon
  * @property {string|undefined} icon64
  * @property {string|undefined} siteURL
+ * @property {string|undefined} updateURL
  * @property {string|undefined} downloadURL
  * @property {string|undefined} supportURL
  * @property {string[]} require
@@ -33,6 +34,7 @@ const ExplorerModuleMetaStore = types.model('ExplorerModuleMetaStore', {
   icon: types.maybe(types.string),
   icon64: types.maybe(types.string),
   siteURL: types.maybe(types.string),
+  updateURL: types.maybe(types.string),
   downloadURL: types.maybe(types.string),
   supportURL: types.maybe(types.string),
   require: types.array(types.string),

@@ -179,6 +179,10 @@ const convertCodeV2toV3 = /**CodeV2*/code => {
     description.description = code.desc;
   }
 
+  if (code.updateUrl) {
+    description.updateUrl = code.updateUrl;
+  }
+
   if (code.downloadUrl) {
     description.downloadUrl = code.downloadUrl;
   }

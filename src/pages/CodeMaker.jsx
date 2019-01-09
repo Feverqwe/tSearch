@@ -505,7 +505,11 @@ class CodeMakerDescriptionPage extends React.Component {
           <BindInput store={this.codeStoreDescription} id={'description'} type={'text'}/>
         </div>
         <div className="field">
-          <span className="field-name">{chrome.i18n.getMessage('kitTrackerDownloadUrl')}</span>
+          <span className="field-name">{chrome.i18n.getMessage('kitTrackerUpdateUrl')}</span>
+          <BindInput store={this.codeStoreDescription} id={'updateUrl'} type={'text'}/>
+        </div>
+        <div className="field">
+          <span className="field-name">{chrome.i18n.getMessage('kitTrackerIsDownloadUrl')}</span>
           <BindInput store={this.codeStoreDescription} id={'downloadUrl'} type={'text'}/>
         </div>
         <div className="field">

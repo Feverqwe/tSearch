@@ -22,7 +22,6 @@ const promiseLimit = require('promise-limit');
 const qs = require('querystring');
 const compareVersions = require('compare-versions');
 const serializeError = require('serialize-error');
-const uuid = require('uuid/v4');
 
 const logger = getLogger('background');
 const oneLimit = promiseLimit(1);
@@ -58,7 +57,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, response) {
   let promise = null;
   switch (message.action) {
     case 'downloadTracker': {
-      promise = downloadTracker(message.id, message.url);
+      promise = downloadTracker(message.id, message.updateUrl, message.downloadUrl);
       break;
     }
     case 'updateTracker': {
@@ -237,9 +236,24 @@ const update = () => {
   });
 };
 
-const downloadTracker = (id, downloadURL) => {
+const downloadTracker = (id, updateURL, downloadURL) => {
   return oneLimit(() => {
-    return fetch(downloadURL).then(response => {
+    return Promise.resolve().then(() => {
+      if (updateURL) {
+        return getDownloadUrlFromUpdateUrl(updateURL, 'tracker').catch((err) => {
+          logger.error('getDownloadUrlFromUpdateUrl error', updateURL, err);
+          return downloadURL;
+        });
+      } else {
+        return downloadURL;
+      }
+    }).then((downloadURL) => {
+      if (!downloadURL) {
+        throw new ErrorWithCode('downloadURL is empty', 'DOWNLOAD_URL_IS_EMPTY');
+      }
+
+      return fetch(downloadURL);
+    }).then(response => {
       if (!response.ok) {
         throw new ErrorWithCode('bad response', 'BAD_RESPONSE');
       }
@@ -267,17 +281,9 @@ const updateTracker = (id) => {
   return oneLimit(() => {
     return storageGet({trackers: {}}).then(storage => {
       const localTracker = storage.trackers[id];
-      const {downloadURL, version} = localTracker.meta;
-      if (!downloadURL) {
-        throw new ErrorWithCode('downloadURL is empty', 'DOWNLOAD_URL_IS_EMPTY');
-      }
+      const {updateURL, downloadURL, version} = localTracker.meta;
 
-      return fetch(downloadURL).then(response => {
-        if (!response.ok) {
-          throw new ErrorWithCode('bad response', 'BAD_RESPONSE');
-        }
-        return response.text();
-      }).then(code => {
+      return getNewCodeByUpdateAndDownloadUrl(updateURL, downloadURL, version, 'tracker').then((code) => {
         const trackerStore = TrackerStore.create({
           id: id,
           meta: getTrackerCodeMeta(code),
@@ -307,17 +313,9 @@ const updateExplorerModule = (id) => {
   return oneLimit(() => {
     return storageGet({explorerModules: {}}).then(storage => {
       const localModule = storage.explorerModules[id];
-      const {downloadURL, version} = localModule.meta;
-      if (!downloadURL) {
-        throw new ErrorWithCode('downloadURL is empty', 'DOWNLOAD_URL_IS_EMPTY');
-      }
+      const {updateURL, downloadURL, version} = localModule.meta;
 
-      return fetch(downloadURL).then(response => {
-        if (!response.ok) {
-          throw new ErrorWithCode('bad response', 'BAD_RESPONSE');
-        }
-        return response.text();
-      }).then(code => {
+      return getNewCodeByUpdateAndDownloadUrl(updateURL, downloadURL, version, 'explorerModule').then((code) => {
         const explorerModuleStore = ExplorerModuleStore.create({
           id: id,
           meta: getExploreModuleCodeMeta(code),
@@ -340,6 +338,64 @@ const updateExplorerModule = (id) => {
         });
       });
     }).then(() => true);
+  });
+};
+
+const getDownloadUrlFromUpdateUrl = (updateURL, type = 'tracker') => {
+  return getCodeAndMetaFromUrl(updateURL, type).then(({meta}) => {
+    return meta.downloadURL;
+  });
+};
+
+const getNewCodeByUpdateAndDownloadUrl = async (updateURL, downloadURL, version, type) => {
+  let meta = null;
+  let code = null;
+
+  if (updateURL) {
+    try {
+      meta = await getCodeAndMetaFromUrl(updateURL, type).meta;
+    } catch (err) {
+      logger.error('getCodeAndMetaFromUrl from updateURL error', updateURL, err);
+    }
+  }
+
+  if (!meta) {
+    if (!downloadURL) {
+      throw new ErrorWithCode('downloadURL is empty', 'DOWNLOAD_URL_IS_EMPTY');
+    }
+
+    const result = await getCodeAndMetaFromUrl(downloadURL, type);
+    meta = result.meta;
+    code = result.code;
+  }
+
+  const isNewVersion = compareVersions(meta.version, version) > 0;
+  if (!isNewVersion) {
+    throw new ErrorWithCode('New version is not found in meta', 'NEW_VERSION_IS_NOT_FOUND');
+  }
+
+  if (!code) {
+    code = await getCodeAndMetaFromUrl(downloadURL, type).code;
+  }
+
+  return code;
+};
+
+const getCodeAndMetaFromUrl = (updateURL, type = 'tracker') => {
+  return fetch(updateURL).then(response => {
+    if (!response.ok) {
+      throw new ErrorWithCode('bad response', 'BAD_RESPONSE');
+    }
+    return response.text();
+  }).then((code) => {
+    let meta = null;
+    if (type === 'tracker') {
+      meta = getTrackerCodeMeta(code);
+    } else
+    if (type === 'explorerModule') {
+      meta = getExploreModuleCodeMeta(code);
+    }
+    return {meta, code};
   });
 };
 

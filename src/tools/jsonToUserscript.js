@@ -18,6 +18,10 @@ const jsonToUserscript = json => {
     meta.push(`@icon ${description.icon}`);
   }
 
+  if (description.updateUrl) {
+    meta.push(`@updateURL ${description.updateUrl}`);
+  }
+
   if (description.downloadUrl) {
     meta.push(`@downloadURL ${description.downloadUrl}`);
   }

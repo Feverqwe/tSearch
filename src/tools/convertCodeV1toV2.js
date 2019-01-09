@@ -6,6 +6,7 @@
  * @property {string} title
  * @property {string} icon
  * @property {string} desc
+ * @property {string} updateUrl
  * @property {string} downloadUrl
  * @property {string} tVersion
  * @property {CodeV2Search} search

@@ -24,6 +24,7 @@ const TrackerOptionsStore = types.model('TrackerOptionsStore', {
  * @property {string|undefined} icon
  * @property {string|undefined} icon64
  * @property {string|undefined} trackerURL
+ * @property {string|undefined} updateURL
  * @property {string|undefined} downloadURL
  * @property {string|undefined} supportURL
  * @property {string[]} [require]
@@ -38,6 +39,7 @@ const TrackerMetaStore = types.model('TrackerMetaStore', {
   icon: types.maybe(types.string),
   icon64: types.maybe(types.string),
   trackerURL: types.maybe(types.string),
+  updateURL: types.maybe(types.string),
   downloadURL: types.maybe(types.string),
   supportURL: types.maybe(types.string),
   require: types.optional(types.array(types.string), []),

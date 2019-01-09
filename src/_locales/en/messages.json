@@ -488,8 +488,11 @@
     "kitTrackerDesc": {
         "message": "Tracker description"
     },
-    "kitTrackerDownloadUrl": {
-        "message": "Update url"
+    "kitTrackerUpdateUrl": {
+        "message": "Check for update url"
+    },
+    "kitTrackerIsDownloadUrl": {
+        "message": "Download url"
     },
     "kitTrackerVersion": {
         "message": "Version"

@@ -467,8 +467,11 @@
   "kitTrackerDesc": {
     "message": "Описание трекера"
   },
-  "kitTrackerDownloadUrl": {
-    "message": "Url обновления"
+  "kitTrackerUpdateUrl": {
+    "message": "Url проверки обновления"
+  },
+  "kitTrackerIsDownloadUrl": {
+    "message": "Url загрузки"
   },
   "kitTrackerVersion": {
     "message": "Версия"
