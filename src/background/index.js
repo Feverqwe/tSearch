@@ -353,7 +353,8 @@ const getNewCodeByUpdateAndDownloadUrl = async (updateURL, downloadURL, version,
 
   if (updateURL) {
     try {
-      meta = await getCodeAndMetaFromUrl(updateURL, type).meta;
+      const result = await getCodeAndMetaFromUrl(updateURL, type);
+      meta = result.meta;
     } catch (err) {
       logger.error('getCodeAndMetaFromUrl from updateURL error', updateURL, err);
     }
@@ -380,7 +381,8 @@ const getNewCodeByUpdateAndDownloadUrl = async (updateURL, downloadURL, version,
       throw new ErrorWithCode('downloadURL is empty', 'DOWNLOAD_URL_IS_EMPTY');
     }
 
-    code = await getCodeAndMetaFromUrl(url, type).code;
+    const result = await getCodeAndMetaFromUrl(url, type);
+    code = result.code;
   }
 
   return code;
