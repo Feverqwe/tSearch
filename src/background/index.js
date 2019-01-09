@@ -221,7 +221,7 @@ const update = () => {
       Promise.all(trackerIds.map(id => updateTracker(id).then(result => {
         return {id, result};
       }, err => {
-        if (err.code !== 'DOWNLOAD_URL_IS_EMPTY') {
+        if (['DOWNLOAD_URL_IS_EMPTY', 'NEW_VERSION_IS_NOT_FOUND'].indexOf(err.code) === -1) {
           logger.error(`updateTracker ${id} error`, err);
         }
         return {id, error: serializeError(err)};
@@ -229,7 +229,7 @@ const update = () => {
       Promise.all(explorerModuleIds.map(id => updateExplorerModule(id).then(result => {
         return {id, result};
       }, err => {
-        if (err.code !== 'DOWNLOAD_URL_IS_EMPTY') {
+        if (['DOWNLOAD_URL_IS_EMPTY', 'NEW_VERSION_IS_NOT_FOUND'].indexOf(err.code) === -1) {
           logger.error(`updateExplorerModule ${id} error`, err);
         }
         return {id, error: serializeError(err)};
