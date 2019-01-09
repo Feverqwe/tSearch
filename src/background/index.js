@@ -196,8 +196,8 @@ const update = () => {
     const trackerIds = [];
     Object.entries(storage.trackers).forEach(([id, tracker]) => {
       try {
-        const trackerMetaStore = TrackerOptionsStore.create(tracker.options || {});
-        if (trackerMetaStore.autoUpdate) {
+        const trackerOptionsStore = TrackerOptionsStore.create(tracker.options || {});
+        if (trackerOptionsStore.autoUpdate) {
           trackerIds.push(id);
         }
       } catch (err) {
@@ -208,8 +208,8 @@ const update = () => {
     const explorerModuleIds = [];
     Object.entries(storage.explorerModules).forEach(([id, module]) => {
       try {
-        const explorerModuleMetaStore = TrackerOptionsStore.create(module.options || {});
-        if (explorerModuleMetaStore.autoUpdate) {
+        const trackerOptionsStore = TrackerOptionsStore.create(module.options || {});
+        if (trackerOptionsStore.autoUpdate) {
           explorerModuleIds.push(id);
         }
       } catch (err) {
@@ -221,13 +221,17 @@ const update = () => {
       Promise.all(trackerIds.map(id => updateTracker(id).then(result => {
         return {id, result};
       }, err => {
-        logger.error(`updateTracker ${id} error`, err);
+        if (err.code !== 'DOWNLOAD_URL_IS_EMPTY') {
+          logger.error(`updateTracker ${id} error`, err);
+        }
         return {id, error: serializeError(err)};
       }))),
       Promise.all(explorerModuleIds.map(id => updateExplorerModule(id).then(result => {
         return {id, result};
       }, err => {
-        logger.error(`updateExplorerModule ${id} error`, err);
+        if (err.code !== 'DOWNLOAD_URL_IS_EMPTY') {
+          logger.error(`updateExplorerModule ${id} error`, err);
+        }
         return {id, error: serializeError(err)};
       })))
     ]).then(([trackers, explorerModules]) => {
@@ -371,14 +375,19 @@ const getNewCodeByUpdateAndDownloadUrl = async (updateURL, downloadURL, version,
   }
 
   if (!code) {
-    code = await getCodeAndMetaFromUrl(meta.downloadURL || downloadURL, type).code;
+    const url = meta.downloadURL || downloadURL;
+    if (!url) {
+      throw new ErrorWithCode('downloadURL is empty', 'DOWNLOAD_URL_IS_EMPTY');
+    }
+
+    code = await getCodeAndMetaFromUrl(url, type).code;
   }
 
   return code;
 };
 
-const getCodeAndMetaFromUrl = (updateURL, type = 'tracker') => {
-  return fetch(updateURL).then(response => {
+const getCodeAndMetaFromUrl = (url, type = 'tracker') => {
+  return fetch(url).then(response => {
     if (!response.ok) {
       throw new ErrorWithCode('bad response', 'BAD_RESPONSE');
     }
