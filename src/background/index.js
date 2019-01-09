@@ -240,7 +240,9 @@ const downloadTracker = (id, updateURL, downloadURL) => {
   return oneLimit(() => {
     return Promise.resolve().then(() => {
       if (updateURL) {
-        return getDownloadUrlFromUpdateUrl(updateURL, 'tracker').catch((err) => {
+        return getCodeAndMetaFromUrl(updateURL, 'tracker').then(({meta}) => {
+          return meta.downloadURL || downloadURL;
+        }).catch((err) => {
           logger.error('getDownloadUrlFromUpdateUrl error', updateURL, err);
           return downloadURL;
         });
@@ -341,12 +343,6 @@ const updateExplorerModule = (id) => {
   });
 };
 
-const getDownloadUrlFromUpdateUrl = (updateURL, type = 'tracker') => {
-  return getCodeAndMetaFromUrl(updateURL, type).then(({meta}) => {
-    return meta.downloadURL;
-  });
-};
-
 const getNewCodeByUpdateAndDownloadUrl = async (updateURL, downloadURL, version, type) => {
   let meta = null;
   let code = null;
@@ -375,7 +371,7 @@ const getNewCodeByUpdateAndDownloadUrl = async (updateURL, downloadURL, version,
   }
 
   if (!code) {
-    code = await getCodeAndMetaFromUrl(downloadURL, type).code;
+    code = await getCodeAndMetaFromUrl(meta.downloadURL || downloadURL, type).code;
   }
 
   return code;
