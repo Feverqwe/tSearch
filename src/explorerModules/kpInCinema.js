@@ -3,7 +3,7 @@
 // @connect *://*.kinopoisk.ru/*
 // @version 1.1
 // @cacheTTL 86400
-// @locale ru {"name": "Кнопоиск: в кино"}
+// @locale ru {"name": "Кинопоиск: в кино"}
 // @locale en {"name": "Kinopoisk: in cinema"}
 // @defaultLocale en
 // ==/UserScript==
