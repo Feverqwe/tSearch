@@ -1,7 +1,8 @@
 // ==UserScript==
 // @name __MSG_name__
+// @downloadURL https://raw.githubusercontent.com/Feverqwe/tSearch/master/src/explorerModules/kpInCinema.js
 // @connect *://*.kinopoisk.ru/*
-// @version 1.1
+// @version 1.2
 // @cacheTTL 86400
 // @locale ru {"name": "Кинопоиск: в кино"}
 // @locale en {"name": "Kinopoisk: in cinema"}

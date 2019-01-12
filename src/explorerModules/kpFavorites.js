@@ -1,8 +1,9 @@
 // ==UserScript==
 // @name __MSG_name__
+// @downloadURL https://raw.githubusercontent.com/Feverqwe/tSearch/master/src/explorerModules/kpFavorites.js
 // @siteURL https://www.kinopoisk.ru
 // @connect *://*.kinopoisk.ru/*
-// @version 1.0
+// @version 1.1
 // @action {"icon":"update","title":"__MSG_update__","command":"update"}
 // @locale ru {"name": "Кинопоиск: Избранное", "update": "Обновить"}
 // @locale en {"name": "Kinopoisk: Favorites", "update": "Update"}

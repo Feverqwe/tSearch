@@ -1,7 +1,8 @@
 // ==UserScript==
 // @name __MSG_name__
+// @downloadURL https://raw.githubusercontent.com/Feverqwe/tSearch/master/src/explorerModules/imdbInCinema.js
 // @connect *://*.imdb.com/*
-// @version 1.1
+// @version 1.2
 // @cacheTTL 86400
 // @locale ru {"name": "IMDB: Сейчас в кино"}
 // @locale en {"name": "IMDB: Now in movie"}
