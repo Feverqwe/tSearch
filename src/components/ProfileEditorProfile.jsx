@@ -183,7 +183,7 @@ class ProfileEditorTackerList extends React.Component {
 
   render() {
     const trackerIds = this.state.trackerIds;
-    const ids = trackerIds.slice(0);
+    const removedIds = trackerIds.slice(0);
 
     const checkedTrackerIds = this.profileEditorProfileStore.selectedTrackerIds;
 
@@ -205,9 +205,9 @@ class ProfileEditorTackerList extends React.Component {
 
     this.profileEditorProfileStore.categoryTrackers.forEach((trackerStore) => {
       const id = trackerStore.id;
-      const pos = ids.indexOf(id);
+      const pos = removedIds.indexOf(id);
       if (pos !== -1) {
-        ids.splice(pos, 1);
+        removedIds.splice(pos, 1);
       }
       if (trackerIds.indexOf(id) === -1) {
         trackerIds.push(id);
@@ -215,7 +215,7 @@ class ProfileEditorTackerList extends React.Component {
       appendTracker(trackerStore);
     });
 
-    ids.forEach((id) => {
+    removedIds.forEach((id) => {
       const trackerStore = this.profileEditorProfileStore.getTrackerById(id);
       if (trackerStore) {
         appendTracker(trackerStore);
