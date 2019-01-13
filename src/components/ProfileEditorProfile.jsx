@@ -191,12 +191,13 @@ class ProfileEditorTackerList extends React.Component {
     const uncheckedTrackers = [];
 
     const appendTracker = (trackerStore) => {
+      const checked = checkedTrackerIds.indexOf(trackerStore.id) !== -1;
       const item = (
         <ProfileEditorTrackerItem key={`tracker-${trackerStore.id}`}
                                   profileEditorProfileStore={this.profileEditorProfileStore}
-                                  trackerStore={trackerStore} showOptions={this.props.showOptions}/>
+                                  trackerStore={trackerStore} showOptions={this.props.showOptions} checked={checked}/>
       );
-      if (checkedTrackerIds.indexOf(trackerStore.id) !== -1) {
+      if (checked) {
         checkedTrackers.push(item);
       } else {
         uncheckedTrackers.push(item);
@@ -276,6 +277,7 @@ class ProfileEditorTrackerItem extends React.Component {
     profileEditorProfileStore: PropTypes.object.isRequired,
     trackerStore: PropTypes.object.isRequired,
     showOptions: PropTypes.bool.isRequired,
+    checked: PropTypes.bool.isRequired,
   };
 
   /**@return RootStore*/
@@ -348,8 +350,7 @@ class ProfileEditorTrackerItem extends React.Component {
 
   render() {
     const tracker = this.trackerStore;
-
-    const checked = this.profileEditorProfileStore.selectedTrackerIds.indexOf(tracker.id) !== -1;
+    const checked = this.props.checked;
 
     const classList = ['item'];
     if (checked) {
