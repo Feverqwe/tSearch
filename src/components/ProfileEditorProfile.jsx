@@ -113,6 +113,10 @@ class ProfileEditorTackerList extends React.Component {
     showOptions: PropTypes.bool.isRequired,
   };
 
+  state = {
+    trackerIds: []
+  };
+
   /**@return ProfileEditorProfileStore*/
   get profileEditorProfileStore() {
     return this.props.profileEditorProfileStore;
@@ -178,15 +182,49 @@ class ProfileEditorTackerList extends React.Component {
   };
 
   render() {
-    const trackers = this.profileEditorProfileStore.categoryTrackers.map((trackerStore) => {
-      return (
-        <ProfileEditorTrackerItem key={`tracker-${trackerStore.id}`} profileEditorProfileStore={this.profileEditorProfileStore} trackerStore={trackerStore} showOptions={this.props.showOptions}/>
+    const trackerIds = this.state.trackerIds;
+    const ids = trackerIds.slice(0);
+
+    const checkedTrackerIds = this.profileEditorProfileStore.selectedTrackerIds;
+
+    const checkedTrackers = [];
+    const uncheckedTrackers = [];
+
+    const appendTracker = (trackerStore) => {
+      const item = (
+        <ProfileEditorTrackerItem key={`tracker-${trackerStore.id}`}
+                                  profileEditorProfileStore={this.profileEditorProfileStore}
+                                  trackerStore={trackerStore} showOptions={this.props.showOptions}/>
       );
+      if (checkedTrackerIds.indexOf(trackerStore.id) !== -1) {
+        checkedTrackers.push(item);
+      } else {
+        uncheckedTrackers.push(item);
+      }
+    };
+
+    this.profileEditorProfileStore.categoryTrackers.forEach((trackerStore) => {
+      const id = trackerStore.id;
+      const pos = ids.indexOf(id);
+      if (pos !== -1) {
+        ids.splice(pos, 1);
+      }
+      if (trackerIds.indexOf(id) === -1) {
+        trackerIds.push(id);
+      }
+      appendTracker(trackerStore);
+    });
+
+    ids.forEach((id) => {
+      const trackerStore = this.profileEditorProfileStore.getTrackerById(id);
+      if (trackerStore) {
+        appendTracker(trackerStore);
+      }
     });
 
     return (
       <div ref={this.refTrackers} className="manager__trackers">
-        {trackers}
+        {checkedTrackers.concat(uncheckedTrackers)}
       </div>
     );
   }
