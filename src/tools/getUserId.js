@@ -1,6 +1,8 @@
 import storageGet from "./storageGet";
 import storageSet from "./storageSet";
 
+const uuid = require('uuid/v4');
+
 let uuidCache = null;
 
 const getUserId = () => {
