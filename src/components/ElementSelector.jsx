@@ -30,7 +30,6 @@ class _ElementSelector extends React.Component {
     showAddDialog: false,
     snapshot: null,
     inputError: null,
-    selectMode: false
   };
 
   componentWillUnmount() {
@@ -50,6 +49,10 @@ class _ElementSelector extends React.Component {
 
   get selectorStore() {
     return this.props.store[this.props.id];
+  }
+
+  get isSelectMode() {
+    return this.frameStore.getSelectListener() === this.selectListener;
   }
 
   input = null;
@@ -103,16 +106,8 @@ class _ElementSelector extends React.Component {
       skipFromEnd: this.store.skipFromEnd,
     }, this.selectListener, this.handleSelectElement);
 
-    this.setState({
-      selectMode: true,
-    });
-
     this.activeSelect = () => {
       this.frameStore.setSelect();
-
-      this.setState({
-        selectMode: false,
-      });
     };
   };
 
@@ -123,10 +118,6 @@ class _ElementSelector extends React.Component {
 
   handleSelectElement = (path) => {
     this.frameStore.setSelect();
-
-    this.setState({
-      selectMode: false,
-    });
 
     this.input.value = path;
     this.handleChange();
@@ -163,7 +154,7 @@ class _ElementSelector extends React.Component {
         containerSelector: this.getContainerSelector(),
         skipFromStart: this.store.skipFromStart,
         skipFromEnd: this.store.skipFromEnd,
-        scrollIntoView: !this.state.selectMode
+        scrollIntoView: !this.isSelectMode
       });
     } catch (err) {
       logger.error('highlightPath error', selector, err);
@@ -210,7 +201,7 @@ class _ElementSelector extends React.Component {
     }
 
     let isReadonly = false;
-    if (this.state.selectMode) {
+    if (this.isSelectMode) {
       isReadonly = true;
     }
 

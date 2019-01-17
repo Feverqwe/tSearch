@@ -159,7 +159,7 @@ class PipelineSelector extends _ElementSelector {
         containerSelector: this.getContainerSelector(),
         skipFromStart: this.store.skipFromStart,
         skipFromEnd: this.store.skipFromEnd,
-        scrollIntoView: !this.state.selectMode
+        scrollIntoView: !this.isSelectMode
       });
     } catch (err) {
       logger.error('highlightPath error', selector, err);
@@ -253,7 +253,7 @@ class PipelineSelector extends _ElementSelector {
     }
 
     let isReadonly = false;
-    if (this.state.selectMode) {
+    if (this.isSelectMode) {
       isReadonly = true;
     }
 

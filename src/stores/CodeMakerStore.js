@@ -49,6 +49,12 @@ const FrameStore = types.model('FrameStore', {
   let selectListener = null;
   let selectHandler = null;
   return {
+    getSelectListener() {
+      return selectListener;
+    },
+    getSelectHandler() {
+      return selectHandler;
+    },
     selectListener(path) {
       self.setPath(path);
       if (selectListener) {
