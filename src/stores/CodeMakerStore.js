@@ -7,10 +7,13 @@ const logger = getLogger('CodeMakerStore');
 
 /**
  * @typedef {{}} FrameStore
+ * @property {string} [state]
  * @property {string} [path]
  * @property {*} options
  * @property {boolean} [selectMode]
- * @property {string|undefined|null} selectOptions
+ * @property {*} selectOptions
+ * @property {function} setState
+ * @property {*} props
  * @property {function} setPath
  * @property {function} setOptions
  * @property {function} setSelectMode
@@ -46,32 +49,32 @@ const FrameStore = types.model('FrameStore', {
     },
   };
 }).views(self => {
-  let selectListener = null;
-  let selectHandler = null;
+  const props = {
+    selectListener: null,
+    selectHandler: null
+  };
+
   return {
-    getSelectListener() {
-      return selectListener;
-    },
-    getSelectHandler() {
-      return selectHandler;
+    get props() {
+      return self.selectOptions && props || {};
     },
     selectListener(path) {
       self.setPath(path);
-      if (selectListener) {
-        selectListener(path);
+      if (props.selectListener) {
+        props.selectListener(path);
       }
     },
     selectHandler(path) {
       self.setPath(path);
-      if (selectHandler) {
-        selectHandler(path);
+      if (props.selectHandler) {
+        props.selectHandler(path);
       }
     },
     setSelectListener(listener) {
-      selectListener = listener;
+      props.selectListener = listener;
     },
     setSelectHandler(handler) {
-      selectHandler = handler;
+      props.selectHandler = handler;
     },
     setSelect(selectMode = false, options = null, listener = null, handleSelect = null) {
       self.setSelectMode(selectMode);
@@ -87,6 +90,7 @@ const FrameStore = types.model('FrameStore', {
  * @property {FrameStore} [frame]
  * @property {CodeStore} [code]
  * @property {function} setCode
+ * @property {*} codeJson
  */
 const CodeMakerStore = types.model('CodeMakerStore', {
   frame: types.optional(FrameStore, {}),

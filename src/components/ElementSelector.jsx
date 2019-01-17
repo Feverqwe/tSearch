@@ -7,16 +7,16 @@ const logger = getLogger('ElementSelector');
 
 class _ElementSelector extends React.Component {
   static propTypes = {
-    id: PropTypes.string,
+    id: PropTypes.string.isRequired,
     optional: PropTypes.bool,
     container: PropTypes.string,
     className: PropTypes.string,
-    title: PropTypes.string,
-    type: PropTypes.string,
-    store: PropTypes.any,
+    title: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
+    store: PropTypes.any.isRequired,
     rootStore: PropTypes.object,
-    onResolvePath: PropTypes.func,
-    onHighlightPath: PropTypes.func,
+    onResolvePath: PropTypes.func.isRequired,
+    onHighlightPath: PropTypes.func.isRequired,
     setActiveSelector: PropTypes.func,
   };
 
@@ -33,9 +33,7 @@ class _ElementSelector extends React.Component {
   };
 
   componentWillUnmount() {
-    if (this.props.setActiveSelector) {
-      this.props.setActiveSelector(null);
-    }
+    this.setActiveSelector(null);
     this.fireActiveSelect();
   }
 
@@ -52,7 +50,13 @@ class _ElementSelector extends React.Component {
   }
 
   get isSelectMode() {
-    return this.frameStore.getSelectListener() === this.selectListener;
+    return this.frameStore.props.selectListener === this.selectListener;
+  }
+
+  setActiveSelector(value) {
+    if (this.props.setActiveSelector) {
+      this.props.setActiveSelector(value);
+    }
   }
 
   input = null;
@@ -96,9 +100,7 @@ class _ElementSelector extends React.Component {
   handleSelect = e => {
     e.preventDefault();
 
-    if (this.props.setActiveSelector) {
-      this.props.setActiveSelector(this);
-    }
+    this.setActiveSelector(this);
 
     this.frameStore.setSelect(true, {
       containerSelector: this.getContainerSelector(),
@@ -117,16 +119,14 @@ class _ElementSelector extends React.Component {
   };
 
   handleSelectElement = (path) => {
-    this.frameStore.setSelect();
+    this.fireActiveSelect();
 
     this.input.value = path;
     this.handleChange();
   };
 
   updateResult() {
-    if (this.props.setActiveSelector) {
-      this.props.setActiveSelector(this);
-    }
+    this.setActiveSelector(this);
 
     if (this.state.inputError) {
       this.setState({

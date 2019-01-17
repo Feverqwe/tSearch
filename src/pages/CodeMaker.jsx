@@ -262,9 +262,9 @@ class CodeMakerSearchPage extends React.Component {
 class CodeMakerAuthPage extends React.Component {
   static propTypes = {
     rootStore: PropTypes.object,
-    codeStore: PropTypes.object,
-    onResolvePath: PropTypes.func,
-    onHighlightPath: PropTypes.func,
+    codeStore: PropTypes.object.isRequired,
+    onResolvePath: PropTypes.func.isRequired,
+    onHighlightPath: PropTypes.func.isRequired,
   };
 
   get frameStore() {
@@ -315,9 +315,9 @@ class CodeMakerAuthPage extends React.Component {
 class CodeMakerSelectorsPage extends React.Component {
   static propTypes = {
     rootStore: PropTypes.object,
-    codeStore: PropTypes.object,
-    onResolvePath: PropTypes.func,
-    onHighlightPath: PropTypes.func,
+    codeStore: PropTypes.object.isRequired,
+    onResolvePath: PropTypes.func.isRequired,
+    onHighlightPath: PropTypes.func.isRequired,
   };
 
   get codeSearchSelectors() {
@@ -335,6 +335,7 @@ class CodeMakerSelectorsPage extends React.Component {
   activeSelector = null;
   setActiveSelector = (component) => {
     if (this.activeSelector !== component) {
+      // logger('setActiveSelector', component && component.props.id);
       if (this.outputAutorun) {
         this.outputAutorun();
         this.outputAutorun = null;
@@ -342,11 +343,13 @@ class CodeMakerSelectorsPage extends React.Component {
 
       this.activeSelector = component;
 
-      this.outputAutorun = autorun(() => {
-        if (this.activeSelector && this.activeSelector.selectorStore) {
-          this.activeSelector.updateResult();
-        }
-      });
+      if (this.activeSelector) {
+        this.outputAutorun = autorun(() => {
+          if (this.activeSelector && JSON.stringify(this.activeSelector.selectorStore)) {
+            this.activeSelector.updateResult();
+          }
+        });
+      }
     }
   };
 
@@ -407,7 +410,7 @@ class CodeMakerSelectorsPage extends React.Component {
 class CodeMakerDescriptionPage extends React.Component {
   static propTypes = {
     rootStore: PropTypes.object,
-    codeStore: PropTypes.object,
+    codeStore: PropTypes.object.isRequired,
   };
 
   get codeStoreDescription() {

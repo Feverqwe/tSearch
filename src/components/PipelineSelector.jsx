@@ -15,15 +15,15 @@ const logger = getLogger('PipelineSelector');
 @observer
 class PipelineSelector extends _ElementSelector {
   static propTypes = {
-    id: PropTypes.string,
+    id: PropTypes.string.isRequired,
     optional: PropTypes.bool,
     container: PropTypes.string,
-    title: PropTypes.string,
-    store: PropTypes.any,
+    title: PropTypes.string.isRequired,
+    store: PropTypes.any.isRequired,
     rootStore: PropTypes.object,
-    onResolvePath: PropTypes.func,
-    onHighlightPath: PropTypes.func,
-    setActiveSelector: PropTypes.func,
+    onResolvePath: PropTypes.func.isRequired,
+    onHighlightPath: PropTypes.func.isRequired,
+    setActiveSelector: PropTypes.func.isRequired,
   };
 
   state = {
@@ -104,11 +104,19 @@ class PipelineSelector extends _ElementSelector {
   };
 
   addMethod = (method, args) => {
+    this.setActiveSelector(this);
+
     this.selectorStore.addMethod(method, args);
     this.closeDialog();
   };
 
-  handleRemoveMethod = method => {
+  handleChangeMethod = () => {
+    this.setActiveSelector(this);
+  };
+
+  handleRemoveMethod = (method) => {
+    this.setActiveSelector(this);
+
     this.selectorStore.removeMethod(method);
   };
 
@@ -123,14 +131,11 @@ class PipelineSelector extends _ElementSelector {
   };
 
   updateResult = () => {
-    if (this.props.setActiveSelector) {
-      this.props.setActiveSelector(this);
-    }
+    this.setActiveSelector(this);
 
-    if (this.state.outputError || this.state.inputError) {
+    if (this.state.inputError) {
       this.setState({
-        inputError: null,
-        outputError: null
+        inputError: null
       });
     }
 
@@ -147,7 +152,7 @@ class PipelineSelector extends _ElementSelector {
         throw new Error('Node is not found');
       }
     } catch (err) {
-      logger('updateResult error', selector, err);
+      logger('updateResult input error', selector, err);
 
       this.setState({
         inputError: err.message
@@ -178,12 +183,17 @@ class PipelineSelector extends _ElementSelector {
     }).then(result => {
       if (this.output) {
         this.output.value = result;
+
+        this.setState({
+          outputError: null
+        });
       }
     }, err => {
-      logger('updateResult error', err);
+      logger('updateResult output error', err);
 
       if (this.output) {
         this.output.value = lastResult;
+
         this.setState({
           outputError: err.message
         });
@@ -225,7 +235,7 @@ class PipelineSelector extends _ElementSelector {
 
       pipeline = this.selectorStore.pipeline.map((method, index) => {
         return (
-          <Method key={`${index}_${method.name}`} index={index} method={method} onRemove={this.handleRemoveMethod}/>
+          <Method key={`${index}_${method.name}`} index={index} method={method} onChange={this.handleChangeMethod} onRemove={this.handleRemoveMethod}/>
         );
       });
     }
@@ -288,9 +298,9 @@ class PipelineSelector extends _ElementSelector {
 @observer
 class Method extends React.Component {
   static propTypes = {
-    rootStore: PropTypes.object,
-    method: PropTypes.object,
-    onRemove: PropTypes.func,
+    method: PropTypes.object.isRequired,
+    onChange: PropTypes.func.isRequired,
+    onRemove: PropTypes.func.isRequired,
   };
 
   state = {
@@ -308,6 +318,7 @@ class Method extends React.Component {
     this.setState({
       showEditDialog: false
     });
+    this.props.onChange();
   };
 
   handleRemove = e => {
