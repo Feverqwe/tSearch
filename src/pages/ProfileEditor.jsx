@@ -8,7 +8,6 @@ import PropTypes from "prop-types";
 import ProfileEditorProfiles from "../components/ProfileEditorProfiles";
 import ProfileEditorProfile from "../components/ProfileEditorProfile";
 import getLogger from "../tools/getLogger";
-import getTitle from "../tools/getTitle";
 import {Redirect} from "react-router-dom";
 
 const logger = getLogger('ProfileEditor');

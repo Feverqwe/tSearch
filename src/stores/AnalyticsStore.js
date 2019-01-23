@@ -1,7 +1,6 @@
 import {flow, isAlive, types} from "mobx-state-tree";
 import getLogger from "../tools/getLogger";
 import {ErrorWithCode} from "../tools/errors";
-import getUserId from "../tools/getUserId";
 
 window.ga = window.ga || function() {
   (window.ga.q = window.ga.q || []).push(arguments);
