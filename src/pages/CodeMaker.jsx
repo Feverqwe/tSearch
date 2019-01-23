@@ -34,6 +34,9 @@ class CodeMaker extends React.Component {
 
   componentDidMount() {
     document.title = getTitle('Code maker');
+    if (window.ga) {
+      window.ga('send', 'pageview', {page: location.href, title: document.title});
+    }
   }
 
   get codeMakerStore() {

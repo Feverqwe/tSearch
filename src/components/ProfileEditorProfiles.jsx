@@ -3,6 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import {Link, withRouter} from "react-router-dom";
 import getLogger from "../tools/getLogger";
+import getTitle from "../tools/getTitle";
 
 const uuid = require('uuid/v4');
 const Sortable = require('sortablejs');
@@ -17,6 +18,13 @@ class ProfileEditorProfiles extends React.Component {
     profileEditorStore: PropTypes.object.isRequired,
     history: PropTypes.object,
   };
+
+  componentDidMount() {
+    document.title = getTitle('Edit profiles');
+    if (window.ga) {
+      window.ga('send', 'pageview', {page: location.href, title: document.title});
+    }
+  }
 
   /**@return ProfileEditorStore*/
   get profileEditorStore() {

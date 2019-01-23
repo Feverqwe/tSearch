@@ -33,10 +33,6 @@ class ProfileEditor extends React.Component {
     }
   }
 
-  componentDidMount() {
-    document.title = getTitle('Profile editor');
-  }
-
   /**@return RootStore*/
   get rootStore() {
     return this.props.rootStore;

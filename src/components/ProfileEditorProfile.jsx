@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import getLogger from "../tools/getLogger";
 import blankSvg from "../assets/img/blank.svg";
 import {Link} from "react-router-dom";
+import getTitle from "../tools/getTitle";
 
 const Sortable = require('sortablejs');
 
@@ -16,6 +17,13 @@ class ProfileEditorProfile extends React.Component {
     profileEditorStore: PropTypes.object.isRequired,
     profileEditorProfileStore: PropTypes.object.isRequired,
   };
+
+  componentDidMount() {
+    document.title = getTitle(`Edit profile "${this.profileEditorProfileStore.name}"`);
+    if (window.ga) {
+      window.ga('send', 'pageview', {page: location.href, title: document.title});
+    }
+  }
 
   state = {
     showOptions: false

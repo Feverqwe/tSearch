@@ -39,6 +39,9 @@ class Search extends React.Component {
 
   componentDidMount() {
     document.title = getTitle(JSON.stringify(this.props.query));
+    if (window.ga) {
+      window.ga('send', 'pageview', {page: location.href, title: document.title});
+    }
   }
 
   /**@return RootStore*/
@@ -115,8 +118,10 @@ class SearchSession extends React.Component {
       }
     }
 
-    if (window.ga && this.searchStore.query) {
-      window.ga('send', 'event', 'Search', 'keyword', this.searchStore.query);
+    if (window.ga) {
+      if (this.searchStore.query) {
+        window.ga('send', 'event', 'Search', 'keyword', this.searchStore.query);
+      }
     }
   }
 

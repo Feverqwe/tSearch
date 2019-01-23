@@ -46,6 +46,9 @@ class Editor extends React.Component {
 
   componentDidMount() {
     document.title = getTitle('Code editor');
+    if (window.ga) {
+      window.ga('send', 'pageview', {page: location.href, title: document.title});
+    }
   }
 
   componentWillUnmount() {
