@@ -1,5 +1,5 @@
-import {escapeJsonPath, getType, isArrayType, isMapType, resolvePath} from "mobx-state-tree";
-import {compare, unescapePathComponent} from "fast-json-patch";
+import {getType, isArrayType, isMapType, resolvePath} from "mobx-state-tree";
+import {compare} from "fast-json-patch";
 
 const getParentPath = (path) => {
   return path.substr(0, path.lastIndexOf('/'));
@@ -13,19 +13,15 @@ const mobxCompare = (mobxOldValue, newValue) => {
     oldValue = mobxOldValue;
   }
   return compare(oldValue, newValue).filter((patch) => {
-    if (patch.path.indexOf('~') !== -1) {
-      patch.path = patch.path.split('/').map(part => escapeJsonPath(unescapePathComponent(part))).join('/');
-    }
-
     if (patch.op === 'remove') {
-      const value = resolvePathFixed(mobxOldValue, patch.path);
+      const value = resolvePath(mobxOldValue, patch.path);
       if (value === undefined) {
         return false;
       }
 
       const placePath = getParentPath(patch.path);
       if (placePath !== patch.path) {
-        const place = resolvePathFixed(mobxOldValue, placePath);
+        const place = resolvePath(mobxOldValue, placePath);
         const placeType = getType(place);
         if (!isArrayType(placeType) && !isMapType(placeType)) {
           patch.op = 'replace';
@@ -35,14 +31,6 @@ const mobxCompare = (mobxOldValue, newValue) => {
     }
     return true;
   });
-};
-
-const resolvePathFixed = (store, path) => {
-  if (isMapType(getType(store)) && /^\/\//.test(path)) {
-    return resolvePath(store.get(''), path.substr(1));
-  } else {
-    return resolvePath(store, path);
-  }
 };
 
 export default mobxCompare;
