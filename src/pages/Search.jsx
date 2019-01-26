@@ -4,7 +4,6 @@ import Profiles from "../components/Profiles";
 import Filters from "../components/Filters";
 import ScrollTop from "../components/ScrollTop";
 import PropTypes from "prop-types";
-import RootStore from "../stores/RootStore";
 import {inject, observer} from "mobx-react";
 import SearchPage from "../components/SearchPage";
 import getTitle from "../tools/getTitle";
