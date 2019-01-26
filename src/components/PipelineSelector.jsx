@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 import AddMethodDialog from "./AddMethodDialog";
 import EditMethodDialog from "./EditMethodDialog";
 import getLogger from "../tools/getLogger";
+import filesize from "filesize";
 
 const Sortable = require('sortablejs');
 
@@ -24,11 +25,12 @@ class PipelineSelector extends _ElementSelector {
     onResolvePath: PropTypes.func.isRequired,
     onHighlightPath: PropTypes.func.isRequired,
     setActiveSelector: PropTypes.func.isRequired,
-    datePreview: PropTypes.bool,
+    preview: PropTypes.bool,
+    previewType: PropTypes.string,
   };
 
   static defaultProps = {
-    datePreview: false,
+    preview: false,
     optional: false,
   };
 
@@ -187,7 +189,21 @@ class PipelineSelector extends _ElementSelector {
     }, Promise.resolve(node)).then((result) => {
       this.selectorStore.verifyType(result);
       if (this.state.previewMode) {
-        result = new Date(result * 1000).toString();
+        switch (this.props.previewType) {
+          case 'date': {
+            result = new Date(result * 1000).toString();
+            break;
+          }
+          case 'size': {
+            try {
+              result = filesize(result);
+            } catch (err) {
+              logger.warn('filesize error', result, err);
+              result = 'n/a';
+            }
+            break;
+          }
+        }
       }
       return result;
     }).then(result => {
@@ -248,7 +264,7 @@ class PipelineSelector extends _ElementSelector {
     }
 
     let previewBtn = null;
-    if (this.props.datePreview) {
+    if (this.props.preview) {
       const classList = ['preview-btn'];
       if (this.state.previewMode) {
         classList.push('active');

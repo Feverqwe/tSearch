@@ -391,7 +391,7 @@ class CodeMakerSelectorsPage extends React.Component {
           title={chrome.i18n.getMessage('kitTorrentTitle')}/>
         <PipelineSelector {...pipelineProps} id={'url'} container={'row'}
           title={chrome.i18n.getMessage('kitTorrentLink')}/>
-        <PipelineSelector {...pipelineProps} id={'size'} optional={true} container={'row'}
+        <PipelineSelector {...pipelineProps} id={'size'} optional={true} container={'row'} preview={true} previewType={'size'}
           title={chrome.i18n.getMessage('kitTorrentSize')}/>
         <PipelineSelector {...pipelineProps} id={'downloadUrl'} optional={true} container={'row'}
           title={chrome.i18n.getMessage('kitTorrentDownloadLink')}/>
@@ -399,7 +399,7 @@ class CodeMakerSelectorsPage extends React.Component {
           title={chrome.i18n.getMessage('kitSeedCount')}/>
         <PipelineSelector {...pipelineProps} id={'peers'} optional={true} container={'row'}
           title={chrome.i18n.getMessage('kitPeerCount')}/>
-        <PipelineSelector {...pipelineProps} id={'date'} optional={true} container={'row'} datePreview={true}
+        <PipelineSelector {...pipelineProps} id={'date'} optional={true} container={'row'} preview={true} previewType={'date'}
           title={chrome.i18n.getMessage('kitAddTime')}/>
         <PipelineSelector {...pipelineProps} id={'nextPageUrl'}  optional={true}
           title={chrome.i18n.getMessage('kitNextPageLink')}/>
