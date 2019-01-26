@@ -48,6 +48,7 @@ class FrameWorker {
     const frame = this.frame = document.createElement('iframe');
     frame.src = 'sandbox.html' + '#' + qs.stringify(this.query);
     frame.style.display = 'none';
+    frame.sandbox = 'allow-scripts';
     frame.onload = () => {
       frame.onload = null;
       this.isLoaded = true;
