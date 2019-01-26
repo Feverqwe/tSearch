@@ -484,5 +484,8 @@
   },
   "kitNextPageLink": {
     "message": "Ссылка на следующую страницу"
+  },
+  "kitPreview": {
+    "message": "Предпросмотр"
   }
 }

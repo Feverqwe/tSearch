@@ -24,6 +24,12 @@ class PipelineSelector extends _ElementSelector {
     onResolvePath: PropTypes.func.isRequired,
     onHighlightPath: PropTypes.func.isRequired,
     setActiveSelector: PropTypes.func.isRequired,
+    datePreview: PropTypes.bool,
+  };
+
+  static defaultProps = {
+    datePreview: false,
+    optional: false,
   };
 
   state = {
@@ -31,6 +37,7 @@ class PipelineSelector extends _ElementSelector {
     snapshot: null,
     inputError: null,
     outputError: null,
+    previewMode: false,
   };
 
   sortable = null;
@@ -179,6 +186,9 @@ class PipelineSelector extends _ElementSelector {
       });
     }, Promise.resolve(node)).then((result) => {
       this.selectorStore.verifyType(result);
+      if (this.state.previewMode) {
+        result = new Date(result * 1000).toString();
+      }
       return result;
     }).then(result => {
       if (this.output) {
@@ -210,6 +220,15 @@ class PipelineSelector extends _ElementSelector {
     return result;
   }
 
+  handlePreview = (e) => {
+    e.preventDefault();
+    this.setState({
+      previewMode: !this.state.previewMode,
+    }, () => {
+      this.updateResult();
+    });
+  };
+
   render() {
     const {id, optional} = this.props;
 
@@ -225,6 +244,17 @@ class PipelineSelector extends _ElementSelector {
     } else {
       title = (
         <label className="field-name">{this.props.title}</label>
+      );
+    }
+
+    let previewBtn = null;
+    if (this.props.datePreview) {
+      const classList = ['preview-btn'];
+      if (this.state.previewMode) {
+        classList.push('active');
+      }
+      previewBtn = (
+        <input disabled={isDisabled} onClick={this.handlePreview} type="button" title={chrome.i18n.getMessage('kitPreview')} className={classList.join(' ')}/>
       );
     }
 
@@ -278,6 +308,7 @@ class PipelineSelector extends _ElementSelector {
                    onChange={this.handleChange} onKeyUp={this.handleKeyup} defaultValue={defaultValue} className={inputClassList.join(' ')}/>
             <input disabled={isDisabled} type="text" data-id={`${id}-result`} ref={this.refOutput}
                    className={outputClassList.join(' ')} readOnly={true}/>
+            {previewBtn}
             <input disabled={isDisabled} onClick={this.handleSelect} type="button" data-id={`${id}-btn`} value={chrome.i18n.getMessage('kitSelect')}/>
           </div>
           <div className='pipeline'>

@@ -505,5 +505,8 @@
     },
     "kitNextPageLink": {
         "message": "Next page link"
+    },
+    "kitPreview": {
+        "message": "Preview"
     }
 }

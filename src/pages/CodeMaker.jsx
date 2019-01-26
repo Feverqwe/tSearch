@@ -399,7 +399,7 @@ class CodeMakerSelectorsPage extends React.Component {
           title={chrome.i18n.getMessage('kitSeedCount')}/>
         <PipelineSelector {...pipelineProps} id={'peers'} optional={true} container={'row'}
           title={chrome.i18n.getMessage('kitPeerCount')}/>
-        <PipelineSelector {...pipelineProps} id={'date'} optional={true} container={'row'}
+        <PipelineSelector {...pipelineProps} id={'date'} optional={true} container={'row'} datePreview={true}
           title={chrome.i18n.getMessage('kitAddTime')}/>
         <PipelineSelector {...pipelineProps} id={'nextPageUrl'}  optional={true}
           title={chrome.i18n.getMessage('kitNextPageLink')}/>
