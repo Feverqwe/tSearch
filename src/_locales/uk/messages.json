@@ -320,8 +320,11 @@
    "kitTrackerDesc": {
       "message": "Опис трекера"
    },
-   "kitTrackerDownloadUrl": {
+   "kitTrackerUpdateUrl": {
       "message": "Url оновлення коду"
+   },
+   "kitTrackerIsDownloadUrl": {
+      "message": "Url завантаження коду"
    },
    "kitTrackerTitle": {
       "message": "Назва трекера"
@@ -496,5 +499,14 @@
    },
    "wordFilterLabel": {
       "message": "Фільтр слів"
+   },
+    "kitPreview": {
+        "message": "Попередній перегляд"
+   },
+    "advanced_options": {
+        "message": "Розширений перегляд"
+   },
+   "singleResultTable": {
+        "message": "Об'єднати результати пошуку в єдину таблицю"
    }
 }
