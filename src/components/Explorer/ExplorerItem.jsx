@@ -203,7 +203,7 @@ class ExplorerItem extends React.Component {
       }
       if (this.state.showQuickSearch) {
         quickSearchResults = (
-          <QuickSearchResults quickSearchItemStore={quickSearchItem}/>
+          <QuickSearchResults quickSearchItemStore={quickSearchItem} zoom={sectionStore.zoom}/>
         );
       }
     }
@@ -237,7 +237,8 @@ class ExplorerItem extends React.Component {
 @observer
 class QuickSearchResults extends React.Component {
   static propTypes = {
-    quickSearchItemStore: PropTypes.object.isRequired
+    quickSearchItemStore: PropTypes.object.isRequired,
+    zoom: PropTypes.number.isRequired,
   };
 
   /**@return ExplorerQuickSearchItemStore*/
@@ -250,7 +251,7 @@ class QuickSearchResults extends React.Component {
     const labelNode = popupNode.parentNode;
     const angleNode = this.angleNode;
     if (labelNode && angleNode) {
-      setPosition(labelNode, popupNode, this.angleNode);
+      setPosition(labelNode, popupNode, this.angleNode, this.props.zoom);
     }
   }
 
@@ -302,58 +303,41 @@ class QuickSearchResults extends React.Component {
   }
 }
 
-const getPosition = function(node) {
+const getRectWithOffset = function(node, zoom) {
   const box = node.getBoundingClientRect();
   return {
-    top: Math.round(box.top + window.pageYOffset),
-    left: Math.round(box.left + window.pageXOffset),
-    width: box.width,
-    height: box.height
+    top: Math.round(box.top * zoom + window.pageYOffset),
+    left: Math.round(box.left * zoom + window.pageXOffset),
+    width: box.width * zoom,
+    height: box.height * zoom
   }
 };
 
-const getSize = function(node) {
-  return {width: node.offsetWidth, height: node.offsetHeight};
-};
+const setPosition = function (labelNode, popupNode, angleNode, zoom) {
+  zoom = zoom / 100;
+  const popupWidth = 300 * zoom;
 
-const setPosition = function (labelNode, popupNode, angleNode) {
-  const width = 300;
+  const labelRect = getRectWithOffset(labelNode, zoom);
 
-  const labelPos = {
-    left: 0,
-    top: 0
-  };
+  const labelCenterPos = labelRect.left + labelRect.width / 2;
+  const popupRightPos = labelCenterPos + popupWidth / 2;
 
-  let parent = labelNode;
-  while (parent.offsetParent !== null) {
-    labelPos.left += parent.offsetLeft;
-    labelPos.top += parent.offsetTop;
-    parent = parent.offsetParent;
-  }
-
-  const rLabelPos = getPosition(labelNode);
-
-  const labelSize = getSize(labelNode);
-
+  let popupLeftPos = labelCenterPos - popupWidth / 2;
   const docWidth = document.body.clientWidth;
-  const anglePos = labelPos.left + labelSize.width / 2;
-  const rightPos = anglePos + width / 2;
-  let leftPos = anglePos - width / 2;
-  if (rightPos > docWidth) {
-    leftPos = docWidth - width;
+  if (popupRightPos > docWidth) {
+    popupLeftPos = docWidth - popupWidth;
   }
-  if (leftPos < 0) {
-    leftPos = 0;
+  if (popupLeftPos < 0) {
+    popupLeftPos = 0;
   }
 
-  const angleLeftPercent = 100 * (anglePos - leftPos) / width;
+  const angleLeftPercent = 100 / popupWidth * (labelCenterPos - popupLeftPos);
 
-  leftPos -= rLabelPos.left;
-  labelPos.top -= rLabelPos.top;
+  popupLeftPos -= labelRect.left;
 
   angleNode.style.left = angleLeftPercent + '%';
-  popupNode.style.left = leftPos + 'px';
-  popupNode.style.top = (labelPos.top + labelSize.height - 5) + 'px';
+  popupNode.style.left = popupLeftPos / zoom + 'px';
+  popupNode.style.top = ((labelRect.height - 5) / zoom) + 'px';
 };
 
 export default ExplorerItem;
