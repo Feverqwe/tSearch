@@ -338,6 +338,7 @@ const setPosition = function (labelNode, popupNode, angleNode, zoom) {
   angleNode.style.left = angleLeftPercent + '%';
   popupNode.style.left = popupLeftPos / zoom + 'px';
   popupNode.style.top = ((labelRect.height - 5) / zoom) + 'px';
+  popupNode.style.zoom = 1 / zoom;
 };
 
 export default ExplorerItem;
