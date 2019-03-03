@@ -21,7 +21,7 @@ const sizzleQuerySelectorAll = (target, selector) => {
 };
 
 const isRequired = selector => {
-  return /[^:]:(not|has|contains|empty|parent|header|first|last|eq|even|odd|lt|gt)|^[~+]/.test(selector);
+  return /[^:]:(not|has|contains|empty|parent|header|first|last|eq|even|odd|lt|gt)|^\s*[~+]/.test(selector);
 };
 
 export {
