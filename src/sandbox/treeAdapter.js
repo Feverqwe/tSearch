@@ -21,6 +21,13 @@ class TreeAdapter extends Adapter {
   static denyTags = ['NOSCRIPT', 'LINK', 'SCRIPT', 'IFRAME', 'STYLE'];
 
   createElement(tagName, nameSpaceUri, attrs) {
+    // fix incorrect tagName
+    if (/=/.test(tagName)) {
+      const newTagName = tagName.split('=')[0];
+      logger.warn('createElement tagName fixed', tagName, newTagName);
+      return this.createElement(newTagName, nameSpaceUri, attrs);
+    }
+
     attrs.forEach(pair => {
       if (TreeAdapter.denyPropsRe.test(pair.name)) {
         pair.name = 'deny-' + pair.name;
