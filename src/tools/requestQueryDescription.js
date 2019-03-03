@@ -1,8 +1,49 @@
 import exKitGetDoc from "./exKitGetDoc";
 import {ErrorWithCode} from "./errors";
 import closestElement from "./closestElement";
+import getLogger from "./getLogger";
+import escapeStringRegexp from "escape-string-regexp";
+
+const logger = getLogger('requestQueryDescription');
 
 const qs = require('querystring');
+
+const decodeHexChars = (text) => {
+  return text.replace(/(\\x[a-zA-Z0-9]{2})/g, function(text, word) {
+    let char = word;
+    try {
+      char = String.fromCharCode(parseInt('0x' + char.substr(2), 16));
+    } catch (e){
+    }
+    return char;
+  });
+};
+
+const findSrcByImgId = (body, id) => {
+  const m = new RegExp(`(\\[['"]${escapeStringRegexp(id)}['"]\\])`).exec(body);
+  const idPos = body.indexOf(m && m[1]);
+  if (idPos === -1) {
+    throw new Error('Image id is not found');
+  }
+  const endPos = body.indexOf('}', idPos);
+  let startPos = endPos;
+  while (--startPos > 0) {
+    if (body.charAt(startPos) === '{') {
+      break;
+    }
+  }
+  if (startPos <= 0) {
+    throw new Error('Function statement is not found');
+  }
+
+  const fnStatement = body.substr(startPos, endPos - startPos);
+  const mSrc = /(data:[^'"]+)/.exec(fnStatement);
+  if (mSrc) {
+    const rawSrc = mSrc[1];
+    return decodeHexChars(rawSrc);
+  }
+  throw new Error('Src is not found');
+};
 
 const requestQueryDescription = (query) => {
   return fetch('https://www.google.com/search?' + qs.stringify({
@@ -19,18 +60,33 @@ const requestQueryDescription = (query) => {
       const images = Array.from(content.querySelectorAll('a img')).reduce((result, node) => {
         const link = closestElement(node, 'a');
         if (link.href) {
-          const uri = new URL(link.href);
-          const query = qs.parse(uri.search.substr(1));
-          const imgUrl = query.imgurl;
-          if (/^https?:/.test(imgUrl)) {
-            result.push(imgUrl);
+          let src = null;
+          try {
+            if (node.id) {
+              src = findSrcByImgId(body, node.id);
+            }
+          } catch (err) {
+            // pass
+          }
+          if (src) {
+            result.push(src);
+          } else {
+            const uri = new URL(link.href);
+            const query = qs.parse(uri.search.substr(1));
+            const imgUrl = query.imgurl;
+            if (/^https?:/.test(imgUrl)) {
+              result.push(imgUrl);
+            }
           }
         }
         return result;
       }, []);
 
       const proxyImages = images.map((url) => {
-        return 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=focus&resize_w=400&rewriteMime=image/jpeg&url=' + encodeURIComponent(url);
+        if (/^https?:/.test(url)) {
+          return 'https://images-pos-opensocial.googleusercontent.com/gadgets/proxy?container=focus&resize_w=400&rewriteMime=image/jpeg&url=' + encodeURIComponent(url);
+        }
+        return url;
       });
 
       const allImages = proxyImages.concat(images);
