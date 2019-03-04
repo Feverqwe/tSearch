@@ -23,7 +23,7 @@ class TreeAdapter extends Adapter {
   createElement(tagName, nameSpaceUri, attrs) {
     // fix incorrect tagName
     if (/=/.test(tagName)) {
-      const newTagName = tagName.split('=')[0];
+      const newTagName = tagName.substr(0, tagName.indexOf('='));
       logger.warn('createElement tagName fixed', tagName, newTagName);
       return this.createElement(newTagName, nameSpaceUri, attrs);
     }
