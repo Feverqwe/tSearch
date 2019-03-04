@@ -25,6 +25,10 @@ class ExploreSection extends React.Component {
       minHeight: 0,
       showOptions: false,
     };
+
+    if (this.sectionStore.id === 'favorites' && this.sectionStore.state === 'idle') {
+      this.sectionStore.fetchData();
+    }
   }
 
   /**@return {ExplorerStore}*/

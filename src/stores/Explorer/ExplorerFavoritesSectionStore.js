@@ -53,9 +53,14 @@ const ExplorerFavoritesSectionStore = types.compose('ExplorerFavoritesSectionSto
         }
       }
     }),
-    addItem(item) {
-      self.items.push(item);
-    },
+    addItem: flow(function* (item) {
+      if (self.state === 'idle') {
+        yield self.fetchData();
+      }
+      if (isAlive(self)) {
+        self.items.push(item);
+      }
+    }),
     removeItem(item) {
       const items = self.items.slice(0);
       const pos = items.indexOf(item);
