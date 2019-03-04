@@ -8,6 +8,7 @@ import exKitPipelineMethods from "../tools/exKitPipelineMethods";
 const strFields = ['categoryTitle', 'title'];
 const intFields = ['categoryId', 'size', 'seeds', 'peers', 'date'];
 const urlFields = ['categoryUrl', 'url', 'downloadUrl', 'nextPageUrl'];
+const selectors = ['categoryTitle', 'categoryUrl', 'categoryId', 'title', 'url', 'size', 'downloadUrl', 'seeds', 'peers', 'date'];
 
 class ExKitTracker {
   constructor() {
@@ -108,7 +109,6 @@ class ExKitTracker {
     const errors = [];
     const cache = {};
 
-    const selectors = ['categoryTitle', 'categoryUrl', 'categoryId', 'title', 'url', 'size', 'downloadUrl', 'seeds', 'peers', 'date'];
     for (let key, i = 0; key = selectors[i]; i++) {
       const selector = this.code.selectors[key];
       if (selector) {
