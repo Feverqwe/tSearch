@@ -64,11 +64,6 @@ class TextFilter extends React.Component {
     filter.setText(this.input.value);
   };
 
-  handleDoubleClick = () => {
-    this.input.value = '';
-    this.onChange();
-  };
-
   handleSubmit = (e) => {
     e.preventDefault();
 
@@ -87,7 +82,6 @@ class TextFilter extends React.Component {
         <span className="filter__label">{chrome.i18n.getMessage('wordFilterLabel')}</span>
         <form onSubmit={this.handleSubmit} className="input_box input_box-filter">
           <input
-            onDoubleClick={this.handleDoubleClick}
             ref={this.refInput}
             onChange={this.onChange}
             defaultValue={filter.text}
@@ -115,12 +109,6 @@ class SizeFilter extends React.Component {
     this.props.filtersStore.setSize(this.min.value * 1, this.max.value * 1);
   };
 
-  handleDoubleClick = () => {
-    this.min.value = '';
-    this.max.value = '';
-    this.onChange();
-  };
-
   handleSubmit = (e) => {
     e.preventDefault();
 
@@ -143,7 +131,6 @@ class SizeFilter extends React.Component {
         <span className="filter__label">{chrome.i18n.getMessage('sizeFilterLabel')}</span>
         <form onSubmit={this.handleSubmit} className="input_box input_box-filter">
           <input
-            onDoubleClick={this.handleDoubleClick}
             onChange={this.onChange}
             defaultValue={filter.minSizeGb || ''}
             ref={this.refMin} name={'sizeMin'}
@@ -151,7 +138,6 @@ class SizeFilter extends React.Component {
             type="number" placeholder={chrome.i18n.getMessage('rangeFromPlaceholder')}/>
           {' — '}
           <input
-            onDoubleClick={this.handleDoubleClick}
             onChange={this.onChange}
             defaultValue={filter.maxSizeGb || ''}
             ref={this.refMax} name={'sizeMax'}
@@ -184,12 +170,6 @@ class SeedFilter extends React.Component {
     filter.setSeed(this.min.value * 1, this.max.value * 1);
   };
 
-  handleDoubleClick = () => {
-    this.min.value = '';
-    this.max.value = '';
-    this.onChange();
-  };
-
   handleSubmit = (e) => {
     e.preventDefault();
 
@@ -216,7 +196,6 @@ class SeedFilter extends React.Component {
         <span className="filter__label">{chrome.i18n.getMessage('seedFilterLabel')}</span>
         <form onSubmit={this.handleSubmit} className="input_box input_box-filter">
           <input
-            onDoubleClick={this.handleDoubleClick}
             onChange={this.onChange}
             defaultValue={filter.minSeed || ''}
             ref={this.refMin} name={'seedMin'}
@@ -224,7 +203,6 @@ class SeedFilter extends React.Component {
             type="number" placeholder={chrome.i18n.getMessage('rangeFromPlaceholder')}/>
           {' — '}
           <input
-            onDoubleClick={this.handleDoubleClick}
             onChange={this.onChange}
             defaultValue={filter.maxSeed || ''}
             ref={this.refMax} name={'seedMax'}
@@ -257,12 +235,6 @@ class PeerFilter extends React.Component {
     filter.setPeer(this.min.value * 1, this.max.value * 1);
   };
 
-  handleDoubleClick = () => {
-    this.min.value = '';
-    this.max.value = '';
-    this.onChange();
-  };
-
   handleSubmit = (e) => {
     e.preventDefault();
 
@@ -289,7 +261,6 @@ class PeerFilter extends React.Component {
         <span className="filter__label">{chrome.i18n.getMessage('peerFilterLabel')}</span>
         <form onSubmit={this.handleSubmit} className="input_box input_box-filter">
           <input
-            onDoubleClick={this.handleDoubleClick}
             onChange={this.onChange}
             defaultValue={filter.minPeer || ''}
             ref={this.refMin} name={'peerMin'}
@@ -297,7 +268,6 @@ class PeerFilter extends React.Component {
             type="number" placeholder={chrome.i18n.getMessage('rangeFromPlaceholder')}/>
           {' — '}
           <input
-            onDoubleClick={this.handleDoubleClick}
             onChange={this.onChange}
             defaultValue={filter.maxPeer || ''}
             ref={this.refMax} name={'peerMax'}
@@ -347,16 +317,6 @@ class TimeFilter extends React.Component {
     const filter = this.props.filtersStore;
 
     filter.setTime(this.state.min * 1, this.state.max * 1);
-  };
-
-  handleDoubleClick = () => {
-    this.state.min = 0;
-    this.state.max = 0;
-    this.onChange();
-    this.setState({
-      minDate: null,
-      maxDate: null
-    });
   };
 
   handleSubmit = (e) => {
@@ -430,17 +390,10 @@ class TimeFilter extends React.Component {
     });
   };
 
-  refDatePicker = (dataPicker) => {
-    if (dataPicker) {
-      dataPicker.input.addEventListener('dblclick', this.handleDoubleClick);
-    }
-  };
-
   getRange() {
     return (
       <form onSubmit={this.handleSubmit} className="input_box input_box-filter input_box-time-filter input_box-time-filter-visible">
         <DatePicker
-          ref={this.refDatePicker}
           name={'timeMin'}
           selected={this.state.minDate}
           onChange={this.handleMinDateChange}
@@ -448,7 +401,6 @@ class TimeFilter extends React.Component {
         />
         {' — '}
         <DatePicker
-          ref={this.refDatePicker}
           name={'timeMax'}
           selected={this.state.maxDate}
           onChange={this.handleMaxDateChange}
