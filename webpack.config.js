@@ -96,7 +96,9 @@ const config = {
     extensions: ['.js', '.jsx'],
   },
   plugins: [
-    new CleanWebpackPlugin(outputPath),
+    new CleanWebpackPlugin({
+      cleanOnceBeforeBuildPatterns: [outputPath]
+    }),
     new CopyWebpackPlugin([
       {from: './src/manifest.json',},
       {from: './src/assets/img', to: './assets/img'},
