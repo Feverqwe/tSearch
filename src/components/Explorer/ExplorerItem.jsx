@@ -255,8 +255,15 @@ class QuickSearchResults extends React.Component {
     }
   }
 
+  onPopupClick = (e) => {
+    e.stopPropagation();
+  };
+
   popupNode = null;
   refPopupNode = (element) => {
+    if (!this.popupNode && element) {
+      element.addEventListener('click', this.onPopupClick);
+    }
     this.popupNode = element;
     if (element) {
       this.updatePosition();
@@ -271,14 +278,7 @@ class QuickSearchResults extends React.Component {
   render() {
     const results = this.quickSearchItemStore.results.map((result) => {
       return (
-        <li key={result.url} className="torrent__title">
-          {highlight.getReactComponent('a', {
-            className: 'title',
-            target: '_blank',
-            href: result.url
-          }, result.title, result.titleHighlightMap)}
-          , {result.sizeText}
-        </li>
+        <QuickSearchResult key={result.url} result={result} query={this.quickSearchItemStore.query}/>
       );
     });
 
@@ -299,6 +299,38 @@ class QuickSearchResults extends React.Component {
           </div>
         </div>
       </div>
+    );
+  }
+}
+
+@inject('rootStore')
+@observer
+class QuickSearchResult extends React.Component {
+  static propTypes = {
+    result: PropTypes.object.isRequired,
+    query: PropTypes.string.isRequired,
+  };
+
+  handleClick = () => {
+    const rootStore = this.props.rootStore;
+    const query = this.props.query;
+    const result = this.props.result;
+    rootStore.history.addClick(query, result.title, result.url, result.trackerId);
+  };
+
+  render() {
+    const result = this.props.result;
+
+    return (
+      <li className="torrent__title">
+        {highlight.getReactComponent('a', {
+          className: 'title',
+          target: '_blank',
+          href: result.url,
+          onMouseUp: this.handleClick
+        }, result.title, result.titleHighlightMap)}
+        , {result.sizeText}
+      </li>
     );
   }
 }

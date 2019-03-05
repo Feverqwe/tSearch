@@ -30,6 +30,7 @@ const ExplorerQuickSearchResultStore = types.model('ExplorerQuickSearchResultSto
   size: types.number,
   sizeText: types.string,
   quality: types.number,
+  trackerId: types.optional(types.string, ''),
 }).views((self) => {
   return {
     get titleHighlightMap() {
