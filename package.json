@@ -67,7 +67,7 @@
     "archiver": "^3.0.0",
     "babel-loader": "^8.0.5",
     "clean-css-loader": "^1.1.0",
-    "clean-webpack-plugin": "^1.0.1",
+    "clean-webpack-plugin": "^2.0.0",
     "copy-webpack-plugin": "^5.0.0",
     "css-loader": "^2.1.0",
     "cssnano": "^4.1.10",
@@ -80,7 +80,7 @@
     "script-loader": "^0.7.2",
     "style-loader": "^0.23.1",
     "url-loader": "^1.1.2",
-    "webpack": "^4.29.5",
+    "webpack": "^4.29.6",
     "webpack-cli": "^3.2.3"
   }
 }
