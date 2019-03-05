@@ -21,13 +21,6 @@ class TreeAdapter extends Adapter {
   static denyTags = ['NOSCRIPT', 'LINK', 'SCRIPT', 'IFRAME', 'STYLE'];
 
   createElement(tagName, nameSpaceUri, attrs) {
-    // fix incorrect tagName
-    if (/=/.test(tagName)) {
-      const newTagName = tagName.substr(0, tagName.indexOf('='));
-      logger.warn('createElement tagName fixed', tagName, newTagName);
-      return this.createElement(newTagName, nameSpaceUri, attrs);
-    }
-
     attrs.forEach(pair => {
       if (TreeAdapter.denyPropsRe.test(pair.name)) {
         pair.name = 'deny-' + pair.name;
@@ -50,7 +43,18 @@ class TreeAdapter extends Adapter {
       }
     }
 
-    const element = document.createElementNS(nameSpaceUri, tagName);
+    let element = null;
+    try {
+      element = document.createElementNS(nameSpaceUri, tagName);
+    } catch (err) {
+      if (err.name === 'InvalidCharacterError') {
+        logger.warn('createElement error: InvalidCharacterError, replaced', tagName, 'div');
+        element = document.createElementNS(nameSpaceUri, 'div');
+      } else {
+        throw err;
+      }
+    }
+
     attrs.forEach(pair => {
       try {
         return element.setAttribute(pair.name, pair.value);
