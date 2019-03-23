@@ -54,7 +54,10 @@ const ExplorerFavoritesSectionStore = types.compose('ExplorerFavoritesSectionSto
       }
     }),
     addItem(item) {
-      self.items.push(item);
+      const exists = self.items.some((_item) => item.url === _item.url);
+      if (!exists) {
+        self.items.push(item);
+      }
     },
     removeItem(item) {
       const items = self.items.slice(0);
