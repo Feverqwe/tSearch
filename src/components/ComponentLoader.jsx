@@ -4,79 +4,40 @@ import PropTypes from "prop-types";
 
 const logger = getLogger('ComponentLoader');
 
+const Editor = React.lazy(() => import('../pages/Editor'));
+const CodeMaker = React.lazy(() => import('../pages/CodeMaker'));
+const ProfileEditor = React.lazy(() => import('../pages/ProfileEditor'));
+const History = React.lazy(() => import('../pages/History'));
+const Options = React.lazy(() => import('../pages/Options'));
+const Main = React.lazy(() => import('../pages/Main'));
+
+const idComponent = {
+  editor: Editor,
+  codeMaker: CodeMaker,
+  'profile-editor': ProfileEditor,
+  history: History,
+  options: Options,
+  main: Main,
+};
 
 class ComponentLoader extends React.Component {
   static propTypes = {
-    'load-page': PropTypes.string,
+    'load-page': PropTypes.string.isRequired,
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      state: 'idle'
-    };
-
-    this.Component = null;
-  }
-  componentDidMount() {
-    if (this.state.state === 'idle') {
-      this.load();
-    }
-  }
-  async load() {
-    this.setState({state: 'pending'});
-    try {
-      let result = null;
-      switch (this.props['load-page']) {
-        case 'editor': {
-          result = await import('../pages/Editor');
-          break;
-        }
-        case 'codeMaker': {
-          result = await import('../pages/CodeMaker');
-          break;
-        }
-        case 'profile-editor': {
-          result = await import('../pages/ProfileEditor');
-          break;
-        }
-        case 'history': {
-          result = await import('../pages/History');
-          break;
-        }
-        case 'options': {
-          result = await import('../pages/Options');
-          break;
-        }
-        case 'main': {
-          result = await import('../pages/Main');
-          break;
-        }
-        default: {
-          throw new Error('Component is not found');
-        }
-      }
-      this.Component = result.default;
-      this.setState({state: 'done'});
-    } catch (err) {
-      logger.error('Load error', err);
-      this.setState({state: 'error'});
-    }
-  }
   render() {
-    if (this.state.state !== 'done') {
-      return (
-        this.state.state
-      );
-    }
+    const {'load-page': componentId, ...props} = this.props;
 
-    const {'load-page': loadPage, ...props} = this.props;
+    const Component = idComponent[componentId];
 
     return (
-      <this.Component {...props}/>
+      <React.Suspense fallback={<Spinner/>}>
+        <Component {...props}/>
+      </React.Suspense>
     );
   }
 }
+
+const Spinner = () => 'Loading...';
 
 export default ComponentLoader;
