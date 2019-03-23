@@ -224,12 +224,14 @@ class ProfileEditorTackerList extends React.Component {
       appendTracker(trackerStore);
     });
 
-    removedIds.forEach((id) => {
-      const trackerStore = this.profileEditorProfileStore.getTrackerById(id);
-      if (trackerStore) {
-        appendTracker(trackerStore);
-      }
-    });
+    if (!this.profileEditorProfileStore.filterText) {
+      removedIds.forEach((id) => {
+        const trackerStore = this.profileEditorProfileStore.getTrackerById(id);
+        if (trackerStore) {
+          appendTracker(trackerStore);
+        }
+      });
+    }
 
     return (
       <div ref={this.refTrackers} className="manager__trackers">
