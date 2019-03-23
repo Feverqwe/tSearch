@@ -82,7 +82,12 @@ const ExplorerStore = types.model('ExplorerStore', {
             logger.error('set modules error, sections will cleared', err);
             self.modules = {};
           }
-          self.state = 'done';
+          if (isAlive(self)) {
+            yield self.favoritesSection.fetchData();
+          }
+          if (isAlive(self)) {
+            self.state = 'done';
+          }
         }
       } catch (err) {
         logger.error('fetch error', err);
