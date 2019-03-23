@@ -79,6 +79,7 @@ const ProfileEditorProfileTrackerStore = types.compose('ProfileEditorProfileTrac
  * @property {function} setName
  * @property {function} setCategory
  * @property {function} setFilterText
+ * @property {function} setSelectedTrackerIds
  * @property {function} addTracker
  * @property {function} moveTracker
  * @property {function} removeTracker
@@ -90,21 +91,14 @@ const ProfileEditorProfileTrackerStore = types.compose('ProfileEditorProfileTrac
  * @property {function} getCategoryTrackersWithFilter
  * @property {function} getTrackerCountByCategory
  * @property {function} getSnapshot
+ * @property {function} afterCreate
  */
 const ProfileEditorProfileStore = types.compose('ProfileEditorProfileStore', ProfileStore, types.model({
   trackers: types.array(ProfileEditorProfileTrackerStore),
   selectedTrackerIds: types.array(types.string),
   category: types.optional(types.enumeration(['all', 'withoutList', 'selected']), 'selected'),
   filterText: types.optional(types.string, ''),
-})).preProcessSnapshot((snapshot) => {
-  if (!snapshot.selectedTrackerIds && snapshot.trackers) {
-    snapshot.selectedTrackerIds = snapshot.trackers.map(tracker => tracker.id);
-  }
-  if (!snapshot.selectedTrackerIds || !snapshot.selectedTrackerIds.length) {
-    snapshot.category = 'all';
-  }
-  return snapshot;
-}).actions((self) => {
+})).actions((self) => {
   return {
     setName(value) {
       self.name = value;
@@ -114,6 +108,9 @@ const ProfileEditorProfileStore = types.compose('ProfileEditorProfileStore', Pro
     },
     setFilterText(value) {
       self.filterText = value;
+    },
+    setSelectedTrackerIds(ids) {
+      self.selectedTrackerIds = ids;
     },
     addTracker(trackerId) {
       const tracker = self.getTrackerById(trackerId);
@@ -243,6 +240,12 @@ const ProfileEditorProfileStore = types.compose('ProfileEditorProfileStore', Pro
         }
       });
       return snapshot;
+    },
+    afterCreate() {
+      self.setSelectedTrackerIds(self.trackers.map(tracker => tracker.id));
+      if (!self.selectedTrackerIds.length) {
+        self.setCategory('all');
+      }
     }
   };
 });
