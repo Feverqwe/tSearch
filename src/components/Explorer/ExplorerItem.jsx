@@ -148,22 +148,22 @@ class ExplorerItem extends React.Component {
              className="action__rmFavorite"/>
       );
       actions.push(
-        <div key={'move'} title={chrome.i18n.getMessage('move')} className="action__move"/>
-      );
-      actions.push(
         <div key={'edit'} onClick={this.handleEditFavorite} title={chrome.i18n.getMessage('edit')}
              className="action__edit"/>
+      );
+      actions.push(
+        <div key={'move'} title={chrome.i18n.getMessage('move')} className="action__move action--last"/>
       );
     } else {
       if (itemStore.isFavorite) {
         actions.push(
           <div key={'rmFavorite'} onClick={this.handleRemoveFavoriteByUrl} title={chrome.i18n.getMessage('removeFromFavorite')}
-               className="action__rmFavorite"/>
+               className="action__rmFavorite action--last"/>
         );
       } else {
         actions.push(
           <div key={'favorite'} onClick={this.handleAddFavorite} title={chrome.i18n.getMessage('addInFavorite')}
-               className="action__favorite"/>,
+               className="action__favorite action--last"/>,
         );
       }
     }
