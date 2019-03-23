@@ -97,6 +97,7 @@ const config = {
   },
   plugins: [
     new CleanWebpackPlugin({
+      cleanStaleWebpackAssets: false,
       cleanOnceBeforeBuildPatterns: [outputPath]
     }),
     new CopyWebpackPlugin([
