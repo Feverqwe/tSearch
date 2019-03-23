@@ -13,10 +13,12 @@ import getNow from "../../tools/getNow";
  * @property {function} updateProps
  * @property {function} addFavorite
  * @property {function} removeFavorite
+ * @property {function} removeFavoriteByUrl
  * @property {*} localTitle
  * @property {*} query
  * @property {*} quickSearchItem
  * @property {function} quickSearch
+ * @property {*} isFavorite
  */
 const ExplorerItemStore = types.model('ExplorerItemStore', {
   title: types.string,
@@ -43,6 +45,11 @@ const ExplorerItemStore = types.model('ExplorerItemStore', {
       const favoritesSectionStore = /**ExplorerFavoritesSectionStore*/getParent(self, 2);
       favoritesSectionStore.removeItem(self);
       favoritesSectionStore.saveItems();
+    },
+    removeFavoriteByUrl() {
+      const explorerStore = /**ExplorerStore*/getParentOfType(self, ExplorerStore);
+      explorerStore.favoritesSection.removeItemByUrl(self.url);
+      explorerStore.favoritesSection.saveItems();
     },
     get localTitle() {
       /**@type RootStore*/
@@ -71,6 +78,10 @@ const ExplorerItemStore = types.model('ExplorerItemStore', {
         });
       }
       self.quickSearchItem.search();
+    },
+    get isFavorite() {
+      const explorerStore = /**ExplorerStore*/getParentOfType(self, ExplorerStore);
+      return explorerStore.favoritesSection.urls.indexOf(self.url) !== -1;
     }
   };
 });

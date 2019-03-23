@@ -18,6 +18,7 @@ const oneLimit = promiseLimit(1);
  * @property {function:Promise} fetchData
  * @property {function} addItem
  * @property {function} removeItem
+ * @property {function} removeItemByUrl
  * @property {function} moveItem
  * @property {function} saveItems
  * @property {function} afterCreate
@@ -67,6 +68,17 @@ const ExplorerFavoritesSectionStore = types.compose('ExplorerFavoritesSectionSto
         self.items = items;
       }
     },
+    removeItemByUrl(url) {
+      let item = null;
+      self.items.some((_item) => {
+        if (_item.url === url) {
+          return item = _item;
+        }
+      });
+      if (item) {
+        self.removeItem(item);
+      }
+    },
     moveItem(index, prevIndex, nextIndex) {
       const items = self.items.slice(0);
       const item = items[index];
@@ -111,6 +123,9 @@ const ExplorerFavoritesSectionStore = types.compose('ExplorerFavoritesSectionSto
   };
 
   return {
+    get urls() {
+      return self.items.map(item => item.url)
+    },
     saveItems() {
       return oneLimit(() => {
         return storageSet({

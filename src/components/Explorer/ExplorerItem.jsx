@@ -72,6 +72,11 @@ class ExplorerItem extends React.Component {
     this.itemStore.removeFavorite();
   };
 
+  handleRemoveFavoriteByUrl = (e) => {
+    e.preventDefault();
+    this.itemStore.removeFavoriteByUrl();
+  };
+
   handleAddFavorite = (e) => {
     e.preventDefault();
     this.itemStore.addFavorite();
@@ -150,10 +155,17 @@ class ExplorerItem extends React.Component {
              className="action__edit"/>
       );
     } else {
-      actions.push(
-        <div key={'favorite'} onClick={this.handleAddFavorite} title={chrome.i18n.getMessage('addInFavorite')}
-             className="action__favorite"/>,
-      );
+      if (itemStore.isFavorite) {
+        actions.push(
+          <div key={'rmFavorite'} onClick={this.handleRemoveFavoriteByUrl} title={chrome.i18n.getMessage('removeFromFavorite')}
+               className="action__rmFavorite"/>
+        );
+      } else {
+        actions.push(
+          <div key={'favorite'} onClick={this.handleAddFavorite} title={chrome.i18n.getMessage('addInFavorite')}
+               className="action__favorite"/>,
+        );
+      }
     }
 
     let dialog = null;
