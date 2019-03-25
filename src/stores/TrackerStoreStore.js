@@ -7,8 +7,7 @@ import getTrackerCodeMeta from "../tools/getTrackerCodeMeta";
 import storageGet from "../tools/storageGet";
 import storageSet from "../tools/storageSet";
 import injectMetaToCode from "../tools/injectMetaToCode";
-
-const uuid = require('uuid/v4');
+import getHash from "../tools/getHash";
 
 const logger = getLogger('TrackerStoreStore');
 
@@ -48,7 +47,6 @@ const Files = struct([struct.partial({
  */
 const TrackerStoreResultStore = types.model('TrackerStoreResultStore', {
   state: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
-  id: types.maybe(types.string),
   name: types.string,
   size: types.number,
   fileType: types.enumeration(['js', 'json']),
@@ -77,21 +75,11 @@ const TrackerStoreResultStore = types.model('TrackerStoreResultStore', {
           }
         });
         let meta = getTrackerCodeMeta(code);
-        if (!meta.downloadURL || !meta.homepageURL) {
-          try {
-            let injectMeta = {};
-            if (!meta.downloadURL) {
-              injectMeta.downloadURL = url;
-            }
-            if (!meta.homepageURL) {
-              injectMeta.homepageURL = html_url;
-            }
-            const changedCode = injectMetaToCode(code, injectMeta);
-            meta = getTrackerCodeMeta(changedCode);
-            code = changedCode;
-          } catch (err) {
-            logger.error('injectMetaToCode error', url, err);
-          }
+        if (!meta.downloadURL) {
+          code = injectMetaToCode(code, {
+            downloadURL: url
+          });
+          meta.downloadURL = url;
         }
         if (isAlive(self)) {
           self.meta = meta;
@@ -106,11 +94,7 @@ const TrackerStoreResultStore = types.model('TrackerStoreResultStore', {
       }
     }),
     save() {
-      let id = self.id;
-      if (!id) {
-        id = self.id = uuid();
-      }
-
+      const {id} = self;
       const trackerStore = TrackerStore.create({
         id: id,
         meta: getTrackerCodeMeta(self.code),
@@ -127,10 +111,17 @@ const TrackerStoreResultStore = types.model('TrackerStoreResultStore', {
   };
 }).views((self) => {
   return {
+    get id() {
+      return getHash(self.download_url);
+    },
     get tracker() {
       /**@type RootStore*/
       const rootStore = getRoot(self);
-      return rootStore.trackers.getTrackerByDownloadUrl(self.download_url);
+      let tracker = rootStore.trackers.getTrackerById(self.id);
+      if (!tracker) {
+        tracker = rootStore.trackers.getTrackerByDownloadUrl(self.download_url);
+      }
+      return tracker;
     },
     get hasTracker() {
       return !!self.tracker;

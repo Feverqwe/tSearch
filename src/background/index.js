@@ -15,6 +15,8 @@ import TabFetchBg from "./tabFetchBg";
 import migrate from "../tools/migrate";
 import errorTracker from "../tools/errorTracker";
 import getUserId from "../tools/getUserId";
+import jsonCodeToUserscript from "../tools/jsonCodeToUserscript";
+import injectMetaToCode from "../tools/injectMetaToCode";
 
 errorTracker.bindExceptions();
 
@@ -258,16 +260,22 @@ const downloadTracker = (id, updateURL, downloadURL) => {
         throw new ErrorWithCode('downloadURL is empty', 'DOWNLOAD_URL_IS_EMPTY');
       }
 
-      return fetch(downloadURL);
-    }).then(response => {
-      if (!response.ok) {
-        throw new ErrorWithCode('bad response', 'BAD_RESPONSE');
-      }
-      return response.text();
-    }).then(code => {
+      return fetch(downloadURL).then(response => {
+        if (!response.ok) {
+          throw new ErrorWithCode('bad response', 'BAD_RESPONSE');
+        }
+        return response.text();
+      }).then(code => transformJsonToCode(code)).then((code) => {
+        const meta = getTrackerCodeMeta(code);
+        if (!meta.downloadURL) {
+          code = injectDownloadUrl(code, meta, downloadURL);
+        }
+        return {meta, code};
+      });
+    }).then(({code, meta}) => {
       const trackerStore = TrackerStore.create({
         id: id,
-        meta: getTrackerCodeMeta(code),
+        meta: meta,
         code: code,
       });
       const tracker = trackerStore.getSnapshot();
@@ -394,13 +402,16 @@ const getCodeAndMetaFromUrl = (url, type = 'tracker') => {
       throw new ErrorWithCode('bad response', 'BAD_RESPONSE');
     }
     return response.text();
-  }).then((code) => {
+  }).then(code => transformJsonToCode(code)).then((code) => {
     let meta = null;
     if (type === 'tracker') {
       meta = getTrackerCodeMeta(code);
     } else
     if (type === 'explorerModule') {
       meta = getExploreModuleCodeMeta(code);
+    }
+    if (!meta.downloadURL) {
+      code = injectDownloadUrl(code, meta, url);
     }
     return {meta, code};
   });
@@ -435,4 +446,24 @@ const track = params => {
       }
     });
   });
+};
+
+const transformJsonToCode = (data) => {
+  let result = data;
+  if (/^\s*{/.test(data)) {
+    try {
+      result = jsonCodeToUserscript(data);
+    } catch (err) {
+      logger.error('jsonCodeToUserscript error', err);
+    }
+  }
+  return result;
+};
+
+const injectDownloadUrl = (code, meta, url) => {
+  code = injectMetaToCode(code, {
+    downloadURL: url
+  });
+  meta.downloadURL = url;
+  return code;
 };
