@@ -19,7 +19,8 @@ const oneLimit = promiseLimit(1);
  * @property {function} deleteTracker
  * @property {function} setTracker
  * @property {function} patchTrackers
- * @property {function} getTackerById
+ * @property {function} getTrackerById
+ * @property {function} getTrackerByDownloadUrl
  * @property {function} saveTrackers
  * @property {function} getTrackersSnapshot
  * @property {function} afterCreate
@@ -73,8 +74,16 @@ const TrackersStore = types.model('TrackersStore', {
   };
 
   return {
-    getTackerById(id) {
+    getTrackerById(id) {
       return resolveIdentifier(TrackerStore, self, id);
+    },
+    getTrackerByDownloadUrl(url) {
+      for (let tracker of self.trackers.values()) {
+        if (tracker.meta.downloadURL === url || tracker.meta.updateURL === url) {
+          return tracker;
+        }
+      }
+      return null;
     },
     saveTrackers() {
       return oneLimit(() => {

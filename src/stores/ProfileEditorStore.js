@@ -4,6 +4,7 @@ import ProfileStore, {ProfileTrackerStore} from "./ProfileStore";
 import storageSet from "../tools/storageSet";
 import TrackerStore from "./TrackerStore";
 import RootStore from "./RootStore";
+import TrackerStoreStore from "./TrackerStoreStore";
 
 const escapeStringRegexp = require('escape-string-regexp');
 
@@ -11,7 +12,10 @@ const logger = getLogger('ProfileEditorStore');
 
 /**
  * @typedef {ProfileTrackerStore} ProfileEditorProfileTrackerStore
+ * @property {string} [updateState]
+ * @property {function:Promise} update
  * @property {*} isEditorProfileTrackerStore
+ * @property {function} getIconUrl
  */
 const ProfileEditorProfileTrackerStore = types.compose('ProfileEditorProfileTrackerStore', ProfileTrackerStore, types.model({
   updateState: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
@@ -81,14 +85,16 @@ const ProfileEditorProfileTrackerStore = types.compose('ProfileEditorProfileTrac
  * @property {function} setFilterText
  * @property {function} setSelectedTrackerIds
  * @property {function} addTracker
- * @property {function} moveTracker
  * @property {function} removeTracker
+ * @property {function} moveTracker
  * @property {*} trackersMap
  * @property {*} categoryTrackers
  * @property {*} allTrackerIds
  * @property {*} filterTextRe
  * @property {function} getCategoryTrackers
  * @property {function} getCategoryTrackersWithFilter
+ * @property {function} getTrackerById
+ * @property {function} getProfileTracker
  * @property {function} getTrackerCountByCategory
  * @property {function} getSnapshot
  * @property {function} afterCreate
@@ -254,15 +260,18 @@ const ProfileEditorProfileStore = types.compose('ProfileEditorProfileStore', Pro
  * @typedef {{}} ProfileEditorStore
  * @property {string} [saveState]
  * @property {ProfileEditorProfileStore[]} profiles
+ * @property {TrackerStoreStore|undefined} trackerStore
  * @property {function:Promise} save
  * @property {function} moveProfile
  * @property {function} removeProfileById
  * @property {function} createProfile
+ * @property {function} createTrackerStore
  * @property {function} getProfileById
  */
 const ProfileEditorStore = types.model('ProfileEditorStore', {
   saveState: types.optional(types.enumeration(['idle', 'pending', 'done', 'error']), 'idle'),
   profiles: types.array(ProfileEditorProfileStore),
+  trackerStore: types.maybe(TrackerStoreStore),
 }).actions(self => {
   return {
     save: flow(function* () {
@@ -321,6 +330,9 @@ const ProfileEditorStore = types.model('ProfileEditorStore', {
         name: 'New'
       });
     },
+    createTrackerStore() {
+      self.trackerStore = {};
+    }
   };
 }).views((self) => {
   return {

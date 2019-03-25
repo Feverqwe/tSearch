@@ -102,7 +102,7 @@ class HistoryQuery extends React.Component {
       <div className="history__item">
         <div className="item item-query">
           <a className="item__remove" data-action="remove-query" href="#remove"
-             title={chrome.i18n.getMessage('remove')}
+             title={chrome.i18n.getMessage('delete')}
              onClick={this.handleRemove}
           />
           <Link className="item__link" to={link}>{query.query || '""'}</Link>
@@ -139,7 +139,7 @@ class HistoryQueryLink extends React.Component {
     return (
       <div className="item item-click_history">
         <a className="item__remove" data-action="remove-click_history" href="#remove"
-           title={chrome.i18n.getMessage('remove')}
+           title={chrome.i18n.getMessage('delete')}
            onClick={this.handleRemove}
         />
         <span className="item__date">

@@ -1,6 +1,6 @@
 const stringify = require('json-stringify-pretty-compact');
 
-const jsonToUserscript = json => {
+const jsonToUserscript = (json) => {
   const meta = [];
   meta.push('==UserScript==');
 

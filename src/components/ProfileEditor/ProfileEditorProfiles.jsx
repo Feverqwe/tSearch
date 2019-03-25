@@ -2,8 +2,8 @@ import {observer} from "mobx-react";
 import React from "react";
 import PropTypes from "prop-types";
 import {Link, withRouter} from "react-router-dom";
-import getLogger from "../tools/getLogger";
-import getTitle from "../tools/getTitle";
+import getLogger from "../../tools/getLogger";
+import getTitle from "../../tools/getTitle";
 
 const uuid = require('uuid/v4');
 const Sortable = require('sortablejs');
@@ -152,7 +152,7 @@ class ProfileEditorProfileItem extends React.Component {
               title={chrome.i18n.getMessage('edit')}/>
         <a onClick={this.handleRemove}
            className="item__cell item__button button-remove"
-           href="#remove" title={chrome.i18n.getMessage('remove')}/>
+           href="#remove" title={chrome.i18n.getMessage('delete')}/>
       </div>
     );
   }

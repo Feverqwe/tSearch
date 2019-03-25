@@ -80,7 +80,7 @@
     "close": {
         "message": "Close"
     },
-    "remove": {
+    "delete": {
         "message": "Delete"
     },
     "advanced_options": {
@@ -337,6 +337,24 @@
     },
     "filter_selected": {
         "message": "Selected"
+    },
+    "external_trackers": {
+        "message": "External"
+    },
+    "fetchMeta": {
+        "message": "Fetch metadata"
+    },
+    "sources": {
+        "message": "Sources"
+    },
+    "refresh": {
+        "message": "Refresh"
+    },
+    "repositories": {
+        "message": "Repositories"
+    },
+    "add_repository": {
+        "message": "Add repository"
     },
     "historyEmpty": {
         "message": "Here empty, yet..."

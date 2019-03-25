@@ -51,6 +51,7 @@
     "serialize-error": "^2.1.0",
     "sizzle": "^2.3.3",
     "sortablejs": "^1.8.4",
+    "superstruct": "^0.6.0",
     "uuid": "^3.3.2",
     "whatwg-fetch": "^3.0.0"
   },

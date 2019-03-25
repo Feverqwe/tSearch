@@ -4,11 +4,9 @@ import React from 'react';
 import PropTypes from "prop-types";
 import {inject, observer} from "mobx-react";
 import Dialog from "../components/Dialog";
-import jsonToUserscript from "../tools/jsonToUserscript";
 import getLogger from "../tools/getLogger";
-import convertCodeV1toV2 from "../tools/convertCodeV1toV2";
-import convertCodeV2toV3 from "../tools/convertCodeV2toV3";
 import getTitle from "../tools/getTitle";
+import jsonCodeToUserscript from "../tools/jsonCodeToUserscript";
 
 const CodeMirror = require('codemirror');
 require('codemirror/mode/javascript/javascript');
@@ -134,16 +132,8 @@ class Editor extends React.Component {
 
     try {
       const text = this.dialogTextarea.value;
-      let json = JSON.parse(text);
 
-      if (json.version === 1) {
-        json = convertCodeV1toV2(json);
-      }
-      if (json.version === 2) {
-        json = convertCodeV2toV3(json);
-      }
-
-      const script = jsonToUserscript(json);
+      const script = jsonCodeToUserscript(text);
 
       editorStore.setCode(script);
       this.editor.setValue(script);

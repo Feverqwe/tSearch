@@ -5,8 +5,8 @@ import ScrollTop from "../components/ScrollTop";
 import Filters from "../components/Filters";
 import {inject, observer} from "mobx-react";
 import PropTypes from "prop-types";
-import ProfileEditorProfiles from "../components/ProfileEditorProfiles";
-import ProfileEditorProfile from "../components/ProfileEditorProfile";
+import ProfileEditorProfiles from "../components/ProfileEditor/ProfileEditorProfiles";
+import ProfileEditorProfile from "../components/ProfileEditor/ProfileEditorProfile";
 import getLogger from "../tools/getLogger";
 import {Redirect} from "react-router-dom";
 

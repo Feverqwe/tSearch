@@ -80,7 +80,7 @@
   "close": {
     "message": "Закрыть"
   },
-  "remove": {
+  "delete": {
     "message": "Удалить"
   },
   "advanced_options": {
@@ -340,6 +340,24 @@
   },
   "historyEmpty": {
     "message": "Здесь пусто, пока..."
+  },
+  "external_trackers": {
+    "message": "Внешние"
+  },
+  "fetchMeta": {
+    "message": "Получить информацию"
+  },
+  "sources": {
+    "message": "Источники"
+  },
+  "refresh": {
+    "message": "Обновить"
+  },
+  "repositories": {
+    "message": "Репозитории"
+  },
+  "add_repository": {
+    "message": "Добавить репозитории"
   },
   "kitTrackerCodeReadError": {
     "message": "Ошибка разбора кода трекера"

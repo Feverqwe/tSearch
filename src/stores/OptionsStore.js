@@ -54,6 +54,7 @@ const ExplorerSectionsStore = types.model('ExplorerSectionsStore', {
  * @property {boolean} [disablePopup]
  * @property {boolean} [invertIcon]
  * @property {boolean} [defineCategory]
+ * @property {boolean} [singleResultTable]
  * @property {boolean} [requestQueryDescription]
  * @property {boolean} [doNotSendStatistics]
  * @property {boolean} [originalPosterName]
@@ -61,6 +62,7 @@ const ExplorerSectionsStore = types.model('ExplorerSectionsStore', {
  * @property {ExplorerSectionsStore} [explorerSections]
  * @property {{by:string,[direction]:number}[]} [sorts]
  * @property {number} [trackerListHeight]
+ * @property {string[]} [repositories]
  * @property {function} setValue
  */
 const OptionsValueStore = types.model('OptionsValueStore', {
@@ -82,6 +84,9 @@ const OptionsValueStore = types.model('OptionsValueStore', {
     direction: types.optional(types.number, 0),
   })), [{by: 'quality'}]),
   trackerListHeight: types.optional(types.number, 200),
+  repositories: types.optional(types.array(types.string), [
+    'https://api.github.com/repos/feverqwe/tSearch/contents/external'
+  ]),
 }).actions(self => {
   return {
     setValue(key, value) {
