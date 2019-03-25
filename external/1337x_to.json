@@ -1,0 +1,39 @@
+{
+  "version": 3,
+  "type": "kit",
+  "description": {
+    "icon": "data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAQAABMLAAATCwAAAAAAAAAAAAD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8ABjzcUgpA388JP9/PCT/f1AY83HAFO9sABjzbAAc93UwIPt7MBz3dzwtB4dcGPNt/////AP///wD///8A////AAM52SQHPdzXCkDg/wk/3/8IPt7XBDraFQY82wIIPdytCkDg/wg+3v8IPt3+BTvbT////wD///8A////AP///wAEOtsABjzcUgpA4P0KQOD/CT/f/wU7210FO9wxCT/e9Ak/4P8LQeD/BjzbiQU72gP///8A////AP///wD///8ABz3dAAg93QcKQeG5Bz7f/wc+4P8HPt7PCD7etQtB4f8LQeH/CkDg4gY82yMGPNsA////AP///wD///8A////AA9D3QAPQ90AFUjfRR5Q4vkUSOH/CkDg/wc94P8MQuL/C0Hh/wpA4IEGPNwABjzcAP///wD///8A////AP///wAQQ90AD0LdABpL3wItW+SlOGTn/zBd5f8eUOT/C0Hh/wU83tgEOdkVAzjZAAM42QD///8A////AP///wD///8AHE3hABxN4QAbTeEAI1PhiDdj5/88Z+j/Qm3p/zZj5/8TRuDEAzjYBAg92QAIPNkA////AP///wD///8A////AB9Q4gAfUOIAHlDhLS1b5O0zYOT/O2bo/z9p5/9HcOn/Qmzo+x1P4GEUSN0AFkndAP///wD///8A////AP///wAfUOEAH1DiASlY5aYzYOb/NWLl/zNg5eI2YuXRQ23o/0tz6v9Ba+bUKVjhGShX4QD///8A////AP///wD///8AG0zeAB9Q30gxX+j4NmPo/zll6P8pWONtJlXgPkJs6PdJcur/TXXr/zdk5YAnVuEC////AP///wD///8A////AB5P4CIsWuTTNmPn/zhk5v8zYOXeJVXjGyRT3wI5ZOarSnPr/0116/9Hcer9JVThUP///wD///8A////AP///wAoWORTOWbq0Dtn6c87Z+fULFricyNT4QAnVeAALlviQUhx6shMdOrQTnbq2C9d5oT///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A//8AAP//AADBgwAAwAMAAOADAADgBwAA8A8AAPAPAAD4DwAA8A8AAOAHAADgAwAAwAMAAMGDAAD//wAA//8AAA==",
+    "name": "1337x",
+    "url": "http://1337x.to/search/%search%/1/",
+    "version": "1.0"
+  },
+  "search": { "url": "http://1337x.to/search/%search%/1/", "method": "GET" },
+  "selectors": {
+    "row": { "selector": "div.table-list-wrap>table>tbody>tr" },
+    "title": {
+      "selector": "td.coll-1.name",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    },
+    "url": {
+      "selector": "td.coll-1.name a:eq(-1)",
+      "pipeline": [{ "name": "getAttr", "args": ["href"] }]
+    },
+    "size": {
+      "selector": "td.coll-4.size.mob-vip",
+      "pipeline": [
+        { "name": "getText" },
+        { "name": "trim" },
+        { "name": "replaceRe", "args": ["^([\\d\\.]+\\s+(\\w{2})).+", "$1"] },
+        { "name": "legacySizeFormat" }
+      ]
+    },
+    "seeds": {
+      "selector": "td.coll-2.seeds",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    },
+    "peers": {
+      "selector": "td.coll-3.leeches",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    }
+  }
+}

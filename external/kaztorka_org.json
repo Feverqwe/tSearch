@@ -1,0 +1,70 @@
+{
+  "version": 3,
+  "type": "kit",
+  "description": {
+    "icon": "http://kaztorka.org/favicon.ico",
+    "name": "Kaztorka.org",
+    "url": "http://kaztorka.org/",
+    "description": "Самый большой казахстанский трекер",
+    "version": "1.0"
+  },
+  "search": {
+    "url": "http://kaztorka.org/search",
+    "method": "POST",
+    "body": "torrentName=%search%"
+  },
+  "auth": {
+    "url": "http://kaztorka.org/auth/login",
+    "loginForm": {
+      "selector": "#loginForm>div:eq(0)>table>tbody>tr:eq(0)>td.lista"
+    }
+  },
+  "selectors": {
+    "row": { "selector": "#searchTable>tbody>tr" },
+    "categoryTitle": {
+      "selector": "td.lista.center.cCat>a",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    },
+    "categoryUrl": {
+      "selector": "td.lista.center.cCat>a",
+      "pipeline": [{ "name": "getAttr", "args": ["href"] }]
+    },
+    "title": {
+      "selector": "td.lista.cName>a",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    },
+    "url": {
+      "selector": "td.lista.cName>a",
+      "pipeline": [{ "name": "getAttr", "args": ["href"] }]
+    },
+    "size": {
+      "selector": "td.lista.center:eq(5)",
+      "pipeline": [
+        { "name": "getText" },
+        { "name": "trim" },
+        { "name": "legacySizeFormat" }
+      ]
+    },
+    "downloadUrl": {
+      "selector": "td.lista.center:eq(2)>a",
+      "pipeline": [{ "name": "getAttr", "args": ["href"] }]
+    },
+    "seeds": {
+      "selector": "td.lista.center:eq(6)>font",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    },
+    "peers": {
+      "selector": "td.lista.center:eq(7)>font",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    },
+    "date": {
+      "selector": "td.lista.center:eq(3)",
+      "pipeline": [
+        { "name": "getText" },
+        { "name": "trim" },
+        { "name": "legacyReplaceMonth" },
+        { "name": "legacyParseDate", "args": [0] }
+      ]
+    }
+  }
+}

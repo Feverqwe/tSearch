@@ -1,0 +1,26 @@
+{
+  "version": 3,
+  "type": "kit",
+  "description": {
+    "icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAQMAAAAlPW0iAAAABlBMVEUAAAD///+l2Z/dAAAAF0lEQVR42mNggIE/9TDkyPCnHBXBpeoBcPgS2r7xJnsAAAAASUVORK5CYII%3D",
+    "name": "Tokyo Toshokan",
+    "url": "http://tokyotosho.info/",
+    "version": "1.0"
+  },
+  "search": {
+    "url": "http://tokyotosho.info/search.php?terms=%search%&type=0",
+    "method": "GET"
+  },
+  "selectors": {
+    "row": { "selector": "table.listing>tbody>tr" },
+    "skipFromStart": 1,
+    "title": {
+      "selector": "td.desc-top>a:eq(1)",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    },
+    "url": {
+      "selector": "td.desc-top>a:eq(0)",
+      "pipeline": [{ "name": "getAttr", "args": ["href"] }]
+    }
+  }
+}

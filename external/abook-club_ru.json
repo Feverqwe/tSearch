@@ -1,0 +1,66 @@
+{
+  "version": 3,
+  "type": "kit",
+  "description": {
+    "icon": "#3d04b8",
+    "name": "abook-club.ru",
+    "url": "http://torrent.abook-club.ru/",
+    "description": "Трекер Клуба Любителей Аудиокниг",
+    "version": "1.0"
+  },
+  "search": {
+    "url": "http://torrent.abook-club.ru/browse.php?incldead=0&search=%search%",
+    "method": "GET",
+    "encoding": "cp1251"
+  },
+  "auth": {
+    "url": "http://torrent.abook-club.ru/login.php",
+    "loginForm": {
+      "selector": "form[action=\"takelogin.php\"] input[name=\"username\"]"
+    }
+  },
+  "selectors": {
+    "row": { "selector": "form>table:eq(2)>tbody>tr" },
+    "categoryTitle": {
+      "selector": "td:eq(0)>a>img",
+      "pipeline": [{ "name": "getAttr", "args": ["alt"] }]
+    },
+    "categoryUrl": {
+      "selector": "td:eq(0)>a",
+      "pipeline": [{ "name": "getAttr", "args": ["href"] }]
+    },
+    "title": {
+      "selector": "td:eq(1) a",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    },
+    "url": {
+      "selector": "td:eq(1) a",
+      "pipeline": [{ "name": "getAttr", "args": ["href"] }]
+    },
+    "size": {
+      "selector": "td:eq(7)",
+      "pipeline": [
+        { "name": "getText" },
+        { "name": "trim" },
+        { "name": "legacySizeFormat" }
+      ]
+    },
+    "seeds": {
+      "selector": "td:eq(8)",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    },
+    "peers": {
+      "selector": "td:eq(9)",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    },
+    "date": {
+      "selector": "td:eq(6)",
+      "pipeline": [
+        { "name": "getText" },
+        { "name": "trim" },
+        { "name": "replaceRe", "args": ["(.{10})(.+)", "$1 $2"] },
+        { "name": "legacyParseDate", "args": [0] }
+      ]
+    }
+  }
+}

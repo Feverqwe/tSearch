@@ -1,0 +1,54 @@
+{
+  "version": 3,
+  "type": "kit",
+  "description": {
+    "icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAOwwAADsMBx2+oZAAAABp0RVh0U29mdHdhcmUAUGFpbnQuTkVUIHYzLjUuMTFH80I3AAABXUlEQVQ4T2P4Twg8/HQNygIDAhoef7npv573x++vUD5+DT/+fI3aJ+O2hmH3vYVQIWQN/8AAygGD25/OuW1jAGrI32757z9UCqGhoaHB09Nz5cqVUP7//+9/vgRqcF/L9ObbM6gQsoZbt26Zmpo6Ozv//v0bInL09QaghqSd6nDjgQDFSaGhocbGxidOnICIVF5wA2rY/RDhASBA8fSZM2eAGoDagOyvfz55HGDx3M76/c8XiCwEoGj4+/evm5sb0GFPnjzZ8mKG236GWddLoHIwgKIBCHbs2AG0JL8hLfSMmM9Bzk+/3kElYABdw8+fPx19rR1X87idZJh0JQcqigTQNQBB8TUn14sMzlvY3395CxVCAlg0ZF60sCqUMwvQhPJRARYN6SudnDZzuJ5mfP/nFVQICWBz0l0Hl/0sjit43v56DhVCAlg0FB70DIz2DggI+PXnB1QIDv7/BwCgoZWcJhmANwAAAABJRU5ErkJggg%3D%3D",
+    "name": "New-Team.Org",
+    "url": "http://new-team.org/",
+    "version": "1.0"
+  },
+  "search": {
+    "url": "http://new-team.org/tracker.php",
+    "method": "POST",
+    "body": "max=1&to=1&nm=%search%"
+  },
+  "selectors": {
+    "row": { "selector": "#tor-tbl>tbody>tr" },
+    "categoryTitle": {
+      "selector": "td.row1:eq(2)>a",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    },
+    "categoryUrl": {
+      "selector": "td.row1:eq(2)>a",
+      "pipeline": [{ "name": "getAttr", "args": ["href"] }]
+    },
+    "title": {
+      "selector": "td.row4.med.tLeft>div>a",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    },
+    "url": {
+      "selector": "td.row4.med.tLeft>div>a",
+      "pipeline": [{ "name": "getAttr", "args": ["href"] }]
+    },
+    "size": {
+      "selector": "td.row1.small.nowrap:eq(0)>u",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    },
+    "downloadUrl": {
+      "selector": "td.row1.small.nowrap:eq(0)>a",
+      "pipeline": [{ "name": "getAttr", "args": ["href"] }]
+    },
+    "seeds": {
+      "selector": "td.row1.seedmed",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    },
+    "peers": {
+      "selector": "td.row1.leechmed",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    },
+    "date": {
+      "selector": "td.row1.small.nowrap:eq(1)>u",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    }
+  }
+}

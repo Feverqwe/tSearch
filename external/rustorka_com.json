@@ -1,0 +1,59 @@
+{
+  "version": 3,
+  "type": "kit",
+  "description": {
+    "icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAOwwAADsMBx2+oZAAAABp0RVh0U29mdHdhcmUAUGFpbnQuTkVUIHYzLjUuMTFH80I3AAABSUlEQVQ4T2P4TyLAruHGwxdQFgbAouHC7efy/k3T1x2H8lEBuoa3n745ZUwzTejVCG7bsP8iVBQJoGi4ev955dTNTplTz954nNK82jNvBlAEKgcDDJuPXF2z98KSHacnrzic3LDCp2jW6r0ggy/feRpVu9SvaE5G++ruxftmrT8BVAnSMGPN0Zj6ZYEl8+Zvwe7orYevxTUsDiydD1QJ5IKcdPXuE9ecmZHVS8EK0EHphE3WKZNW77kA4UL9cOrqfcXAFr2ITggXDnK71wk6Vc7bdBLKR/Z0UMk8Jf9WKAcGMjvWyHo1QDlggNCgF9Fjmzx5w4ELUTULZX2bHTMmr9h1rnzKZm77YqgKMEBokPVtFHaukPNp9i2cOWn5gYT6pSqBraKuNVzW5VAVYIDQkNK6HBKgyODg+Xu5vauhHDBAaCAS0FrD//8AwGeYuQ79m24AAAAASUVORK5CYII=",
+    "name": "Rustorka",
+    "url": "http://rustorka.com/forum/",
+    "version": "1.0"
+  },
+  "search": {
+    "url": "http://rustorka.com/forum/tracker.php",
+    "method": "POST",
+    "body": "nm=%search%",
+    "encoding": "cp1251"
+  },
+  "auth": {
+    "url": "http://rustorka.com/forum/login.php",
+    "loginForm": { "selector": "#load-login" }
+  },
+  "selectors": {
+    "row": { "selector": "#tor-tbl>tbody>tr" },
+    "categoryTitle": {
+      "selector": "td:eq(2)>a",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    },
+    "categoryUrl": {
+      "selector": "td:eq(2)>a",
+      "pipeline": [{ "name": "getAttr", "args": ["href"] }]
+    },
+    "title": {
+      "selector": "td.row4.med.tLeft>a",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    },
+    "url": {
+      "selector": "td.row4.med.tLeft>a",
+      "pipeline": [{ "name": "getAttr", "args": ["href"] }]
+    },
+    "size": {
+      "selector": "td.row4.small.nowrap:eq(0)>u",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    },
+    "downloadUrl": {
+      "selector": "td.row4.med.nowrap>a",
+      "pipeline": [{ "name": "getAttr", "args": ["href"] }]
+    },
+    "seeds": {
+      "selector": "td.row4.seedmed",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    },
+    "peers": {
+      "selector": "td.row4.leechmed",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    },
+    "date": {
+      "selector": "td.row4.small.nowrap:eq(1)>u",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    }
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "version": 3,
+  "type": "kit",
+  "description": {
+    "icon": "data:image/jpeg;base64,/9j/4QAYRXhpZgAASUkqAAgAAAAAAAAAAAAAAP/sABFEdWNreQABAAQAAAAAAAD/4QMcaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLwA8P3hwYWNrZXQgYmVnaW49Iu+7vyIgaWQ9Ilc1TTBNcENlaGlIenJlU3pOVGN6a2M5ZCI/PiA8eDp4bXBtZXRhIHhtbG5zOng9ImFkb2JlOm5zOm1ldGEvIiB4OnhtcHRrPSJBZG9iZSBYTVAgQ29yZSA1LjUtYzAxNCA3OS4xNTE0ODEsIDIwMTMvMDMvMTMtMTI6MDk6MTUgICAgICAgICI+IDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+IDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bXA6Q3JlYXRvclRvb2w9IlBpeGVsbWF0b3IgMi4yIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOkJERTc4OTAzRkYxNTExRTI4NkI2REMxQzVGOUIyN0UyIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOkJERTc4OTA0RkYxNTExRTI4NkI2REMxQzVGOUIyN0UyIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6QkRFNzg5MDFGRjE1MTFFMjg2QjZEQzFDNUY5QjI3RTIiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6QkRFNzg5MDJGRjE1MTFFMjg2QjZEQzFDNUY5QjI3RTIiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz7/7gAOQWRvYmUAZMAAAAAB/9sAhAAbGhopHSlBJiZBQi8vL0JHPz4+P0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHAR0pKTQmND8oKD9HPzU/R0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0f/wAARCAAQABADASIAAhEBAxEB/8QAWAABAQEAAAAAAAAAAAAAAAAAAQAFAQEAAAAAAAAAAAAAAAAAAAAAEAACAgEEAwEAAAAAAAAAAAABEQIDACFBEjKBEwUEEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwDK+Zw9rmAUNHj9TgbXAAMarL81saoCckEdu2Nt0bISnFPd9vGB/9k%3D",
+    "name": "UnionGang.tv",
+    "url": "http://www.uniongang.tv/",
+    "description": "Приватный трекер релиз-группы Электричка",
+    "version": "1.0"
+  },
+  "search": {
+    "url": "http://www.uniongang.tv/browse.php?search=%search%&incldead=0&cat=0&dsearch=",
+    "method": "GET",
+    "encoding": "cp1251"
+  },
+  "auth": {
+    "url": "http://www.uniongang.tv/signup.php",
+    "loginForm": {
+      "selector": "table.blok>tbody>tr:eq(1)>td>center>form>input:eq(0)"
+    }
+  },
+  "selectors": {
+    "row": { "selector": "td.outer>table.embedded>tbody:eq(1)>tr" },
+    "categoryTitle": {
+      "selector": "td:eq(0)>a>img",
+      "pipeline": [{ "name": "getAttr", "args": ["alt"] }]
+    },
+    "categoryUrl": {
+      "selector": "td:eq(0)>a",
+      "pipeline": [{ "name": "getAttr", "args": ["href"] }]
+    },
+    "title": {
+      "selector": "td:eq(1)>a:eq(0)",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    },
+    "url": {
+      "selector": "td:eq(1)>a:eq(0)",
+      "pipeline": [{ "name": "getAttr", "args": ["href"] }]
+    },
+    "size": {
+      "selector": "td:eq(4)",
+      "pipeline": [
+        { "name": "getText" },
+        { "name": "trim" },
+        { "name": "legacySizeFormat" }
+      ]
+    },
+    "seeds": {
+      "selector": "td:eq(5)",
+      "pipeline": [
+        { "name": "getText" },
+        { "name": "trim" },
+        { "name": "replaceRe", "args": ["([^|]*)\\|([^|]*)", "$1"] }
+      ]
+    },
+    "peers": {
+      "selector": "td:eq(5)",
+      "pipeline": [
+        { "name": "getText" },
+        { "name": "trim" },
+        { "name": "replaceRe", "args": ["([^|]*)\\|([^|]*)", "$2"] }
+      ]
+    },
+    "date": {
+      "selector": "td:eq(1)>i",
+      "pipeline": [
+        { "name": "getText" },
+        { "name": "trim" },
+        { "name": "legacyParseDate", "args": ["0"] }
+      ]
+    }
+  }
+}

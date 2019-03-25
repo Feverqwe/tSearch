@@ -1,0 +1,57 @@
+{
+  "version": 3,
+  "type": "kit",
+  "description": {
+    "icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAWdEVYdFNvZnR3YXJlAHBhaW50Lm5ldCA0LjA76PVpAAAAWElEQVQ4T2MYnICZmfk/lAkH2MTwAmQNJGuGAZBGojTDFJKKodohBvy6yQTBTRBs8QuCmTR+gfEvJqA4EJ9g+gXGowYMSgPIwVDtuAHRCrEBZJtwG8LAAABECQFiIJXmeQAAAABJRU5ErkJggg==",
+    "name": "NewStudio",
+    "url": "http://newstudio.tv/",
+    "version": "1.0"
+  },
+  "search": {
+    "url": "http://newstudio.tv/tracker.php",
+    "method": "POST",
+    "body": "nm=%search%"
+  },
+  "selectors": {
+    "row": { "selector": "table.table.well.well-small>tbody>tr" },
+    "skipFromStart": 1,
+    "categoryTitle": {
+      "selector": "td:eq(2)>a>img",
+      "pipeline": [{ "name": "getAttr", "args": ["alt"] }]
+    },
+    "categoryUrl": {
+      "selector": "td:eq(2)>a",
+      "pipeline": [{ "name": "getAttr", "args": ["href"] }]
+    },
+    "title": {
+      "selector": "td.row4.med.tLeft>a",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    },
+    "url": {
+      "selector": "td.row4.med.tLeft>a",
+      "pipeline": [{ "name": "getAttr", "args": ["href"] }]
+    },
+    "size": {
+      "selector": "td.row4.nowrap>a",
+      "pipeline": [
+        { "name": "getText" },
+        { "name": "trim" },
+        { "name": "legacySizeFormat" }
+      ]
+    },
+    "downloadUrl": {
+      "selector": "td.row4.nowrap>a",
+      "pipeline": [{ "name": "getAttr", "args": ["href"] }]
+    },
+    "date": {
+      "selector": "td.row4.small",
+      "pipeline": [
+        { "name": "getText" },
+        { "name": "trim" },
+        { "name": "legacyReplaceToday" },
+        { "name": "legacyReplaceMonth" },
+        { "name": "legacyParseDate", "args": [1] }
+      ]
+    }
+  }
+}

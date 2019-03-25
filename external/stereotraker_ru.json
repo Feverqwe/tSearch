@@ -1,0 +1,28 @@
+{
+  "version": 3,
+  "type": "kit",
+  "description": {
+    "icon": "#abbcc6",
+    "name": "stereotraker.ru",
+    "url": "http://stereotraker.ru/",
+    "version": "1.0"
+  },
+  "search": {
+    "url": "http://stereotraker.ru/index.php?do=search",
+    "method": "POST",
+    "body": "do=search&subaction=search&story=%search%&titleonly=0&searchuser=&replyless=0&replylimit=0&searchdate=0&beforeafter=after&sortby=date&resorder=desc&showposts=1",
+    "encoding": "cp1251"
+  },
+  "selectors": {
+    "row": { "selector": "#dle-content>div" },
+    "skipFromStart": 1,
+    "title": {
+      "selector": "a",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    },
+    "url": {
+      "selector": "a",
+      "pipeline": [{ "name": "getAttr", "args": ["href"] }]
+    }
+  }
+}

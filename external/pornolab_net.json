@@ -1,0 +1,81 @@
+{
+  "version": 3,
+  "type": "kit",
+  "description": {
+    "icon": "data:image/x-icon;base64,AAABAAEAEBAAAAEAGABoAwAAFgAAACgAAAAQAAAAIAAAAAEAGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pv7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/j4+Pj4+Pv7++6YDy6YDzv7+/v7+8CKPoCKPoCKPoCKPoCKPoCKPoCKPoCKPrv7+/j4+Pj4+Pv7++6YDy6YDzv7+/v7+8CKPoCKPoCKPoCKPoCKPoCKPoCKPoCKPrv7+/j4+Pj4+Pv7++6YDy6YDzv7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+8CKPoCKPrv7+/j4+Pj4+Pv7++6YDy6YDzv7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+8CKPoCKPrv7+/j4+Pj4+Pv7++6YDy6YDzv7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+8CKPoCKPrv7+/j4+Pj4+Pv7++6YDy6YDy6YDy6YDy6YDy6YDy6YDzv7+/v7+/v7+8CKPoCKPrv7+/j4+Pj4+Pv7++6YDy6YDy6YDy6YDy6YDy6YDy6YDy6YDzv7+/v7+8CKPoCKPrv7+/j4+Pj4+Pv7++6YDy6YDzv7+/v7+/v7+/v7++6YDy6YDzv7+/v7+8CKPoCKPrv7+/j4+Pj4+Pv7++6YDy6YDzv7+/v7+/v7+/v7++6YDy6YDzv7+/v7+8CKPoCKPrv7+/j4+Pj4+Pv7++6YDy6YDzv7+/v7+/v7+/v7++6YDy6YDzv7+/v7+8CKPoCKPrv7+/j4+Pj4+Pv7++6YDy6YDy6YDy6YDy6YDy6YDy6YDy6YDzv7+/v7+8CKPoCKPrv7+/j4+Pj4+Pv7++6YDy6YDy6YDy6YDy6YDy6YDy6YDzv7+/v7+/v7+8CKPoCKPrv7+/j4+Pj4+Pv7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/j4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+MAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "name": "Pornolab",
+    "url": "http://pornolab.net/forum/",
+    "description": "Крупнейший русскоязычный порно трекер.",
+    "version": "1.0"
+  },
+  "search": {
+    "url": "http://pornolab.net/forum/tracker.php",
+    "method": "POST",
+    "body": "max=1&to=1&nm=%search%"
+  },
+  "auth": {
+    "url": "http://pornolab.net/forum/login.php",
+    "loginForm": {
+      "selector": "table.borderless.bCenter>tbody>tr:eq(0)>td:eq(1)>input"
+    }
+  },
+  "selectors": {
+    "row": { "selector": "#tor-tbl>tbody>tr" },
+    "categoryTitle": {
+      "selector": "td.row1:eq(2)>a",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    },
+    "categoryUrl": {
+      "selector": "td.row1:eq(2)>a",
+      "pipeline": [{ "name": "getProp", "args": ["href"] }]
+    },
+    "title": {
+      "selector": "td.row4.med.tLeft.u>div",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    },
+    "url": {
+      "selector": "td.row4.med.tLeft.u>div>a",
+      "pipeline": [{ "name": "getProp", "args": ["href"] }]
+    },
+    "size": {
+      "selector": "td.row4.small.nowrap:eq(0)>u",
+      "pipeline": [
+        { "name": "getText" },
+        { "name": "trim" },
+        { "name": "toInt" }
+      ]
+    },
+    "downloadUrl": {
+      "selector": "td.row4.small.nowrap:eq(0)>a",
+      "pipeline": [{ "name": "getProp", "args": ["href"] }]
+    },
+    "seeds": {
+      "selector": "td.row4.seedmed>b",
+      "pipeline": [
+        { "name": "getText" },
+        { "name": "trim" },
+        { "name": "toInt" }
+      ]
+    },
+    "peers": {
+      "selector": "td.row4.leechmed>b",
+      "pipeline": [
+        { "name": "getText" },
+        { "name": "trim" },
+        { "name": "toInt" }
+      ]
+    },
+    "date": {
+      "selector": "td.row4.small.nowrap:eq(1)>u",
+      "pipeline": [
+        { "name": "getText" },
+        { "name": "trim" },
+        { "name": "toInt" }
+      ]
+    },
+    "nextPageUrl": {
+      "selector": "div.nav>p:eq(1)>a:eq(-1)",
+      "pipeline": [{ "name": "getProp", "args": ["href"] }]
+    }
+  }
+}

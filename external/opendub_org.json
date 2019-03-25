@@ -1,0 +1,53 @@
+{
+  "version": 3,
+  "type": "kit",
+  "description": {
+    "icon": "data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgwLL2o6M9l8PjfxeT027XY6M+2xZ1ftzXlo7cJwXu2DQjntdzw17Xg9Nu14PTXtej018GU3MdZlODLZNB0aeg8LCS1qOTHjgT01/3s7NP93PDb/lWhj/6VtYv+YUD3/jUAu/3k6Mv96OjL/ejoy/348Nf9KKSSoDwoJNkorJrMAAAAAGxEOSmo3L+yAPzj/ekI6/41PRP+GSUH/fU1M/3lOT/94TEr/fEdC/3Q+Ov9/QTr/IRUSUwAAAAAYEQ9JAAAAAAAAAAAICAYeajgw3Y5VUf9xRUn/jVxh/59wc/+WZ2//ZzpF/24+Of+VZWD/TzMvvwAAAAgAAAAAAAAAABcQDTtdMirISiQdrhwTD2BhO0Xqs3Bs/82Edf/FgHX/vIWC/6l7ff+AVVX/YUNBywMCAQ0CAgEPGhANSgcFBBQcExBFgEM68pBCO/9jLibgrGla7Nl/av/FcmD/1Htn/9J7Zv/Ih3//nXNx/yAVG6sNCQc0YC8n4YpDO/8/JSCMAAAAADsjHn+QRT//kUdA/9Z9a//ZgG7/yXZl/9R9a//bgW3/2YJu/8CEff93PDX7bDIq9oxAOv+MRD3/KhoXZAAAAAABAwILbjkz1qRTSv/Ec2P/nlxO/9p/bf/Pd2X/l1hL/7drXf/Yg3H/kkAv/4U6Nv+SRD//TisopgAAAAAAAAAAAAAAACkZFmK6ZVj/sGdY/7NoWf/dgG//2n5t/69lV/+QVUr/yXBf/4Q5MP+WRkD/cDg01gMDAxEAAAAAAAAAAAAAAAAAAQETpV9S6+iHdP/jhXL/3oJv/96CcP/jhXL/6Il2/6pXSP+PPjj/i0M99RUNDDgAAAAAAAAAAAAAAAAAAAAAAAAAAHhJPrLvjXf/4YVw/+GFcP/hhXD/4YVw/+GFcP+cSD7/mkdB/y4aF2UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAnGRVR4IRx//CNeP/lh3P/5Ydz/+aIdP/ggm7/qk1E/1kuK6gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwmIWfOfWvv+5V///eSff/5k37/7Ix3/286NL8FBAQWAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFA4MKG5FPJOhYlXCkFhNsUIqJWEAAAADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//+sQQAArEEAAKxBgAKsQcADrEEAAKxBAACsQYAArEGAAaxBwAGsQcADrEHgB6xB4A+sQfAPrEH4H6xB//+sQQ==",
+    "name": "OpenDub Torrent Tracker",
+    "url": "http://www.opendub.org/",
+    "description": "На OpenDub можно скачать аниме: OST, TV, ONA, Manga, Live, OVA, Movie, Hentai, Portable Video, DVD, Games",
+    "version": "1.0"
+  },
+  "search": {
+    "url": "http://www.opendub.org/browse.php?search=%search%",
+    "method": "GET"
+  },
+  "selectors": {
+    "row": {
+      "selector": "#ajax_located>div.hentry:eq(0)>div.entry-content.frame-content>table>tbody>tr>td>table.comments:eq(1)>tbody>tr"
+    },
+    "skipFromStart": 1,
+    "categoryTitle": {
+      "selector": "td:eq(0)>a>img",
+      "pipeline": [{ "name": "getAttr", "args": ["alt"] }]
+    },
+    "title": {
+      "selector": "td:eq(1)>a:eq(1)",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    },
+    "url": {
+      "selector": "td:eq(1)>a:eq(1)",
+      "pipeline": [{ "name": "getAttr", "args": ["href"] }]
+    },
+    "size": {
+      "selector": "td.fixalign.comments-in-top.comments-in-left:eq(2)",
+      "pipeline": [
+        { "name": "getText" },
+        { "name": "trim" },
+        { "name": "legacySizeFormat" }
+      ]
+    },
+    "downloadUrl": {
+      "selector": "td.fixalign.comments-in-top.comments-in-left:eq(0)>a:eq(2)",
+      "pipeline": [{ "name": "getAttr", "args": ["href"] }]
+    },
+    "seeds": {
+      "selector": "td.fixalign.comments-in-top.comments-in-left:eq(4)",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    },
+    "peers": {
+      "selector": "td.fixalign.comments-in-top.comments-in-left:eq(5)",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    }
+  }
+}

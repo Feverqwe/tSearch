@@ -1,0 +1,42 @@
+{
+  "version": 3,
+  "type": "kit",
+  "description": {
+    "icon": "#3910fd",
+    "name": "metal-tracker",
+    "url": "http://www.metal-tracker.com/torrents/",
+    "version": "1.0"
+  },
+  "search": {
+    "url": "http://www.metal-tracker.com/torrents/search.html",
+    "method": "POST",
+    "body": "SearchTorrentsForm[nameTorrent]=%search%"
+  },
+  "selectors": {
+    "row": { "selector": "#torrenttable>tbody>tr:eq(1)>td>div.smallalbum" },
+    "title": {
+      "selector": "a:eq(1)>h3",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    },
+    "url": {
+      "selector": "a:eq(1)",
+      "pipeline": [{ "name": "getProp", "args": ["href"] }]
+    },
+    "seeds": {
+      "selector": "div.center.peersinfo>font:eq(0)",
+      "pipeline": [
+        { "name": "getText" },
+        { "name": "trim" },
+        { "name": "toInt" }
+      ]
+    },
+    "peers": {
+      "selector": "div.center.peersinfo>font:eq(1)",
+      "pipeline": [
+        { "name": "getText" },
+        { "name": "trim" },
+        { "name": "toInt" }
+      ]
+    }
+  }
+}

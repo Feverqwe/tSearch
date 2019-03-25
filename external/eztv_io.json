@@ -1,0 +1,36 @@
+{
+  "version": 3,
+  "type": "kit",
+  "description": {
+    "icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAOwwAADsMBx2+oZAAAABh0RVh0U29mdHdhcmUAcGFpbnQubmV0IDQuMC4zjOaXUAAAAStJREFUOE+Vka1uAlEQhXmDPgIS2UfoC5Bg6zD15QFIrl1XRA2KYltBgqlAILBNMHUNqSJ1sLB0afnbfnfPcveWH8HJZDMze86Z2dlCciEywXC8uWlGVyYk7rsxnf5ordLFdWNO3wqm8Y4CBnnr7Zd3D4OfzvuKnA7AqxjMMCW3Al77TkT1+TtlWjCQDnqVmUDjjiEvnlntT/icbNUCWg/Xg2nACqCyIotqS9hsT65mSrOotBc8rQBAsl9mwpIJTW9Jxx3NRX4lIYp3d4356/4y55ALas2obEICmRLia7LFQrlouQDQ1QR4t8HMTXvsxsP0DOC0ADz1lvCUB96hzgqwZAgfRvJy8B8cfAHQDZjDhlnrWICZ8yOptxeESuGfgF39IR/jjSxUWiTJHzo6j94HyCFCAAAAAElFTkSuQmCC",
+    "name": "EZTV",
+    "url": "https://eztv.ch/",
+    "description": "EZTV, your one stop source for all your favorite TV shows.",
+    "version": "1.0"
+  },
+  "search": { "url": "https://eztv.io/search/%search%", "method": "GET" },
+  "selectors": {
+    "row": { "selector": "#header_holder > table:eq(4) > tbody > tr" },
+    "skipFromStart": 2,
+    "title": {
+      "selector": "td:eq(1) > a",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    },
+    "url": {
+      "selector": "td:eq(1)>a",
+      "pipeline": [{ "name": "getAttr", "args": ["href"] }]
+    },
+    "size": {
+      "selector": "td:eq(3)",
+      "pipeline": [
+        { "name": "getText" },
+        { "name": "trim" },
+        { "name": "legacySizeFormat" }
+      ]
+    },
+    "downloadUrl": {
+      "selector": "td:eq(2)>a:eq(1)",
+      "pipeline": [{ "name": "getAttr", "args": ["href"] }]
+    }
+  }
+}

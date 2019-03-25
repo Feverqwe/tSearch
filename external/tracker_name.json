@@ -1,0 +1,64 @@
+{
+  "version": 3,
+  "type": "kit",
+  "description": {
+    "icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAxNpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNS1jMDE0IDc5LjE1MTQ4MSwgMjAxMy8wMy8xMy0xMjowOToxNSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iUGl4ZWxtYXRvciAyLjIiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6REQ4REYyODcwMjMwMTFFM0I3MTA4MzIzNUVGNEMxMjQiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6REQ4REYyODgwMjMwMTFFM0I3MTA4MzIzNUVGNEMxMjQiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDpERDhERjI4NTAyMzAxMUUzQjcxMDgzMjM1RUY0QzEyNCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDpERDhERjI4NjAyMzAxMUUzQjcxMDgzMjM1RUY0QzEyNCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PsinAqYAAAAbUExURf/////Nzf/NmP+aY/+aIv9mAH/N/wCazwBm0JksNXQAAABhSURBVHjaVI1JEgAhCAPZAvz/xYM6ouZEdwUg2mGmK2JQ9lZsEI/wZhRnnD6g9DJoFdaSjIJnRqTvQl2PMk6XOKkXkIM6hV08V3aFdcphtM6I6vKGP31KBpnQ86unT4ABAAqNAecvjG1IAAAAAElFTkSuQmCC",
+    "name": "tracker.name",
+    "url": "http://tracker.name/",
+    "version": "1.0"
+  },
+  "search": {
+    "url": "http://tracker.name/index.php?page=torrents&search=%search%&category=0&active=1",
+    "method": "GET"
+  },
+  "selectors": {
+    "row": {
+      "selector": "#nocolumns>table:eq(0)>tbody>tr>td:eq(1)>table>tbody>tr:eq(1)>td>table>tbody>tr:eq(1)>td>table>tbody>tr"
+    },
+    "skipFromStart": 1,
+    "categoryTitle": {
+      "selector": "td.lista:eq(0)>a>img",
+      "pipeline": [{ "name": "getAttr", "args": ["alt"] }]
+    },
+    "categoryUrl": {
+      "selector": "td.lista:eq(0)>a",
+      "pipeline": [{ "name": "getAttr", "args": ["href"] }]
+    },
+    "title": {
+      "selector": "td.lista:eq(2)>a",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    },
+    "url": {
+      "selector": "td.lista:eq(2)>a",
+      "pipeline": [{ "name": "getAttr", "args": ["href"] }]
+    },
+    "size": {
+      "selector": "td.lista:eq(3)",
+      "pipeline": [
+        { "name": "getText" },
+        { "name": "trim" },
+        { "name": "legacySizeFormat" }
+      ]
+    },
+    "downloadUrl": {
+      "selector": "td.lista:eq(4)>a",
+      "pipeline": [{ "name": "getAttr", "args": ["href"] }]
+    },
+    "seeds": {
+      "selector": "td:eq(6)>a",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    },
+    "peers": {
+      "selector": "td:eq(7)>a",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    },
+    "date": {
+      "selector": "td:eq(5)",
+      "pipeline": [
+        { "name": "getText" },
+        { "name": "trim" },
+        { "name": "legacyParseDate", "args": ["1"] }
+      ]
+    }
+  }
+}

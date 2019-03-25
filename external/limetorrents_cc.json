@@ -1,0 +1,50 @@
+{
+  "version": 3,
+  "type": "kit",
+  "description": {
+    "icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAOwwAADsMBx2+oZAAAABp0RVh0U29mdHdhcmUAUGFpbnQuTkVUIHYzLjUuMTFH80I3AAAB3UlEQVQ4T43Oy28ScRAH8N//06uJp149ajy0xsaLBw82mtTUVBMTEw40NRSkBaQ8CqUgWBusVq2JfWzZpRXLY5GF3aWUx26hCvuSpVsep/5ga+NFMPlkkpnMdzIAJUwDhYh5JGnYSeq38VkQzpgHChHG3ZQB+aGHwB5p6e8iQLyEGQjsU9b+sIwJTc+F0kYYg0Aku9DHN9oaJk1hch4j57BMF8BLCyXe0yVcYIUAJ3+v1lFW8DGCp2epV5cxahYg5DSneMWWG6q3g43Oltz+1OhsnnYQuf35tLMptz9Kre5CQbDtpLXg4MgWLWrFpvd3651wtlhTdJxilJp+senjFUuvNcG23vrwlZiKHL6CL7nXYg+LgrUsP1bVFHOl8awsT/Fnzj/DJ3FGG4yOxwp2kGQ80YLdsXsjW9UdiXdz4thJQwcrdCxr8tK9vDSeYF9Ytq7FCo540QlSx8vQXs6g/zK8TT3PcTNFSUPzYzR/55B/lOOc7xMTuo2rkbw5ybhwxgXSFZ8qXrLbkevT61dc6O1g7MHqwX0bclOzNrSEjeKMM1X2qEDmxP+3BOtYxydd6Igbu7WReoqzi5cXiYoXAtSvwL/5SdXP15cAXX0zSIBS9U6AbO3t/1mhodrKOaR8RDUD8i5zAAAAAElFTkSuQmCC",
+    "name": "LimeTorrents",
+    "url": "https://www.limetorrents.cc/",
+    "version": "1.0"
+  },
+  "search": {
+    "url": "https://www.limetorrents.cc/search/all/%search%/",
+    "method": "GET"
+  },
+  "selectors": {
+    "row": { "selector": "table.table2>tbody>tr" },
+    "skipFromStart": 1,
+    "categoryTitle": {
+      "selector": "td.tdnormal:eq(0)",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    },
+    "title": {
+      "selector": "td.tdleft>div.tt-name>a:eq(1)",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    },
+    "url": {
+      "selector": "td.tdleft>div.tt-name>a:eq(1)",
+      "pipeline": [{ "name": "getAttr", "args": ["href"] }]
+    },
+    "size": {
+      "selector": "td.tdnormal:eq(1)",
+      "pipeline": [
+        { "name": "getText" },
+        { "name": "trim" },
+        { "name": "legacySizeFormat" }
+      ]
+    },
+    "downloadUrl": {
+      "selector": "td.tdleft>div.tt-name>a:eq(0)",
+      "pipeline": [{ "name": "getAttr", "args": ["href"] }]
+    },
+    "seeds": {
+      "selector": "td.tdseed",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    },
+    "peers": {
+      "selector": "td.tdleech",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    }
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "version": 3,
+  "type": "kit",
+  "description": {
+    "icon": "data:image/vnd.microsoft.icon;base64,AAABAAEAEBAAAAEAGABoAwAAFgAAACgAAAAQAAAAIAAAAAEAGAAAAAAAQAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADk5OWvq6m0p57g3tsAAAAAAADNzc0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADFyMqUcVvOXBrPfEqwmIiFhodycnKEhIQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACpp6WsWyj4XAD2XADLWhR6VkNbW1t3eHi1tbXHx8cAAAAAAAAAAAAAAAAAAADQ0tSHeW7MZiL8fSz3kE70oGvVr5fAvr3T09Pf39/KysrIyMgAAADt7e3Q0NC9vb21trainJbHrpzTv7PRysXT0dDn5+fy8vLx8fHw8PDMzMzLy8sAAADR0dG9vb3f39/s7OyjpKRfYWKSk5SZmZqJiYmxsrLw8PDw8PDl5ebCw8QAAAAAAACZmZmWlpbl5eXx8fHU1NR0dHSkpKPn5+fT09O/v7/s7O3w8PDbzL/Cr6IAAAAAAABlZWVbW1u6urrr6+vs7OzDw8Nubm68vLzs7Ozp6enq6uvq6ebttX7Vi04AAAAAAACioqJ2dnaDg4PV1dbj4+Pk5OSnp6dzc3PJycnk5OTh4uTl1sb4rFnzlTrLiloAAAAAAADQ0tOLh4S2p5vV1NLExMTY2NiYmJiHh4fQ0NHe3t7rwpb+p0j5nUDRfjkAAAAAAADc4OKZiHnPkFbRv6uKi4ynp6elpaVzc3Ofn6Dh1MfspmDciT/CfUSue1UAAAAAAADJy86dgGrqmEbuuX7Fv7e/wMHCwsLAwMDJycm8qpyNaE14ZVoAAAAAAAAAAAAAAADKy82xhGP2okv8r1rswZXp5uTt7e7t7e3Z2dl5eHhaWltdXl8AAAAAAAAAAAAAAADi5ObDoYXfkkjcklLLpIbJxcLp6erx8fHAwMB6enpkZGRjY2MAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADPz8/IyMjS0tLDw8MAAACIiIgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADNzc21tbXS0tIAAAAAAAAAAAAAAAAAAAAAAADw3wAA8A8AAPADAADgAQAAAAEAAAADAAAAAwAAAAMAAAABAACAAQAAgAEAAIAHAACABwAAgAcAAPwvAAD+PwAA",
+    "name": "zoneland.ru",
+    "url": "http://zoneland.ru/forum/",
+    "version": "1.0"
+  },
+  "search": {
+    "url": "http://zoneland.ru/forum/tracker.php",
+    "method": "POST",
+    "body": "max=1&to=1&nm=%search%",
+    "encoding": "cp1251"
+  },
+  "selectors": {
+    "row": { "selector": "#tor-tbl>tbody>tr" },
+    "categoryTitle": {
+      "selector": "td.row1:eq(1)>a",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    },
+    "categoryUrl": {
+      "selector": "td.row1:eq(1)>a",
+      "pipeline": [{ "name": "getAttr", "args": ["href"] }]
+    },
+    "title": {
+      "selector": "td.row4.med.tLeft>a",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    },
+    "url": {
+      "selector": "td.row4.med.tLeft>a",
+      "pipeline": [{ "name": "getAttr", "args": ["href"] }]
+    },
+    "size": {
+      "selector": "td.row4.small.nowrap:eq(0)>u",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    },
+    "downloadUrl": {
+      "selector": "td.row4.med.nowrap>a",
+      "pipeline": [{ "name": "getAttr", "args": ["href"] }]
+    },
+    "seeds": {
+      "selector": "td.row4.seedmed>b",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    },
+    "peers": {
+      "selector": "td.row4.leechmed>b",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    },
+    "date": {
+      "selector": "td.row4.small.nowrap:eq(1)>u",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    }
+  }
+}

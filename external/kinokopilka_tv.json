@@ -1,0 +1,29 @@
+{
+  "version": 3,
+  "type": "kit",
+  "description": {
+    "icon": "#13282a",
+    "name": "kinokopilka.tv",
+    "url": "http://www.kinokopilka.pro/",
+    "version": "1.0"
+  },
+  "search": {
+    "url": "http://www.kinokopilka.pro/search?utf8=%E2%9C%93&q=%search%",
+    "method": "GET"
+  },
+  "selectors": {
+    "row": { "selector": "#catalog-content>div" },
+    "categoryTitle": {
+      "selector": "span:eq(4)",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    },
+    "title": {
+      "selector": "a",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    },
+    "url": {
+      "selector": "a",
+      "pipeline": [{ "name": "getAttr", "args": ["href"] }]
+    }
+  }
+}

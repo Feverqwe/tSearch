@@ -13,122 +13,58 @@
     "method": "GET"
   },
   "selectors": {
-    "row": {
-      "selector": "#form>table.forumline:eq(1)>tbody>tr"
-    },
+    "row": { "selector": "#form>table.forumline:eq(1)>tbody>tr" },
     "skipFromStart": 1,
     "categoryTitle": {
       "selector": "td.gen>a",
-      "pipeline": [
-        {
-          "name": "getText"
-        },
-        {
-          "name": "trim"
-        }
-      ]
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
     },
     "categoryUrl": {
       "selector": "td.gen>a",
-      "pipeline": [
-        {
-          "name": "getProp",
-          "args": [
-            "href"
-          ]
-        }
-      ]
+      "pipeline": [{ "name": "getProp", "args": ["href"] }]
     },
     "title": {
       "selector": "td.topictitle.genmed>a",
-      "pipeline": [
-        {
-          "name": "getText"
-        },
-        {
-          "name": "trim"
-        }
-      ]
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
     },
     "url": {
       "selector": "td.topictitle.genmed>a",
-      "pipeline": [
-        {
-          "name": "getProp",
-          "args": [
-            "href"
-          ]
-        }
-      ]
+      "pipeline": [{ "name": "getProp", "args": ["href"] }]
     },
     "size": {
       "selector": "td.gensmall:eq(0)",
       "pipeline": [
-        {
-          "name": "getText"
-        },
-        {
-          "name": "trim"
-        },
-        {
-          "name": "legacySizeFormat"
-        }
+        { "name": "getText" },
+        { "name": "trim" },
+        { "name": "legacySizeFormat" }
       ]
     },
     "downloadUrl": {
       "selector": "td.genmed:eq(3)>a",
-      "pipeline": [
-        {
-          "name": "getProp",
-          "args": [
-            "href"
-          ]
-        }
-      ]
+      "pipeline": [{ "name": "getProp", "args": ["href"] }]
     },
     "seeds": {
       "selector": "td.seedmed",
       "pipeline": [
-        {
-          "name": "getText"
-        },
-        {
-          "name": "trim"
-        },
-        {
-          "name": "toInt"
-        }
+        { "name": "getText" },
+        { "name": "trim" },
+        { "name": "toInt" }
       ]
     },
     "peers": {
       "selector": "td.leechmed",
       "pipeline": [
-        {
-          "name": "getText"
-        },
-        {
-          "name": "trim"
-        },
-        {
-          "name": "toInt"
-        }
+        { "name": "getText" },
+        { "name": "trim" },
+        { "name": "toInt" }
       ]
     },
     "date": {
       "selector": "td.gensmall:eq(-1)",
       "pipeline": [
-        {
-          "name": "getText"
-        },
-        {
-          "name": "trim"
-        },
-        {
-          "name": "legacyParseDate",
-          "args": [
-            "0"
-          ]
-        }
+        { "name": "getText" },
+        { "name": "trim" },
+        { "name": "legacyParseDate", "args": ["0"] }
       ]
     }
   }

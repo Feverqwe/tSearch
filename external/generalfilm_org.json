@@ -1,0 +1,54 @@
+{
+  "version": 3,
+  "type": "kit",
+  "description": {
+    "icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAACxIAAAsSAdLdfvwAAAAHdElNRQfZAhkTDBuWhDf7AAAAGHRFWHRTb2Z0d2FyZQBwYWludC5uZXQgNC4wLjVlhTJlAAADFUlEQVQ4TyWMSUwTcRxG/940GreD0ejRGwcPxsSLG8YlQUGEIkZBrUslKGokGJdIQCUUI9WgoSJVqiK0TjehrTBQaCpqWwTSBQQ6ZSlb6cyU6TIdOi0/m5i8w3v5kg+5Zno8VO+g7/NYUOleVIxR+oGJtgl6cNg3ODJrHyO7BqYUHso8NIkTlNU9Y0GjAXzE3xEGJwPO6bCVSv7lYM5LOoKJAM37CdLOgIdOev0xIgT+6aVRNDQvD0I/A/4w8DEAkmMX2PkIMJPUXCr/k5pCK3E6Hk85cpMGEghicUn6qaO8pvHP6CzW0eP2+aIAr5uwZ897JG9+VdTWV0reiF8ZGj4Mo3GalH/rEgifKo0jnXaHQFR8MPO6JwC+GC3XWLdtfZmbYzMNEO19/ecK8aPpNqTvgQ3bBXKde4GHBYh+s5qv3pN4aJhJBK2j8VWovvopzMfAE0y24fBCAkggYNJ2N01x4Aw5R9jhafArf/SNRzhimVKaptZvlOt04A3AE6lR0TtAsDxat8aReWbMHSF/UoZ6g7pOg9dpv0v1+HCYzxDWrt1Sky8kTlyQ78kusNG/HXwHQqvsGWedVqa/e0Fb3eRds+PhzgM3Gr67hgKwN7vmSIHMQYFlblr08pqN0/Sx79DBLO+u4w0ETLng72cToE1lVS0/3cvQOwGbd4nOPpDZmZAbXLYVzEBVu0CGGs3jh4ru3paJy+TSsrfmA1cq2mdMX8d1+eW1q9Ny9gsrFc5Bvb/FBjLV4h0LVCLjEmbhTc9wcXmbRDNp743a1aS4PSQpba2oNqoeqz51MzZDpM4Yv2+BJ3quFKmjxcqlIjNUdkOViq4yQS0ON9RcgTFe1Z2Uaeg6XVisT5ToV0TqyM1WqgRh8Swt5OogVxY4pghf7ITbX8IZnVDYBbe+stdVrEjJpvyyOpGvXS7C4RFqjZ3SwyXtynkdCD/SeQYowbgrKr4Ii4la2AsKLksDp1OPUn+6OnFOlTyPlHxeCydoJLMUXCHGX6qfzW6NFjczxc2ha++pHA2cbI7va6TTsWTeFy5TFjz8Dxs4JCp7qeT8AAAAAElFTkSuQmCC",
+    "name": "Generalfilm.org",
+    "url": "http://generalfilm.org/",
+    "version": "1.0"
+  },
+  "search": {
+    "url": "http://generalfilm.org/tracker.php",
+    "method": "POST",
+    "body": "max=1&t=1&nm=%search%"
+  },
+  "selectors": {
+    "row": { "selector": "#tor-tbl > tbody > tr" },
+    "categoryTitle": {
+      "selector": "td:eq(2)>a",
+      "pipeline": [{ "name": "getText" }]
+    },
+    "categoryUrl": {
+      "selector": "td:eq(2)>a",
+      "pipeline": [{ "name": "getProp", "args": ["href"] }]
+    },
+    "title": {
+      "selector": "td:eq(3)>a",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+    },
+    "url": {
+      "selector": "td:eq(3)>a",
+      "pipeline": [{ "name": "getProp", "args": ["href"] }]
+    },
+    "size": {
+      "selector": "td:eq(5)>u",
+      "pipeline": [{ "name": "getText" }, { "name": "parseSize" }]
+    },
+    "downloadUrl": {
+      "selector": "td:eq(5)>a",
+      "pipeline": [{ "name": "getProp", "args": ["href"] }]
+    },
+    "seeds": {
+      "selector": "td:eq(6)",
+      "pipeline": [{ "name": "getText" }, { "name": "toInt" }]
+    },
+    "peers": {
+      "selector": "td:eq(7)",
+      "pipeline": [{ "name": "getText" }, { "name": "toInt" }]
+    },
+    "date": {
+      "selector": "td:eq(9)>u",
+      "pipeline": [{ "name": "getText" }, { "name": "toInt" }]
+    }
+  }
+}
