@@ -5,6 +5,7 @@ import storageSet from "../tools/storageSet";
 import TrackerStore from "./TrackerStore";
 import RootStore from "./RootStore";
 import TrackerStoreStore from "./TrackerStoreStore";
+import getIconFromMeta from "../tools/getIconFromMeta";
 
 const escapeStringRegexp = require('escape-string-regexp');
 
@@ -63,13 +64,7 @@ const ProfileEditorProfileTrackerStore = types.compose('ProfileEditorProfileTrac
       return true;
     },
     getIconUrl() {
-      if (self.meta.icon64) {
-        return self.meta.icon64;
-      } else
-      if (self.meta.icon) {
-        return self.meta.icon;
-      }
-      return '';
+      return getIconFromMeta(self.meta);
     }
   };
 });

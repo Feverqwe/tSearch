@@ -265,13 +265,13 @@ class ProfileEditorProfile extends React.Component {
             </div>
           </div>
           {trackerList}
-        </div>
-        <div className="manager__footer">
-          {listControls}
-          <div className="space"/>
-          <Link to={'/codeMaker'} target="_blank" className="button manager__footer__btn">{chrome.i18n.getMessage('createCode')}</Link>
-          <Link to={'/editor/tracker'} target="_blank" className="button manager__footer__btn">{chrome.i18n.getMessage('add')}</Link>
-          <button className="styled-button" onClick={this.handleSave}>{chrome.i18n.getMessage('save')}</button>
+          <div className="manager__footer">
+            {listControls}
+            <div className="space"/>
+            <Link to={'/codeMaker'} target="_blank" className="button manager__footer__btn">{chrome.i18n.getMessage('createCode')}</Link>
+            <Link to={'/editor/tracker'} target="_blank" className="button manager__footer__btn">{chrome.i18n.getMessage('add')}</Link>
+            <button className="styled-button" onClick={this.handleSave}>{chrome.i18n.getMessage('save')}</button>
+          </div>
         </div>
         {sourcesDialog}
       </div>

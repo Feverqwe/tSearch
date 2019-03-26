@@ -26,6 +26,11 @@ body {
   flex-direction: column;
   &.profile-editor {
     height: 100%;
+    max-height: 100%;
+
+    .content {
+      overflow: hidden;
+    }
   }
 }
 
@@ -683,6 +688,7 @@ a.tracker__name {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  overflow: hidden;
 }
 
 .manager__header {
@@ -778,8 +784,6 @@ a.tracker__name {
   border-top: 1px dashed #ccc;
   overflow: auto;
   flex-grow: 1;
-  min-height: calc(100% - 37px);
-  height: calc(100% - 37px);
   flex-direction: column;
 
   * {

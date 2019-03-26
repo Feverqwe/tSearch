@@ -1,6 +1,7 @@
 import {flow, isAlive, onPatch, types} from 'mobx-state-tree';
 import TrackerWorker from "../tools/trackerWorker";
 import getLogger from "../tools/getLogger";
+import getIconFromMeta from "../tools/getIconFromMeta";
 
 const logger = getLogger('TrackerStore');
 
@@ -128,12 +129,7 @@ const TrackerStore = types.model('TrackerStore', {
       return snapshot;
     },
     getIconUrl() {
-      if (self.meta.icon64) {
-        return self.meta.icon64;
-      } else if (self.meta.icon) {
-        return self.meta.icon;
-      }
-      return '';
+      return getIconFromMeta(self.meta);
     },
     get attached() {
       return attached;

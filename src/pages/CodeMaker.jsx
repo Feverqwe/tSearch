@@ -15,6 +15,7 @@ import exKitRequestOptionsNormalize from "../tools/exKitRequestOptionsNormalize"
 import CodeMakerFrame from "../components/CodeMakerFrame";
 import getTitle from "../tools/getTitle";
 import {autorun} from "mobx";
+import colorToIcon from "../tools/colorToIcon";
 
 const logger = getLogger('codeMaker');
 
@@ -421,11 +422,7 @@ class CodeMakerDescriptionPage extends React.Component {
   }
 
   generateIcon(color) {
-    if (!/^#/.test(color)) {
-      return color;
-    }
-    const icon = btoa(`<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 48 48"><circle cx="24" cy="24" r="24" fill="${color}" /></svg>`);
-    return `data:image/svg+xml;base64,${icon}`;
+    return colorToIcon(color);
   }
 
   handleIconClick = e => {
