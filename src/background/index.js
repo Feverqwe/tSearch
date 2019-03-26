@@ -16,7 +16,7 @@ import migrate from "../tools/migrate";
 import errorTracker from "../tools/errorTracker";
 import getUserId from "../tools/getUserId";
 import jsonCodeToUserscript from "../tools/jsonCodeToUserscript";
-import injectMetaToCode from "../tools/injectMetaToCode";
+import setCodeMeta from "../tools/setCodeMeta";
 
 errorTracker.bindExceptions();
 
@@ -268,7 +268,8 @@ const downloadTracker = (id, updateURL, downloadURL) => {
       }).then(code => transformJsonToCode(code)).then((code) => {
         const meta = getTrackerCodeMeta(code);
         if (!meta.downloadURL) {
-          code = injectDownloadUrl(code, meta, downloadURL);
+          meta.downloadURL = downloadURL;
+          code = setCodeMeta(code, meta);
         }
         return {meta, code};
       });
@@ -411,7 +412,8 @@ const getCodeAndMetaFromUrl = (url, type = 'tracker') => {
       meta = getExploreModuleCodeMeta(code);
     }
     if (!meta.downloadURL) {
-      code = injectDownloadUrl(code, meta, url);
+      meta.downloadURL = url;
+      code = setCodeMeta(code, meta);
     }
     return {meta, code};
   });
@@ -458,12 +460,4 @@ const transformJsonToCode = (data) => {
     }
   }
   return result;
-};
-
-const injectDownloadUrl = (code, meta, url) => {
-  code = injectMetaToCode(code, {
-    downloadURL: url
-  });
-  meta.downloadURL = url;
-  return code;
 };

@@ -6,8 +6,8 @@ import TrackerStore, {TrackerMetaStore} from "./TrackerStore";
 import getTrackerCodeMeta from "../tools/getTrackerCodeMeta";
 import storageGet from "../tools/storageGet";
 import storageSet from "../tools/storageSet";
-import injectMetaToCode from "../tools/injectMetaToCode";
 import getHash from "../tools/getHash";
+import setCodeMeta from "../tools/setCodeMeta";
 
 const logger = getLogger('TrackerStoreStore');
 
@@ -76,10 +76,8 @@ const TrackerStoreResultStore = types.model('TrackerStoreResultStore', {
         });
         let meta = getTrackerCodeMeta(code);
         if (!meta.downloadURL) {
-          code = injectMetaToCode(code, {
-            downloadURL: url
-          });
           meta.downloadURL = url;
+          code = setCodeMeta(code, meta);
         }
         if (isAlive(self)) {
           self.meta = meta;
