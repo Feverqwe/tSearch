@@ -2,7 +2,7 @@
 // @name __MSG_name__
 // @downloadURL https://raw.githubusercontent.com/Feverqwe/tSearch/master/src/explorerModules/kpSeries.js
 // @connect *://*.kinopoisk.ru/*
-// @version 1.3
+// @version 1.4
 // @cacheTTL 86400
 // @locale ru {"name": "Сериалы"}
 // @locale en {"name": "Series"}
@@ -17,7 +17,7 @@ const parseInfo = text => {
   let title;
   let year;
 
-  const m1 = /^(\d{4}(?:-\d{4})?)$/;
+  const m1 = /^(\d{4}(?:-\d{4})?)$/.exec(text);
   if (m1) {
     year = parseInt(m1[1], 10);
   } else {
