@@ -2,36 +2,36 @@
 // @name __MSG_name__
 // @downloadURL https://raw.githubusercontent.com/Feverqwe/tSearch/master/src/explorerModules/kpSeries.js
 // @connect *://*.kinopoisk.ru/*
-// @version 1.2
+// @version 1.3
 // @cacheTTL 86400
 // @locale ru {"name": "Сериалы"}
 // @locale en {"name": "Series"}
 // @defaultLocale en
 // ==/UserScript==
 
-const kpGetImgFileName = url => {
-  return url.replace(/sm_film/, 'film');
-};
-
 const spaceReplace = text => {
   return text.replace(/[\s\xA0]/g, ' ');
 };
 
-const parseTitleType = text => {
-  const m = /^(.*)\s+\([^)]+\)$/.exec(text);
-  if (m) {
-    return {
-      title: m[1]
-    };
-  }
-};
-
 const parseInfo = text => {
-  const m = /^(?:(.*)\s+|)\((\d{4})[^)]*\)(?:\s+\d+\s+.{3}\.)?$/.exec(text);
-  if (m) {
+  let title;
+  let year;
+
+  const m1 = /^(\d{4}(?:-\d{4})?)$/;
+  if (m1) {
+    year = parseInt(m1[1], 10);
+  } else {
+    const m = /^(.+),\s+(?:(\d{4})-(?:\d{4})?)$/.exec(text);
+    if (m) {
+      title = m[1];
+      year = parseInt(m[2], 10);
+    }
+  }
+
+  if (title) {
     return {
-      title: m[1],
-      year: parseInt(m[2], 10)
+      title: title,
+      year: year
     };
   }
 };
@@ -57,39 +57,31 @@ const prop = (node, prop) => {
 };
 
 const parseItem = item => {
-  const linkNode = item.querySelector('td~td > div > a');
+  const linkNode = item.querySelector('.selection-film-item-meta > a.selection-film-item-meta__link');
   const url = prop(linkNode, 'href');
+  const title = normText(linkNode.querySelector('.selection-film-item-meta__name'));
 
-  let title = null;
-  const titleType = parseTitleType(normText(linkNode));
-  if (titleType) {
-    title = titleType.title;
-  }
-
-  const imgNode = item.querySelector('.poster img[src]');
-  const href = prop(imgNode, 'src');
-  if (/spacer\.gif$/.test(href)) {
-    imgNode.src = imgNode.title;
-  }
-  const poster = kpGetImgFileName(prop(imgNode, 'src') || '');
-
-  let titleOriginal = null;
-  const info = parseInfo(normText(item.querySelector('td~td > div > a~span')));
+  const originalNameNode = linkNode.querySelector('.selection-film-item-meta__original-name');
+  const info = parseInfo(normText(originalNameNode));
+  let originalTitle = null;
   if (info) {
-    titleOriginal = info.title;
+    originalTitle = info.title;
   }
+
+  const imgNode = item.querySelector('.selection-film-item-poster img[src]');
+  const posterUrl = prop(imgNode, 'src') || '';
 
   const result = {
     title: title,
     url: url
   };
 
-  if (titleOriginal) {
-    result.titleOriginal = titleOriginal;
+  if (originalTitle) {
+    result.titleOriginal = originalTitle;
   }
 
-  if (poster) {
-    result.poster = poster;
+  if (posterUrl) {
+    result.poster = posterUrl;
   }
 
   return result;
@@ -101,7 +93,7 @@ const onPageLoad = response => {
 
   const ddBl = {};
   const results = [];
-  Array.from(doc.querySelectorAll('#itemList > tbody > tr')).forEach(item => {
+  Array.from(doc.querySelectorAll('.desktop-grid-column > .selection-list > .selections-film-item')).forEach(item => {
     try {
       const result = parseItem(item);
 
@@ -123,7 +115,7 @@ const onPageLoad = response => {
 const getItems = () => {
   return API_request({
     method: 'GET',
-    url: 'https://www.kinopoisk.ru/top/lists/45/perpage/100/',
+    url: 'https://www.kinopoisk.ru/lists/navigator/?quick_filters=serials',
   }).then(response => {
     return onPageLoad(response);
   });
