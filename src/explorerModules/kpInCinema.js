@@ -2,7 +2,7 @@
 // @name __MSG_name__
 // @downloadURL https://raw.githubusercontent.com/Feverqwe/tSearch/master/src/explorerModules/kpInCinema.js
 // @connect *://*.kinopoisk.ru/*
-// @version 1.2
+// @version 1.3
 // @cacheTTL 86400
 // @locale ru {"name": "Кинопоиск: в кино"}
 // @locale en {"name": "Kinopoisk: in cinema"}
@@ -48,11 +48,15 @@ const prop = (node, prop) => {
 };
 
 const parseItem = item => {
-  const poster = kpGetImgFileName(prop(item.querySelector('.poster img[src]'), 'src') || '');
-
   const linkNode = item.querySelector('.info .name a');
   let title = normText(linkNode);
   const url = prop(linkNode, 'href');
+
+  let poster = kpGetImgFileName(prop(item.querySelector('.poster img[src]'), 'src') || '');
+  const m = /\/film\/(\d+)/.exec(url);
+  if (m) {
+    poster = `https://www.kinopoisk.ru/images/film/${m[1]}.jpg`;
+  }
 
   let year = null;
   let titleOriginal = null;
