@@ -340,7 +340,7 @@ const updateExplorerModule = (id) => {
         const explorerModule = explorerModuleStore.getSnapshot();
         destroy(explorerModuleStore);
 
-        const isNewVersion = compareVersions(version, explorerModule.meta.version) > 0;
+        const isNewVersion = compareVersions(explorerModule.meta.version, version) > 0;
         if (!isNewVersion) {
           throw new ErrorWithCode('New version is not found', 'NEW_VERSION_IS_NOT_FOUND');
         }
