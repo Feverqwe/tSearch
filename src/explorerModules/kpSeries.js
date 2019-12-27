@@ -2,7 +2,7 @@
 // @name __MSG_name__
 // @downloadURL https://raw.githubusercontent.com/Feverqwe/tSearch/master/src/explorerModules/kpSeries.js
 // @connect *://*.kinopoisk.ru/*
-// @version 1.4
+// @version 1.5
 // @cacheTTL 86400
 // @locale ru {"name": "Сериалы"}
 // @locale en {"name": "Series"}
@@ -87,12 +87,10 @@ const parseItem = item => {
   return result;
 };
 
-const onPageLoad = response => {
+const onPageLoad = (results, response, ddBl) => {
   const content = response.body;
   const doc = API_getDoc(content, response.url);
 
-  const ddBl = {};
-  const results = [];
   Array.from(doc.querySelectorAll('.desktop-grid-column > .selection-list > .selections-film-item')).forEach(item => {
     try {
       const result = parseItem(item);
@@ -113,12 +111,24 @@ const onPageLoad = response => {
 };
 
 const getItems = () => {
-  return API_request({
-    method: 'GET',
-    url: 'https://www.kinopoisk.ru/lists/navigator/?quick_filters=serials',
-  }).then(response => {
-    return onPageLoad(response);
-  });
+  const results = [];
+  const ddBl = {};
+
+  let page = 0;
+  function next() {
+    page++;
+    if (page > 10) return;
+
+    return API_request({
+      method: 'GET',
+      url: 'https://www.kinopoisk.ru/lists/navigator/?quick_filters=serials&page=' + page,
+    }).then(response => {
+      onPageLoad(results, response, ddBl);
+
+      return next();
+    });
+  }
+  return next().then(() => results);
 };
 
 API_event('getItems', () => {
