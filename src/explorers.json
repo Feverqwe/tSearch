@@ -1,11 +1,14 @@
 {
-  "ggGamesNew": "1.3",
-  "ggGamesTop": "1.2",
-  "imdbInCinema": "1.2",
-  "imdbPopular": "1.2",
-  "imdbSeries": "1.2",
-  "kpFavorites": "1.1",
-  "kpInCinema": "1.3",
-  "kpPopular": "1.2",
-  "kpSeries": "1.5"
+  "ggGamesNew": "1.4",
+  "ggGamesTop": "1.3",
+  "imdbInCinema": "1.4",
+  "imdbPopular": "1.4",
+  "imdbSeries": "1.4",
+  "kpFavorites": "1.5",
+  "kpInCinema": "1.5",
+  "kpPopular": "1.3",
+  "kpSeries": "1.7",
+  "tmdbInCinema": "1.2",
+  "tmdbPopular": "1.2",
+  "tmdbSeries": "1.2"
 }

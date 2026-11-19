@@ -4,17 +4,17 @@
   "description": {
     "icon": "data:image/x-icon;base64,AAABAAEAEBAAAAEAGABoAwAAFgAAACgAAAAQAAAAIAAAAAEAGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pv7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/j4+Pj4+Pv7++6YDy6YDzv7+/v7+8CKPoCKPoCKPoCKPoCKPoCKPoCKPoCKPrv7+/j4+Pj4+Pv7++6YDy6YDzv7+/v7+8CKPoCKPoCKPoCKPoCKPoCKPoCKPoCKPrv7+/j4+Pj4+Pv7++6YDy6YDzv7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+8CKPoCKPrv7+/j4+Pj4+Pv7++6YDy6YDzv7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+8CKPoCKPrv7+/j4+Pj4+Pv7++6YDy6YDzv7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+8CKPoCKPrv7+/j4+Pj4+Pv7++6YDy6YDy6YDy6YDy6YDy6YDy6YDzv7+/v7+/v7+8CKPoCKPrv7+/j4+Pj4+Pv7++6YDy6YDy6YDy6YDy6YDy6YDy6YDy6YDzv7+/v7+8CKPoCKPrv7+/j4+Pj4+Pv7++6YDy6YDzv7+/v7+/v7+/v7++6YDy6YDzv7+/v7+8CKPoCKPrv7+/j4+Pj4+Pv7++6YDy6YDzv7+/v7+/v7+/v7++6YDy6YDzv7+/v7+8CKPoCKPrv7+/j4+Pj4+Pv7++6YDy6YDzv7+/v7+/v7+/v7++6YDy6YDzv7+/v7+8CKPoCKPrv7+/j4+Pj4+Pv7++6YDy6YDy6YDy6YDy6YDy6YDy6YDy6YDzv7+/v7+8CKPoCKPrv7+/j4+Pj4+Pv7++6YDy6YDy6YDy6YDy6YDy6YDy6YDzv7+/v7+/v7+8CKPoCKPrv7+/j4+Pj4+Pv7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/j4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+MAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
     "name": "Pornolab",
-    "url": "http://pornolab.net/forum/",
+    "url": "https://pornolab.net/forum/",
     "description": "Крупнейший русскоязычный порно трекер.",
-    "version": "1.0"
+    "version": "1.1"
   },
   "search": {
-    "url": "http://pornolab.net/forum/tracker.php",
+    "url": "https://pornolab.net/forum/tracker.php",
     "method": "POST",
     "body": "max=1&to=1&nm=%search%"
   },
   "auth": {
-    "url": "http://pornolab.net/forum/login.php",
+    "url": "https://pornolab.net/forum/login.php",
     "loginForm": {
       "selector": "table.borderless.bCenter>tbody>tr:eq(0)>td:eq(1)>input"
     }
@@ -30,11 +30,11 @@
       "pipeline": [{ "name": "getProp", "args": ["href"] }]
     },
     "title": {
-      "selector": "td.row4.med.tLeft.u>div",
+      "selector": "td a[href^='./viewtopic.php?t=']",
       "pipeline": [{ "name": "getText" }, { "name": "trim" }]
     },
     "url": {
-      "selector": "td.row4.med.tLeft.u>div>a",
+      "selector": "td a[href^='./viewtopic.php?t=']",
       "pipeline": [{ "name": "getProp", "args": ["href"] }]
     },
     "size": {
@@ -74,7 +74,7 @@
       ]
     },
     "nextPageUrl": {
-      "selector": "div.nav>p:eq(1)>a:eq(-1)",
+      "selector": "b + a[href^='tracker.php?search_id='][href*='&start=']",
       "pipeline": [{ "name": "getProp", "args": ["href"] }]
     }
   }

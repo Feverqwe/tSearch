@@ -4,11 +4,11 @@
   "description": {
     "icon": "#3910fd",
     "name": "metal-tracker",
-    "url": "http://www.metal-tracker.com/torrents/",
-    "version": "1.0"
+    "url": "https://www.metal-tracker.com/torrents/",
+    "version": "1.1"
   },
   "search": {
-    "url": "http://www.metal-tracker.com/torrents/search.html",
+    "url": "https://www.metal-tracker.com/torrents/search.html",
     "method": "POST",
     "body": "SearchTorrentsForm[nameTorrent]=%search%"
   },
@@ -36,6 +36,15 @@
         { "name": "getText" },
         { "name": "trim" },
         { "name": "toInt" }
+      ]
+    },
+    "size": {
+      "selector": ":scope",
+      "pipeline": [
+        { "name": "getText" },
+        { "name": "trim" },
+        { "name": "replaceRe", "args": ["^[\\s\\S]*?(?:размер|size)\\s*:\\s*(\\d[\\d., ]*\\s*(?:[kmgt]i?b|[кмгт]б))[\\s\\S]*$", "$1"] },
+        { "name": "legacySizeFormat" }
       ]
     }
   }

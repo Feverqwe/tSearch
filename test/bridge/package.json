@@ -1,0 +1,18 @@
+{
+  "name": "tsearch-test-bridge",
+  "version": "1.0.0",
+  "private": true,
+  "main": "browser.cjs",
+  "engines": {
+    "node": "^24.11.0"
+  },
+  "scripts": {
+    "build": "node build.cjs",
+    "test": "jest --runInBand --testPathIgnorePatterns=\"live[.]test[.]cjs$\"",
+    "test:live": "jest --runInBand \"live[.]test[.]cjs$\""
+  },
+  "devDependencies": {
+    "jest": "^30.5.2",
+    "playwright": "^1.65.1"
+  }
+}

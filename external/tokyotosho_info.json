@@ -4,23 +4,62 @@
   "description": {
     "icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAQMAAAAlPW0iAAAABlBMVEUAAAD///+l2Z/dAAAAF0lEQVR42mNggIE/9TDkyPCnHBXBpeoBcPgS2r7xJnsAAAAASUVORK5CYII%3D",
     "name": "Tokyo Toshokan",
-    "url": "http://tokyotosho.info/",
-    "version": "1.0"
+    "url": "https://tokyo-tosho.net/",
+    "version": "1.1"
   },
   "search": {
-    "url": "http://tokyotosho.info/search.php?terms=%search%&type=0",
+    "url": "https://tokyo-tosho.net/search.php?terms=%search%&type=0&searchName=true&searchComment=true",
     "method": "GET"
   },
   "selectors": {
-    "row": { "selector": "table.listing>tbody>tr" },
-    "skipFromStart": 1,
+    "row": { "selector": "table.listing > tbody > tr:has(> td[rowspan=\"2\"])" },
     "title": {
-      "selector": "td.desc-top>a:eq(1)",
+      "selector": "td.desc-top > a[type=\"application/x-bittorrent\"][href]",
       "pipeline": [{ "name": "getText" }, { "name": "trim" }]
     },
     "url": {
-      "selector": "td.desc-top>a:eq(0)",
-      "pipeline": [{ "name": "getAttr", "args": ["href"] }]
+      "selector": "td.desc-top > a[href^=\"magnet:\"], td.desc-top > a[type=\"application/x-bittorrent\"][href]",
+      "pipeline": [{ "name": "getProp", "args": ["href"] }]
+    },
+    "size": {
+      "selector": "+ tr > td:nth-of-type(1)",
+      "pipeline": [
+        { "name": "getText" },
+        { "name": "trim" },
+        { "name": "replaceRe", "args": ["^[\\s\\S]*?(?:размер|size)\\s*:\\s*(\\d[\\d., ]*\\s*(?:[kmgt]i?b|[кмгт]б))[\\s\\S]*$", "$1"] },
+        { "name": "legacySizeFormat" }
+      ]
+    },
+    "seeds": {
+      "selector": "+ tr > td:nth-of-type(2)",
+      "pipeline": [
+        { "name": "getText" },
+        { "name": "trim" },
+        { "name": "replaceRe", "args": ["^[\\s\\S]*?\\bS:\\s*(\\d+)[\\s\\S]*$", "$1"] },
+        { "name": "toInt" }
+      ]
+    },
+    "peers": {
+      "selector": "+ tr > td:nth-of-type(2)",
+      "pipeline": [
+        { "name": "getText" },
+        { "name": "trim" },
+        { "name": "replaceRe", "args": ["^[\\s\\S]*?\\bL:\\s*(\\d+)[\\s\\S]*$", "$1"] },
+        { "name": "toInt" }
+      ]
+    },
+    "date": {
+      "selector": "+ tr > td:nth-of-type(1)",
+      "pipeline": [
+        { "name": "getText" },
+        { "name": "trim" },
+        { "name": "replaceRe", "args": ["^[\\s\\S]*?(?:date|дата)\\s*:\\s*(\\d{4}-\\d{2}-\\d{2}) (\\d{2}:\\d{2}) UTC[\\s\\S]*$", "$1T$2:00Z"] },
+        { "name": "parseIsoDate" }
+      ]
+    },
+    "downloadUrl": {
+      "selector": "td.desc-top > a[type=\"application/x-bittorrent\"][href]",
+      "pipeline": [{ "name": "getProp", "args": ["href"] }]
     }
   }
 }

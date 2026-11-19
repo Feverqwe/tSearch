@@ -2,3 +2,12 @@
 /node_modules/
 /dist/
 /old/
+# Local agent notes, handoffs and conversation exports
+/.codex/
+/.tsearch-test-profile/
+/storybook-static/
+/experiments/
+/external/disabled/
+*.har
+npm-debug.log*
+.DS_Store

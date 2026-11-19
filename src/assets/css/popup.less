@@ -1,24 +1,12 @@
-body {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  margin: 0;
-}
+@import 'ui.less';
 
-.loading {
-  opacity: 0;
-}
+.popup-search {
+  box-sizing: border-box;
+  // The toolbar popup sizes its viewport to the document.
+  width: 550px;
+  padding: 21px 25px;
 
-.search {
-  display: flex;
-  align-items: center;
-  height: 70px;
-  margin: 0 25px;
-
-  .search-from {
-    .input {
-      width: 512px;
-    }
-    .suggestions-container {
-      width: 512px;
-    }
+  &:has(.suggestions-container) {
+    min-height: 220px;
   }
 }

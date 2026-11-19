@@ -1,0 +1,265 @@
+@import (less) 'palette.css';
+
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --radius: 2px;
+  --control: 24px;
+  --control-large: 28px;
+  --sidebar: 192px;
+  --gutter: var(--space-2);
+  --layout-gap: 10px;
+}
+
+body {
+  color: var(--ink);
+  background: var(--canvas);
+  font:
+    14px/1.45 'Helvetica Neue',
+    Helvetica,
+    Arial,
+    sans-serif;
+  margin: 0;
+}
+
+a:any-link {
+  color: var(--link);
+}
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+button:not(:disabled),
+select:not(:disabled) {
+  cursor: pointer;
+}
+input:is([type='checkbox'], [type='radio'], [type='range']) {
+  accent-color: var(--accent);
+}
+input:is([type='text'], [type='number'], [type='url'], [type='search'], [type='password']),
+select,
+textarea {
+  color: var(--ink);
+  background-color: var(--field);
+  border: 1px solid var(--edge);
+}
+
+.ts-button,
+.ts-control {
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: var(--control);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  background: var(--field);
+  color: var(--ink);
+}
+.ts-control {
+  padding-inline: var(--space-1);
+}
+.ts-control:where(input, select, textarea):focus {
+  border-color: var(--field-focus);
+  outline: none;
+}
+.ts-control[aria-invalid='true'] {
+  border-color: var(--error);
+  &:focus-visible { outline: 1px solid var(--field-focus); outline-offset: 1px; }
+}
+.ts-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  padding-inline: var(--space-3);
+  background: var(--button-surface);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.ts-button:where(:not(:disabled, [aria-busy='true'])):hover {
+  background: var(--button-hover);
+}
+.ts-button:where(:not(:disabled, [aria-busy='true'])):active {
+  background: var(--pressed);
+}
+.ts-button--primary {
+  color: var(--button-label);
+  border-color: var(--button-fill);
+  background: var(--button-fill);
+
+  &:where(:not(:disabled, [aria-busy='true'])):is(:hover, :active) {
+    background: var(--button-fill-hover);
+    border-color: var(--button-fill-hover);
+  }
+}
+.ts-button--quiet {
+  background: transparent;
+  border-color: transparent;
+  color: var(--muted);
+}
+.ts-button[aria-pressed='true'],
+.ts-button[aria-current] {
+  background: var(--accent-soft);
+  color: var(--link);
+}
+.ts-button:disabled,
+.ts-control:disabled {
+  background: var(--disabled-surface);
+  color: var(--disabled-ink);
+  border-color: var(--disabled-edge);
+}
+.ts-button[aria-busy='true'] {
+  position: relative;
+  cursor: progress;
+}
+.ts-button--replace[aria-busy='true'] {
+  > .ts-button-label { opacity: 0; }
+  > .ts-loading { position: absolute; }
+}
+.ts-button--inline {
+  padding-inline: calc(var(--space-3) + var(--space-5));
+
+  > .ts-loading { position: absolute; inset-inline-end: var(--space-3); }
+}
+.ts-button--with-icon.ts-button--replace[aria-busy='true']::before {
+  visibility: hidden;
+}
+.ts-field-heading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+.ts-loading {
+  display: inline-block;
+  box-sizing: border-box;
+  inline-size: 14px;
+  block-size: 14px;
+  flex: none;
+  border: 2px solid currentColor;
+  border-inline-end-color: transparent;
+  border-radius: 50%;
+  animation: ts-spin .8s linear infinite;
+}
+@keyframes ts-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .ts-loading { animation: none; }
+}
+.ts-field {
+  display: grid;
+  gap: 2px;
+  small {
+    color: var(--muted);
+  }
+  .ts-field-error {
+    color: var(--error);
+  }
+}
+.ts-floating {
+  box-sizing: border-box;
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  overflow: auto;
+  z-index: 20;
+}
+.ts-floating--arrow {
+  overflow: visible;
+}
+.ts-floating-arrow {
+  position: absolute;
+  inline-size: 10px;
+  block-size: 10px;
+  box-sizing: border-box;
+  background: inherit;
+  border: 1px solid var(--edge);
+  pointer-events: none;
+
+  &[data-side='bottom'] {
+    top: -6px;
+    transform: rotate(45deg);
+    border-right: 0;
+    border-bottom: 0;
+  }
+  &[data-side='top'] {
+    bottom: -6px;
+    transform: rotate(45deg);
+    border-left: 0;
+    border-top: 0;
+  }
+}
+.ts-tooltip-anchor {
+  display: inline-flex;
+}
+.ts-tooltip {
+  font-size: 12px;
+  padding: 2px var(--space-2);
+  overflow-wrap: anywhere;
+  pointer-events: none;
+}
+
+.ts-icon-button {
+  width: var(--control);
+  min-width: var(--control);
+  padding: 0;
+}
+.ts-button--with-icon::before,
+.ts-icon-link::before {
+  content: '';
+  display: block;
+  width: var(--ts-icon-size, 16px);
+  height: var(--ts-icon-size, 16px);
+  background: currentColor;
+  mask: var(--ts-glyph) center / contain no-repeat;
+}
+:is(.ts-icon-button, .ts-icon-link)::before { margin: auto; }
+.ts-button--with-icon:not(.ts-icon-button)::before { flex: none; }
+.ts-glyph--refresh { --ts-glyph: url(../img/refresh.svg); }
+.ts-glyph--reset { --ts-glyph: url(../img/reset.svg); }
+.ts-glyph--settings { --ts-glyph: url(../img/options.svg); }
+.ts-glyph--website { --ts-glyph: url(../img/external.svg); }
+.ts-glyph--add-favorite { --ts-glyph: url(../img/favorite.svg); }
+.ts-glyph--remove-favorite { --ts-glyph: url(../img/rm_favorite.svg); }
+.ts-glyph--edit { --ts-glyph: url(../img/edit.svg); }
+.ts-glyph--search { --ts-glyph: url(../img/mini_search.svg); }
+.ts-glyph--move { --ts-glyph: url(../img/moveble.svg); }
+.ts-glyph--remove { --ts-glyph: url(../img/delete.svg); }
+:is(.ts-glyph--up, .ts-glyph--down) { --ts-glyph: url(../img/arrow_up.svg); }
+.ts-glyph--down::before { transform: rotate(180deg); }
+[data-sort-target] { outline: 2px solid var(--focus); }
+
+.ts-pipeline-chain {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  list-style: none;
+  padding: 0;
+  margin-block: var(--space-1);
+  font: 12px/1.5 ui-monospace, monospace;
+  overflow-wrap: anywhere;
+  code { color: var(--link); font: inherit; }
+}
+.ts-glyph--info { --ts-glyph: url(../img/info.svg); }
+.ts-glyph--more-vertical { --ts-glyph: url(../img/more-vertical.svg); }
+.ts-glyph--dock-bottom { --ts-glyph: url(../img/dock-bottom.svg); }
+.ts-glyph--dock-right { --ts-glyph: url(../img/dock-right.svg); }
+.ts-glyph--dock-window { --ts-glyph: url(../img/dock-window.svg); }
+.ts-glyph--target { --ts-glyph: url(../img/target.svg); }
+.ts-glyph--transform { --ts-glyph: url(../img/transform.svg); }
+.ts-glyph--wand { --ts-glyph: url(../img/wand.svg); }
+.ts-glyph--folder { --ts-glyph: url(../img/folder.svg); }
+.ts-glyph--link { --ts-glyph: url(../img/link.svg); }
+.ts-icon-button.ts-button--inline {
+  width: calc(var(--control) + var(--space-5));
+  padding-inline-end: var(--space-5);
+  > .ts-loading { inset-inline-end: var(--space-1); }
+}

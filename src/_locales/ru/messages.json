@@ -3,7 +3,7 @@
     "message": "TMS - Поиск торрентов"
   },
   "extDesc": {
-    "message": "Torrents MultiSearch - поиск по нескольким трекерам сразу!"
+    "message": "Ищите торренты сразу на нескольких трекерах."
   },
   "search": {
     "message": "Найти"
@@ -24,19 +24,19 @@
     "message": "Настройки"
   },
   "wordFilterLabel": {
-    "message": "Фильтр слов"
+    "message": "Фильтр по словам"
   },
   "sizeFilterLabel": {
-    "message": "Размер ГБ"
+    "message": "Размер (ГиБ)"
   },
   "timeFilterLabel": {
-    "message": "Дата"
+    "message": "Дата добавления"
   },
   "seedFilterLabel": {
     "message": "Сиды"
   },
   "peerFilterLabel": {
-    "message": "Пиры"
+    "message": "Личеры"
   },
   "rangeFromPlaceholder": {
     "message": "от"
@@ -48,31 +48,31 @@
     "message": "За всё время"
   },
   "timeFilter1h": {
-    "message": "За час"
+    "message": "За последний час"
   },
   "timeFilter24h": {
-    "message": "За сутки"
+    "message": "За последние сутки"
   },
   "timeFilter72h": {
-    "message": "За 3-е суток"
+    "message": "За последние 3 дня"
   },
   "timeFilter1w": {
-    "message": "За неделю"
+    "message": "За последние 7 дней"
   },
   "timeFilter1m": {
-    "message": "За месяц"
+    "message": "За последние 30 дней"
   },
   "timeFilter1y": {
-    "message": "За год"
+    "message": "За последние 365 дней"
   },
   "timeFilterRange": {
-    "message": "За период..."
+    "message": "Выбрать период…"
   },
   "scrollTop": {
-    "message": "Вверх!"
+    "message": "К началу страницы"
   },
   "manageProfiles": {
-    "message": "Управление списками"
+    "message": "Управление списками трекеров"
   },
   "defaultProfileName": {
     "message": "Стандартный"
@@ -82,9 +82,6 @@
   },
   "delete": {
     "message": "Удалить"
-  },
-  "advanced_options": {
-    "message": "Расширенные опции"
   },
   "save": {
     "message": "Сохранить"
@@ -99,10 +96,10 @@
     "message": "Обновить"
   },
   "exportZip": {
-    "message": "Экспорт в ZIP-файл"
+    "message": "Скачать резервную копию (ZIP)"
   },
   "importZip": {
-    "message": "Импорт из ZIP-файла"
+    "message": "Импортировать резервную копию (ZIP)"
   },
   "row_date": {
     "message": "Добавлено"
@@ -120,16 +117,16 @@
     "message": "Размер"
   },
   "row_seeds": {
-    "message": "Сиды (раздающие)"
+    "message": "Сиды"
   },
   "row_seeds__short": {
     "message": "С"
   },
   "row_peers": {
-    "message": "Пиры (скачивающие)"
+    "message": "Личеры"
   },
   "row_peers__short": {
-    "message": "П"
+    "message": "Л"
   },
   "loadMore": {
     "message": "Загрузить ещё"
@@ -138,7 +135,7 @@
     "message": "Создать список"
   },
   "contextMenuTitle": {
-    "message": "Найти торрент"
+    "message": "Найти торренты"
   },
   "basic": {
     "message": "Основные"
@@ -147,34 +144,40 @@
     "message": "Главная страница"
   },
   "backupRestore": {
-    "message": "Архивирование / Восстановление"
+    "message": "Копирование и восстановление"
   },
   "hidePeerRow": {
-    "message": "Скрыть столбец \"пиры\" (скачивающие)"
+    "message": "Скрыть столбец «Личеры»"
   },
   "hideSeedRow": {
-    "message": "Скрыть столбец \"сиды\" (раздающих)"
+    "message": "Скрыть столбец «Сиды»"
   },
   "categoryWordFilter": {
-    "message": "Учитывать категорию при фильтрации слов"
+    "message": "Учитывать названия рубрик в фильтре по словам"
   },
   "contextMenu": {
-    "message": "Добавить поиск в контекстное меню"
+    "message": "Добавить поиск торрентов в контекстное меню"
   },
   "disablePopup": {
-    "message": "Не отображать окно поиска при нажатии на иконку расширения"
+    "message": "Отключить окно поиска по значку расширения"
   },
   "invertIcon": {
-    "message": "Инвертировать цвет иконки расширения"
+    "message": "Инвертировать цвета значка расширения"
   },
   "defineCategory": {
-    "message": "Автоматически определять категорию раздачи"
+    "message": "Показывать автоматически определённые категории"
   },
-  "requestQueryDescription": {
-    "message": "Получать описание поискового запроса из Google"
+  "rankByReleaseDate": {
+    "message": "Учитывать дату раздачи при сортировке по качеству"
+  },
+  "rankBySeeds": {
+    "message": "Учитывать число сидов при сортировке по качеству"
+  },
+  "rankByLeeches": {
+    "message": "Учитывать число личеров при сортировке по качеству"
   },
   "singleResultTable": {
-    "message": "Объединить результаты поиска в одну таблицу"
+    "message": "Объединять результаты в одной таблице"
   },
   "favorites": {
     "message": "Избранное"
@@ -192,37 +195,46 @@
     "message": "Сериалы"
   },
   "imdbInCinema": {
-    "message": "IMDB: Сейчас в кино"
+    "message": "IMDb: Прокат США"
   },
   "imdbPopular": {
-    "message": "IMDB: Фильмы"
+    "message": "IMDb: Фильмы"
   },
   "imdbSeries": {
-    "message": "IMDB: Сериалы"
+    "message": "IMDb: Сериалы"
+  },
+  "tmdbInCinema": {
+    "message": "TMDB: В кино"
+  },
+  "tmdbPopular": {
+    "message": "TMDB: Фильмы"
+  },
+  "tmdbSeries": {
+    "message": "TMDB: Сериалы"
   },
   "ggGamesTop": {
-    "message": "Игры: Лучшие"
+    "message": "Игры: Популярные на ПК"
   },
   "ggGamesNew": {
     "message": "Игры: Новые"
   },
   "showSections": {
-    "message": "Отображать секции:"
+    "message": "Подборки на главной"
   },
   "originalPosterName": {
-    "message": "Отображать оригинальные названия"
+    "message": "Показывать оригинальные названия"
   },
   "favoriteSync": {
-    "message": "Синхронизировать список избранного"
+    "message": "Синхронизировать избранное"
   },
   "syncProfiles": {
     "message": "Синхронизировать списки трекеров"
   },
   "kpFolderId": {
-    "message": "ID категории кинопоиска"
+    "message": "ID папки Кинопоиска"
   },
   "addInFavorite": {
-    "message": "В избранное"
+    "message": "Добавить в избранное"
   },
   "removeFromFavorite": {
     "message": "Удалить из избранного"
@@ -237,7 +249,7 @@
     "message": "По умолчанию"
   },
   "goToTheWebsite": {
-    "message": "Перейти на сайт"
+    "message": "Открыть сайт"
   },
   "setupView": {
     "message": "Настроить вид"
@@ -249,10 +261,10 @@
     "message": "Оригинальный заголовок"
   },
   "imageUrl": {
-    "message": "URL изображения"
+    "message": "Адрес изображения"
   },
   "descUrl": {
-    "message": "URL описания"
+    "message": "Адрес страницы с описанием"
   },
   "cancel": {
     "message": "Отменить"
@@ -270,10 +282,10 @@
     "message": "Сериалы"
   },
   "categoryAnime": {
-    "message": "Анимэ"
+    "message": "Аниме"
   },
   "categoryDocumentary": {
-    "message": "Докум."
+    "message": "Документальное кино"
   },
   "categoryHumor": {
     "message": "Юмор"
@@ -303,10 +315,13 @@
     "message": "Прочее"
   },
   "categoryAll": {
-    "message": "Всё"
+    "message": "Все"
   },
   "createCode": {
-    "message": "Создать код"
+    "message": "Открыть конструктор трекеров"
+  },
+  "addTracker": {
+    "message": "Добавить трекер"
   },
   "addTrackerCode": {
     "message": "Добавить код"
@@ -321,10 +336,7 @@
     "message": "Обновлять автоматически"
   },
   "enableProxy": {
-    "message": "Включить поддержку прокси"
-  },
-  "doNotSendStatistics": {
-    "message": "Не отправлять статистику"
+    "message": "Запросы через вкладку"
   },
   "quickSearch": {
     "message": "Быстрый поиск"
@@ -333,7 +345,7 @@
     "message": "Все"
   },
   "filter_withoutList": {
-    "message": "Без списка"
+    "message": "Не в этом списке"
   },
   "filter_selected": {
     "message": "Выбранные"
@@ -345,7 +357,7 @@
     "message": "Внешние"
   },
   "fetchMeta": {
-    "message": "Получить информацию"
+    "message": "Загрузить сведения"
   },
   "sources": {
     "message": "Источники"
@@ -357,7 +369,7 @@
     "message": "Репозитории"
   },
   "add_repository": {
-    "message": "Добавить репозитории"
+    "message": "Добавить репозиторий"
   },
   "kitTrackerCodeReadError": {
     "message": "Ошибка разбора кода трекера"
@@ -372,7 +384,7 @@
     "message": "Преобразование"
   },
   "kitLogin": {
-    "message": "Авторизация"
+    "message": "Вход"
   },
   "kitDesc": {
     "message": "Описание"
@@ -384,7 +396,7 @@
     "message": "URL страницы поиска"
   },
   "kitSearchMethod": {
-    "message": "Method"
+    "message": "Метод"
   },
   "kitOpen": {
     "message": "Открыть"
@@ -393,34 +405,40 @@
     "message": "Кодировка поискового запроса"
   },
   "kitPageCharset": {
-    "message": "Кодировка страницы"
+    "message": "Кодировка ответа"
   },
   "kitBaseUrl": {
     "message": "Основной URL"
   },
   "kitLoginUrl": {
-    "message": "URL страницы авторизации"
+    "message": "Адрес страницы входа"
   },
   "kitLoginFormSelector": {
-    "message": "Селектор формы авторизации"
+    "message": "Селектор формы входа"
   },
   "kitSelect": {
     "message": "Выбрать"
   },
   "kitRowSelector": {
-    "message": "Селектор строки"
+    "message": "Селектор строки результата"
   },
   "kitTableRow": {
     "message": "Строка таблицы"
   },
   "kitCategoryName": {
-    "message": "Категория"
+    "message": "Рубрика трекера"
+  },
+  "kitSuggestedTrackerSection": {
+    "message": "Использовать рубрику «$1»"
+  },
+  "kitAdvancedResultFields": {
+    "message": "Дополнительные поля"
   },
   "kitAttribute": {
     "message": "Атрибут"
   },
   "kitCategoryLink": {
-    "message": "Ссылка на категорию"
+    "message": "Ссылка на рубрику"
   },
   "kitTorrentTitle": {
     "message": "Название торрента"
@@ -432,22 +450,22 @@
     "message": "Размер торрента"
   },
   "kitTorrentDownloadLink": {
-    "message": "Ссылка загрузки"
+    "message": "Ссылка на скачивание"
   },
   "kitSeedCount": {
     "message": "Количество сидов"
   },
   "kitPeerCount": {
-    "message": "Количество пиров"
+    "message": "Число личеров"
   },
   "kitAddTime": {
-    "message": "Время добавления"
+    "message": "Дата добавления"
   },
   "kitSkipFirstRows": {
-    "message": "Пропустить первые N строк"
+    "message": "Сколько строк пропустить в начале"
   },
   "kitSkipLastRows": {
-    "message": "Пропустить последние N строк"
+    "message": "Сколько строк пропустить в конце"
   },
   "kitRegexpPattern": {
     "message": "Regexp шаблон"
@@ -495,7 +513,7 @@
     "message": "Версия"
   },
   "kitGetCode": {
-    "message": "Получить код"
+    "message": "Создать JSON"
   },
   "kitReadCode": {
     "message": "Прочитать код"
@@ -505,5 +523,1319 @@
   },
   "kitPreview": {
     "message": "Предпросмотр"
+  },
+  "theme": {
+    "message": "Тема"
+  },
+  "theme_system": {
+    "message": "Системная"
+  },
+  "theme_light": {
+    "message": "Светлая"
+  },
+  "theme_dark": {
+    "message": "Тёмная"
+  },
+  "history_empty": {
+    "message": "История поиска пуста"
+  },
+  "history_remove_error": {
+    "message": "Не удалось удалить запись. Попробуйте ещё раз."
+  },
+  "page_loading": {
+    "message": "Загрузка расширения…"
+  },
+  "search_loading": {
+    "message": "Ищем на трекерах…"
+  },
+  "search_preparing": {
+    "message": "Загружаем настройки поиска…"
+  },
+  "search_prepare_error": {
+    "message": "Не удалось загрузить настройки поиска."
+  },
+  "search_no_trackers": {
+    "message": "В этом списке нет доступных трекеров."
+  },
+  "search_empty": {
+    "message": "Ничего не найдено."
+  },
+  "search_filtered": {
+    "message": "По заданным фильтрам ничего не найдено."
+  },
+  "search_category_empty": {
+    "message": "В этой категории нет результатов."
+  },
+  "search_reset_filters": {
+    "message": "Сбросить фильтры"
+  },
+  "tracker_unavailable": {
+    "message": "Трекер недоступен"
+  },
+  "tracker_error": {
+    "message": "Ошибка трекера"
+  },
+  "profile": {
+    "message": "Список трекеров"
+  },
+  "explorer_full_search": {
+    "message": "Все результаты"
+  },
+  "explorer_cache_error": {
+    "message": "Не удалось обновить подборку. Попробуйте ещё раз."
+  },
+  "explorer_loading": {
+    "message": "Загружаем подборку…"
+  },
+  "explorer_empty": {
+    "message": "В подборке пока ничего нет."
+  },
+  "explorer_poster_size": {
+    "message": "Размер постеров"
+  },
+  "quick_search_empty": {
+    "message": "Раздачи не найдены"
+  },
+  "explorer_refresh": {
+    "message": "Обновить подборку"
+  },
+  "explorer_poster_size_reset": {
+    "message": "Сбросить размер постеров"
+  },
+  "explorer_rows": {
+    "message": "Ряды"
+  },
+  "explorer_move_earlier": {
+    "message": "Переместить раньше"
+  },
+  "explorer_move_later": {
+    "message": "Переместить позже"
+  },
+  "favorite_edit": {
+    "message": "Редактирование карточки"
+  },
+  "favorite_title_required": {
+    "message": "Введите название."
+  },
+  "favorite_invalid_url": {
+    "message": "Введите адрес, который начинается с http:// или https://."
+  },
+  "favorite_url_conflict": {
+    "message": "Этот адрес уже есть в избранном."
+  },
+  "favorite_write_error": {
+    "message": "Не удалось сохранить изменения. Попробуйте ещё раз."
+  },
+  "settings_results": {
+    "message": "Таблица результатов"
+  },
+  "tab_proxy_mode": {
+    "message": "Где открывать сайт трекера"
+  },
+  "tab_proxy_tab": {
+    "message": "Фоновая вкладка"
+  },
+  "tab_proxy_window": {
+    "message": "Отдельное окно"
+  },
+  "settings_browser": {
+    "message": "Браузер"
+  },
+  "settings_showcase": {
+    "message": "Витрина"
+  },
+  "settings_backup": {
+    "message": "Резервное копирование"
+  },
+  "filter_builtIn": {
+    "message": "Встроенные"
+  },
+  "filter_installed": {
+    "message": "Установленные"
+  },
+  "profile_find_tracker": {
+    "message": "Найти трекер"
+  },
+  "profile_edit": {
+    "message": "Редактирование списка"
+  },
+  "profile_name": {
+    "message": "Название списка"
+  },
+  "quality_rule": {
+    "message": "Правило"
+  },
+  "settings_titles": {
+    "message": "Названия раздач"
+  },
+  "settings_preview": {
+    "message": "Предпросмотр"
+  },
+  "settings_save_error": {
+    "message": "Не удалось сохранить настройку. Попробуйте ещё раз."
+  },
+  "titles_highlight": {
+    "message": "Выделять слова из поискового запроса"
+  },
+  "titles_round": {
+    "message": "Круглые скобки"
+  },
+  "titles_square": {
+    "message": "Квадратные скобки"
+  },
+  "titles_curly": {
+    "message": "Фигурные скобки"
+  },
+  "titles_angle": {
+    "message": "Угловые скобки"
+  },
+  "titles_preview_query": {
+    "message": "Запрос «$1»"
+  },
+  "titles_normal": {
+    "message": "Обычный текст"
+  },
+  "titles_muted": {
+    "message": "Приглушить"
+  },
+  "titles_accent": {
+    "message": "Выделить"
+  },
+  "backup_wait": {
+    "message": "Обрабатываем архив…"
+  },
+  "backup_review": {
+    "message": "Проверка резервной копии"
+  },
+  "backup_replace_description": {
+    "message": "Эти записи будут заменены. Остальные данные сохранятся."
+  },
+  "backup_skipped": {
+    "message": "Записи, которые будут пропущены"
+  },
+  "backup_confirm": {
+    "message": "Восстановить данные"
+  },
+  "backup_exported": {
+    "message": "Резервная копия скачана."
+  },
+  "backup_export_error": {
+    "message": "Не удалось сохранить резервную копию."
+  },
+  "backup_invalid": {
+    "message": "Не удалось прочитать архив. Выберите резервную копию расширения в формате ZIP."
+  },
+  "backup_restored": {
+    "message": "Данные восстановлены."
+  },
+  "backup_failed": {
+    "message": "Не удалось восстановить данные из копии. Прежние данные сохранены."
+  },
+  "backup_partial": {
+    "message": "Часть данных могла измениться. Нажмите «Вернуть прежние данные», чтобы попробовать их восстановить."
+  },
+  "backup_retry_restore": {
+    "message": "Вернуть прежние данные"
+  },
+  "backup_recovered": {
+    "message": "Прежние данные восстановлены."
+  },
+  "maker_split": {
+    "message": "Изменить высоту формы и предпросмотра"
+  },
+  "maker_loading": {
+    "message": "Загружаем страницу трекера…"
+  },
+  "maker_request_error": {
+    "message": "Не удалось загрузить страницу трекера. Проверьте адрес и попробуйте ещё раз."
+  },
+  "maker_no_preview": {
+    "message": "Откройте страницу трекера для предпросмотра."
+  },
+  "maker_transformations": {
+    "message": "Преобразования"
+  },
+  "maker_no_transformations": {
+    "message": "Преобразований пока нет."
+  },
+  "maker_method": {
+    "message": "Метод"
+  },
+  "maker_argument_error": {
+    "message": "Проверьте значение аргумента."
+  },
+  "maker_selector_error": {
+    "message": "Проверьте селектор или откройте предпросмотр."
+  },
+  "maker_selector_empty": {
+    "message": "Селектор не нашёл ни одного элемента."
+  },
+  "maker_import_error": {
+    "message": "Не удалось прочитать описание трекера."
+  },
+  "editor_import_file": {
+    "message": "Импортировать файл"
+  },
+  "editor_import_error": {
+    "message": "Не удалось прочитать файл трекера."
+  },
+  "editor_enable_script": {
+    "message": "Разрешить скрипт"
+  },
+  "editor_script_confirm": {
+    "message": "Скрипт будет работать в песочнице и сможет отправлять запросы на $1 от имени вашей учётной записи на трекере. Разрешайте скрипты только из источников, которым доверяете."
+  },
+  "editor_save_error": {
+    "message": "Не удалось сохранить трекер. Проверьте описание и попробуйте ещё раз."
+  },
+  "editor_script_invalid": {
+    "message": "Не удалось запустить скрипт. Проверьте, что он регистрирует поиск через актуальный API трекеров."
+  },
+  "tracker_restore_builtin": {
+    "message": "Восстановить встроенный трекер"
+  },
+  "discard_changes": {
+    "message": "Закрыть без сохранения изменений?"
+  },
+  "profile_missing": {
+    "message": "Этот список трекеров больше не существует."
+  },
+  "profiles_empty": {
+    "message": "Списков трекеров пока нет."
+  },
+  "profile_conflict": {
+    "message": "Сохранённые списки изменились. Нажмите «Обновить», чтобы загрузить актуальные данные."
+  },
+  "catalog_loading": {
+    "message": "Загружаем внешний каталог…"
+  },
+  "catalog_unavailable": {
+    "message": "Не удалось загрузить каталог. Проверьте источники и повторите попытку."
+  },
+  "catalog_partial": {
+    "message": "Некоторые источники каталога недоступны."
+  },
+  "catalog_empty": {
+    "message": "В каталоге нет трекеров."
+  },
+  "catalog_install_error": {
+    "message": "Не удалось обновить трекер. Попробуйте ещё раз."
+  },
+  "tracker_builtin": {
+    "message": "Встроенный"
+  },
+  "tracker_custom": {
+    "message": "Установленный"
+  },
+  "tracker_support": {
+    "message": "Поддержка"
+  },
+  "quality_settings": {
+    "message": "Оценка качества"
+  },
+  "quality_description": {
+    "message": "Правила начисляют баллы по данным раздачи. Баллы категории помогают классифицировать результаты и не входят в оценку качества."
+  },
+  "quality_rules": {
+    "message": "Правила оценки"
+  },
+  "quality_new_rule": {
+    "message": "Добавить правило"
+  },
+  "quality_edit_rule": {
+    "message": "Изменить правило"
+  },
+  "quality_find": {
+    "message": "Найти правила"
+  },
+  "quality_empty": {
+    "message": "Нет подходящих правил."
+  },
+  "quality_defaults": {
+    "message": "Вернуть стандартные настройки"
+  },
+  "quality_conflict": {
+    "message": "Настройки изменились в другой вкладке. Экспортируйте черновик перед обновлением настроек."
+  },
+  "quality_includeSeeds": {
+    "message": "Учитывать сидов"
+  },
+  "quality_seedMin": {
+    "message": "Минимум сидов"
+  },
+  "quality_seedPoints": {
+    "message": "Баллы за сидов"
+  },
+  "quality_includeLeeches": {
+    "message": "Учитывать личеров"
+  },
+  "quality_leechMin": {
+    "message": "Минимальное число личеров"
+  },
+  "quality_leechPoints": {
+    "message": "Баллы за личеров"
+  },
+  "quality_margin": {
+    "message": "Минимальный разрыв баллов категорий"
+  },
+  "quality_patterns": {
+    "message": "Варианты совпадения"
+  },
+  "quality_pattern": {
+    "message": "Слово или шаблон"
+  },
+  "quality_add_pattern": {
+    "message": "Добавить вариант"
+  },
+  "quality_unconditional": {
+    "message": "Любое название"
+  },
+  "quality_regex": {
+    "message": "Регулярное выражение"
+  },
+  "quality_sensitive": {
+    "message": "Учитывать регистр"
+  },
+  "quality_weights": {
+    "message": "Веса"
+  },
+  "quality_add_weight": {
+    "message": "Добавить вес"
+  },
+  "quality_bounds": {
+    "message": "Ограничения размера и возраста"
+  },
+  "quality_minBytes": {
+    "message": "Не менее, байт"
+  },
+  "quality_maxBytes": {
+    "message": "Меньше, байт"
+  },
+  "quality_minAgeDays": {
+    "message": "Не менее, дней"
+  },
+  "quality_maxAgeDays": {
+    "message": "Меньше, дней"
+  },
+  "quality_conditions": {
+    "message": "Дополнительные условия"
+  },
+  "quality_add_condition": {
+    "message": "Добавить условие"
+  },
+  "quality_scope": {
+    "message": "Где искать совпадение"
+  },
+  "quality_any": {
+    "message": "Во всём названии"
+  },
+  "quality_before": {
+    "message": "Перед основным совпадением"
+  },
+  "quality_after": {
+    "message": "После основного совпадения"
+  },
+  "quality_criterion": {
+    "message": "Критерий"
+  },
+  "quality_category": {
+    "message": "Категория"
+  },
+  "quality_points": {
+    "message": "Баллы"
+  },
+  "quality_resolution": {
+    "message": "Разрешение"
+  },
+  "quality_video": {
+    "message": "Формат видео"
+  },
+  "quality_audio": {
+    "message": "Формат аудио"
+  },
+  "quality_game": {
+    "message": "Версия игры"
+  },
+  "quality_size": {
+    "message": "Размер"
+  },
+  "quality_date": {
+    "message": "Возраст"
+  },
+  "quality_transfer": {
+    "message": "Импорт и экспорт JSON"
+  },
+  "quality_transfer_help": {
+    "message": "Вставьте JSON или выберите файл. После проверки увидите, как изменится черновик."
+  },
+  "quality_import_json": {
+    "message": "JSON для импорта"
+  },
+  "quality_upload": {
+    "message": "Загрузить из файла"
+  },
+  "quality_mode": {
+    "message": "Способ импорта"
+  },
+  "quality_merge": {
+    "message": "Добавить новые правила и обновить баллы в совпадающих"
+  },
+  "quality_replace": {
+    "message": "Заменить текущие правила правилами из JSON"
+  },
+  "quality_check": {
+    "message": "Проверить JSON"
+  },
+  "quality_import_impact": {
+    "message": "Добавить: $1. Обновить: $2. Заменить: $3."
+  },
+  "quality_apply_draft": {
+    "message": "Применить к черновику"
+  },
+  "quality_schema": {
+    "message": "Скачать схему JSON"
+  },
+  "quality_export_draft": {
+    "message": "Экспорт черновика"
+  },
+  "quality_export_json": {
+    "message": "Черновик в формате JSON"
+  },
+  "quality_copy": {
+    "message": "Скопировать JSON"
+  },
+  "quality_download": {
+    "message": "Скачать JSON"
+  },
+  "quality_copied": {
+    "message": "JSON скопирован."
+  },
+  "quality_copy_error": {
+    "message": "Не удалось скопировать JSON. Вы можете скачать его."
+  },
+  "quality_error_version": {
+    "message": "Поддерживается только версия 1."
+  },
+  "quality_error_syntax": {
+    "message": "Проверьте синтаксис JSON."
+  },
+  "quality_error_field": {
+    "message": "Это поле не поддерживается."
+  },
+  "quality_error_regex": {
+    "message": "Проверьте синтаксис регулярного выражения."
+  },
+  "quality_error_complexity": {
+    "message": "Слишком сложное регулярное выражение."
+  },
+  "quality_error_length": {
+    "message": "Документ слишком большой."
+  },
+  "quality_error_text": {
+    "message": "Введите текст допустимой длины."
+  },
+  "quality_error_number": {
+    "message": "Введите число в допустимом диапазоне."
+  },
+  "quality_error_range": {
+    "message": "Верхняя граница должна быть больше нижней."
+  },
+  "quality_error_category": {
+    "message": "Выберите поддерживаемую категорию."
+  },
+  "quality_error_criterion": {
+    "message": "Выберите поддерживаемый критерий."
+  },
+  "quality_error_list": {
+    "message": "Проверьте число элементов в списке."
+  },
+  "quality_error_object": {
+    "message": "Ожидается объект."
+  },
+  "quality_error_boolean": {
+    "message": "Ожидается true или false."
+  },
+  "quality_error_scope": {
+    "message": "Выберите, в какой части названия искать совпадение."
+  },
+  "maker_heading": {
+    "message": "Конструктор трекера"
+  },
+  "tracker_code": {
+    "message": "Код трекера"
+  },
+  "editor_heading": {
+    "message": "Редактор трекера"
+  },
+  "page_not_found": {
+    "message": "Страница не найдена"
+  },
+  "maker_preview_title": {
+    "message": "Предпросмотр страницы"
+  },
+  "maker_origin": {
+    "message": "Адрес вкладки сайта"
+  },
+  "maker_headers": {
+    "message": "Заголовки HTTP (JSON)"
+  },
+  "maker_auto_title": {
+    "message": "Определить поля"
+  },
+  "maker_auto_open_first": {
+    "message": "Сначала откройте страницу с результатами поиска."
+  },
+  "maker_auto_pending": {
+    "message": "Анализируем страницу и проверяем результаты…"
+  },
+  "maker_auto_results": {
+    "message": "Поля определены по строкам результатов ($1)."
+  },
+  "maker_auto_login": {
+    "message": "Войти на трекер"
+  },
+  "maker_auto_empty": {
+    "message": "Результатов поиска нет. Откройте страницу с результатами, чтобы определить поля."
+  },
+  "maker_auto_unsupported": {
+    "message": "Не удалось распознать результаты поиска. Выберите поля вручную."
+  },
+  "maker_auto_error": {
+    "message": "Не удалось разобрать или проверить страницу. Настройки сохранились."
+  },
+  "maker_auto_search_unknown": {
+    "message": "Шаблон запроса не найден. Перед экспортом проверьте адрес поиска или тело POST-запроса."
+  },
+  "maker_auto_search_found": {
+    "message": "Шаблон поискового запроса найден и заполнен."
+  },
+  "maker_auto_format_detected": {
+    "message": "формат определён"
+  },
+  "maker_auto_format_ambiguous": {
+    "message": "неоднозначный формат; поле пропущено"
+  },
+  "maker_auto_format_unsupported": {
+    "message": "формат не определён. Проверьте поле."
+  },
+  "maker_auto_login_required": {
+    "message": "Для просмотра этой страницы нужно войти. Войдите на сайте трекера и загрузите результаты снова."
+  },
+  "maker_auto_request_failed": {
+    "message": "Трекер вернул ошибку. Попробуйте загрузить результаты снова."
+  },
+  "maker_auto_format_invalid": {
+    "message": "недопустимые значения; поле пропущено"
+  },
+  "maker_auto_not_found": {
+    "message": "На этой странице не найдено"
+  },
+  "maker_auto_next_incompatible": {
+    "message": "Найдена ссылка $1. Настройте переход на следующую страницу вручную."
+  },
+  "maker_setup": {
+    "message": "Настройка"
+  },
+  "maker_check": {
+    "message": "Проверка"
+  },
+  "maker_code": {
+    "message": "Код"
+  },
+  "maker_result": {
+    "message": "Результат"
+  },
+  "maker_fields": {
+    "message": "Поля"
+  },
+  "maker_tracker_lists": {
+    "message": "К спискам трекеров"
+  },
+  "maker_source_address": {
+    "message": "Адрес страницы с результатами"
+  },
+  "maker_source_phrase": {
+    "message": "Запрос на этой странице"
+  },
+  "maker_help_label": {
+    "message": "Справка — $1"
+  },
+  "maker_help_address": {
+    "message": "Вставьте адрес страницы, на которой уже видны раздачи трекера."
+  },
+  "maker_help_phrase": {
+    "message": "Введите запрос, по которому открыта страница выше."
+  },
+  "maker_request_options": {
+    "message": "Параметры запроса"
+  },
+  "maker_request_tab": {
+    "message": "Запросы через вкладку"
+  },
+  "maker_open_detect": {
+    "message": "Открыть и определить поля"
+  },
+  "maker_open_manual": {
+    "message": "Открыть для ручной настройки"
+  },
+  "maker_check_phrase": {
+    "message": "Проверочная фраза"
+  },
+  "maker_check_run": {
+    "message": "Проверить"
+  },
+  "maker_check_stale": {
+    "message": "Настройки или запрос изменились. Проверьте ещё раз."
+  },
+  "maker_result_count": {
+    "message": "Извлечено раздач: $1"
+  },
+  "maker_all_fields": {
+    "message": "Все поля"
+  },
+  "maker_main_fields": {
+    "message": "Основные поля"
+  },
+  "maker_previous": {
+    "message": "Предыдущая страница"
+  },
+  "maker_next": {
+    "message": "Следующая страница"
+  },
+  "maker_current_page": {
+    "message": "Страница $1"
+  },
+  "maker_required_issues": {
+    "message": "Обязательные поля для проверки"
+  },
+  "maker_optional_issues": {
+    "message": "Замечания по необязательным полям"
+  },
+  "maker_continue": {
+    "message": "Перейти к коду"
+  },
+  "maker_fix": {
+    "message": "Исправить"
+  },
+  "maker_all_issues": {
+    "message": "Все замечания ($1)"
+  },
+  "maker_issue_row": {
+    "message": "Строка $1"
+  },
+  "maker_issue_selector": {
+    "message": "Ошибка синтаксиса селектора"
+  },
+  "maker_issue_no_match": {
+    "message": "Нет совпадений"
+  },
+  "maker_issue_pipeline": {
+    "message": "Ошибка преобразования"
+  },
+  "maker_issue_value": {
+    "message": "Нет значения или неверный формат"
+  },
+  "maker_issue_link": {
+    "message": "Недопустимая ссылка"
+  },
+  "maker_model_report": {
+    "message": "Отчёт об определении полей"
+  },
+  "maker_model_manual": {
+    "message": "Изменено вручную"
+  },
+  "maker_model_kept": {
+    "message": "Сохранено из черновика"
+  },
+  "maker_model_found": {
+    "message": "Определённые поля"
+  },
+  "maker_preview_position": {
+    "message": "Положение предпросмотра"
+  },
+  "maker_preview_bottom": {
+    "message": "Снизу"
+  },
+  "maker_preview_right": {
+    "message": "Справа"
+  },
+  "maker_preview_window": {
+    "message": "Отдельное окно"
+  },
+  "maker_preview_collapse": {
+    "message": "Свернуть предпросмотр"
+  },
+  "maker_preview_blocked": {
+    "message": "Браузер заблокировал окно. Страница трекера открыта снизу."
+  },
+  "maker_selecting": {
+    "message": "Выбор для поля «$1»"
+  },
+  "maker_cancel_selection": {
+    "message": "Отменить выбор"
+  },
+  "maker_match_count": {
+    "message": "$1 · Совпадений: $2"
+  },
+  "maker_highlight_field": {
+    "message": "Подсветить совпадения — $1"
+  },
+  "maker_icon_generate": {
+    "message": "Сгенерировать"
+  },
+  "maker_icon_file": {
+    "message": "Из файла"
+  },
+  "maker_icon_url": {
+    "message": "По ссылке"
+  },
+  "maker_icon_address": {
+    "message": "Ссылка на изображение"
+  },
+  "maker_icon_load": {
+    "message": "Загрузить изображение"
+  },
+  "maker_icon_error": {
+    "message": "Выберите корректное изображение PNG, JPEG, SVG или ICO размером до 1 МБ."
+  },
+  "maker_description_example": {
+    "message": "Независимое кино и открытые медиа"
+  },
+  "maker_publication": {
+    "message": "Публикация"
+  },
+  "maker_code_url": {
+    "message": "Адрес файла JSON"
+  },
+  "maker_github_help": {
+    "message": "Публикация на GitHub"
+  },
+  "maker_github_repo": {
+    "message": "Создайте публичный репозиторий на GitHub. В примере репозиторий называется trackers, а ветка — main."
+  },
+  "maker_github_files": {
+    "message": "Загрузите JSON трекера в репозиторий. В примере файл open-media.json лежит в корне."
+  },
+  "maker_github_raw": {
+    "message": "Вставьте прямую ссылку на файл в поле «Адрес файла JSON». В примере замените <github-user> на своё имя пользователя."
+  },
+  "maker_github_update": {
+    "message": "Для обновления увеличьте версию и замените JSON в том же файле."
+  },
+  "maker_import": {
+    "message": "Импортировать JSON"
+  },
+  "maker_import_replace": {
+    "message": "После успешного импорта текущий черновик будет заменён."
+  },
+  "maker_code_json": {
+    "message": "JSON трекера"
+  },
+  "maker_export_stale": {
+    "message": "Код устарел."
+  },
+  "maker_export_check": {
+    "message": "Проверьте трекер и исправьте ошибки, которые мешают создать JSON."
+  },
+  "maker_export_error": {
+    "message": "Проверьте адреса и версию трекера перед получением кода."
+  },
+  "maker_copy": {
+    "message": "Скопировать"
+  },
+  "maker_copied": {
+    "message": "JSON скопирован."
+  },
+  "maker_copy_error": {
+    "message": "Выделите JSON и скопируйте вручную."
+  },
+  "maker_download": {
+    "message": "Скачать JSON"
+  },
+  "maker_help_method": {
+    "message": "Выберите операцию, которая считывает выбранный элемент или преобразует его значение."
+  },
+  "maker_method_help": {
+    "message": "Справка по преобразованиям"
+  },
+  "maker_empty_source": {
+    "message": "Источник не содержит результатов."
+  },
+  "maker_tracker_page": {
+    "message": "Страница трекера"
+  },
+  "maker_help_search_url": {
+    "message": "По этому адресу расширение выполняет новые поиски."
+  },
+  "maker_help_search_method": {
+    "message": "Выберите HTTP-метод формы поиска трекера."
+  },
+  "maker_help_search_encoding": {
+    "message": "Выберите кодировку, в которой трекер ожидает запрос."
+  },
+  "maker_help_search_charset": {
+    "message": "Укажите кодировку ответа, если текст страницы отображается неверно."
+  },
+  "maker_help_search_body": {
+    "message": "Укажите данные, которые форма отправляет в теле POST."
+  },
+  "maker_help_search_query": {
+    "message": "Укажите параметры, которые нужно добавить к адресу запроса."
+  },
+  "maker_help_search_baseUrl": {
+    "message": "Поле сохраняет основной URL из старых описаний трекеров."
+  },
+  "maker_help_search_originUrl": {
+    "message": "Это страница, которую расширение открывает для запросов через вкладку."
+  },
+  "maker_help_search_headers": {
+    "message": "Укажите дополнительные HTTP-заголовки в виде объекта JSON."
+  },
+  "maker_help_search_tab": {
+    "message": "Выполняйте запросы из вкладки на сайте трекера."
+  },
+  "maker_help_check_phrase": {
+    "message": "Введите запрос, чтобы проверить текущие настройки трекера."
+  },
+  "maker_help_selector_row": {
+    "message": "Укажите повторяющийся элемент с данными одной раздачи."
+  },
+  "maker_help_login_url": {
+    "message": "Укажите адрес страницы входа на трекер."
+  },
+  "maker_help_desc_name": {
+    "message": "Введите название, по которому пользователи узнают трекер."
+  },
+  "maker_help_desc_url": {
+    "message": "Укажите главную страницу трекера."
+  },
+  "maker_help_desc_description": {
+    "message": "Коротко расскажите, что можно найти на этом трекере."
+  },
+  "maker_help_desc_version": {
+    "message": "Укажите версию описания трекера."
+  },
+  "maker_help_icon": {
+    "message": "Выберите цвет или изображение для иконки трекера."
+  },
+  "maker_help_code_url": {
+    "message": "Укажите прямую HTTP- или HTTPS-ссылку на JSON трекера."
+  },
+  "maker_help_json": {
+    "message": "Вставьте содержимое JSON-файла трекера, полученного в конструкторе."
+  },
+  "maker_source_invalid": {
+    "message": "Укажите полный адрес с HTTP или HTTPS."
+  },
+  "maker_configure": {
+    "message": "Настроить"
+  },
+  "maker_configure_field": {
+    "message": "Настроить — $1"
+  },
+  "maker_help_usage": {
+    "message": "Как работает"
+  },
+  "maker_help_example": {
+    "message": "Пример"
+  },
+  "maker_help_address_usage": {
+    "message": "При автоопределении конструктор ищет на этой странице поля выдачи и место для подстановки запроса."
+  },
+  "maker_help_phrase_usage": {
+    "message": "Целиком укажите исходную фразу. По ней расширение определит, куда подставлять новые запросы."
+  },
+  "maker_help_search_url_usage": {
+    "message": "Поставьте %search% на место поисковой фразы. Её также можно передать в параметрах или теле POST."
+  },
+  "maker_help_search_method_usage": {
+    "message": "GET передаёт параметры в адресе. Для POST заполните тело запроса, если форма отправляет данные в нём."
+  },
+  "maker_help_search_encoding_usage": {
+    "message": "Расширение кодирует запрос перед подстановкой вместо %search%. Большинство сайтов используют UTF-8. Некоторые старые сайты ожидают Windows-1251."
+  },
+  "maker_help_search_charset_usage": {
+    "message": "Оставьте поле пустым, чтобы взять кодировку из заголовков ответа. Если в них её нет, расширение использует UTF-8."
+  },
+  "maker_help_search_body_usage": {
+    "message": "Подставьте %search% на место запроса. Для тела в формате JSON укажите Content-Type в HTTP-заголовках."
+  },
+  "maker_help_search_query_usage": {
+    "message": "Расширение добавит разделитель и подставит запрос вместо %search%. Указывайте каждый параметр один раз в адресе или в этом поле."
+  },
+  "maker_legacy_base_url": {
+    "message": "Основной URL (совместимость)"
+  },
+  "maker_help_search_baseUrl_usage": {
+    "message": "Расширение раскрывает относительные ссылки по фактическому адресу ответа. Для нового трекера оставьте это поле пустым."
+  },
+  "maker_help_search_originUrl_usage": {
+    "message": "Укажите страницу для сессии сайта. Если поле пустое, расширение возьмёт сайт из адреса запроса."
+  },
+  "maker_help_search_headers_usage": {
+    "message": "Заключите имена и значения в двойные кавычки. Добавьте заголовки, которые нужны трекеру для этого запроса."
+  },
+  "maker_help_search_tab_usage": {
+    "message": "Браузер может использовать сессию сайта во вкладке. Включите эту настройку, если трекер показывает раздачи после входа."
+  },
+  "maker_help_check_phrase_usage": {
+    "message": "Попробуйте другой запрос и убедитесь, что изменились адрес или тело запроса и сами результаты."
+  },
+  "maker_help_selector_row_usage": {
+    "message": "Расширение будет искать название, ссылку и остальные поля внутри каждой такой строки."
+  },
+  "maker_help_selector_title": {
+    "message": "Укажите элемент с названием раздачи."
+  },
+  "maker_help_selector_title_usage": {
+    "message": "Получите текст из каждой строки. Раздача без названия не появится в результатах поиска."
+  },
+  "maker_help_selector_url": {
+    "message": "Укажите ссылку на страницу раздачи."
+  },
+  "maker_help_selector_url_usage": {
+    "message": "Получите адрес из href. Раздача без ссылки на страницу не появится в результатах поиска."
+  },
+  "maker_help_selector_size": {
+    "message": "Укажите элемент с размером раздачи."
+  },
+  "maker_help_selector_size_usage": {
+    "message": "На выходе нужен размер в байтах. Примените parseSize к тексту вроде 1.5 GB."
+  },
+  "maker_help_selector_downloadUrl": {
+    "message": "Укажите прямую ссылку на скачивание раздачи."
+  },
+  "maker_help_selector_downloadUrl_usage": {
+    "message": "Считайте значение href. Если в результатах поиска нет прямой ссылки, оставьте поле пустым."
+  },
+  "maker_help_selector_seeds": {
+    "message": "Укажите элемент с числом сидов."
+  },
+  "maker_help_selector_seeds_usage": {
+    "message": "На выходе нужно целое число. Уберите подпись преобразованием перед переводом в число."
+  },
+  "maker_help_selector_peers": {
+    "message": "Укажите элемент с числом личеров в результатах поиска."
+  },
+  "maker_help_selector_peers_usage": {
+    "message": "Выберите элемент с нужным счётчиком и извлеките целое число из каждой строки."
+  },
+  "maker_help_selector_date": {
+    "message": "Укажите дату публикации раздачи."
+  },
+  "maker_help_selector_date_usage": {
+    "message": "Выберите преобразование для формата сайта. Для ISO-даты в datetime извлеките атрибут и примените parseIsoDate."
+  },
+  "maker_help_selector_nextPageUrl": {
+    "message": "Укажите ссылку на следующую страницу выдачи."
+  },
+  "maker_help_selector_nextPageUrl_usage": {
+    "message": "Расширение ищет ссылку по всей странице. Если совпадений нет, загрузка результатов на этом заканчивается."
+  },
+  "maker_help_selector_categoryTitle": {
+    "message": "Укажите название рубрики в строке раздачи."
+  },
+  "maker_help_selector_categoryTitle_usage": {
+    "message": "Получите название рубрики. Если на сайте оно ведёт на страницу рубрики, настройте ссылку отдельно."
+  },
+  "maker_help_selector_categoryUrl": {
+    "message": "Укажите ссылку на рубрику раздачи."
+  },
+  "maker_help_selector_categoryUrl_usage": {
+    "message": "Считайте значение href из ссылки на рубрику. Если оставить поле пустым, в результатах будет видно название рубрики."
+  },
+  "maker_help_selector_loginForm": {
+    "message": "Укажите форму или другой элемент, по которому можно узнать страницу входа."
+  },
+  "maker_help_selector_loginForm_usage": {
+    "message": "Если селектор находит элемент, расширение предлагает войти. Выберите элемент, который появляется только тогда, когда нужен вход."
+  },
+  "maker_help_skipFromStart": {
+    "message": "Укажите, сколько совпавших строк пропустить в начале."
+  },
+  "maker_help_skipFromStart_usage": {
+    "message": "Укажите 1, если первая подходящая строка — заголовок таблицы. Если селектор находит только раздачи, укажите 0."
+  },
+  "maker_help_skipFromEnd": {
+    "message": "Укажите, сколько совпавших строк пропустить в конце."
+  },
+  "maker_help_skipFromEnd_usage": {
+    "message": "Укажите 1, если последняя подходящая строка содержит навигацию. Если селектор находит только раздачи, укажите 0."
+  },
+  "maker_help_desc_url_usage": {
+    "message": "Пользователь сможет открыть этот адрес по иконке сайта."
+  },
+  "maker_help_desc_version_usage": {
+    "message": "При замене опубликованного JSON увеличьте версию, чтобы расширение обнаружило обновление."
+  },
+  "maker_help_icon_usage": {
+    "message": "Кнопки «Из файла» и «По ссылке» встраивают изображение в экспортируемый трекер. Поддерживаются PNG, JPEG, SVG и ICO."
+  },
+  "maker_help_code_url_usage": {
+    "message": "Расширение использует этот адрес для установки и обновлений. Для локального черновика оставьте поле пустым."
+  },
+  "maker_help_export": {
+    "message": "Это JSON текущего черновика после успешной проверки."
+  },
+  "maker_help_export_usage": {
+    "message": "Скопируйте или скачайте код, чтобы опубликовать его или позже открыть через импорт JSON."
+  },
+  "maker_help_method_usage": {
+    "message": "Шаги выполняются по порядку. Каждый получает результат предыдущего. Справка у аргумента показывает, какой формат ожидает метод."
+  },
+  "maker_argument_label_Attribute": {
+    "message": "Атрибут"
+  },
+  "maker_argument_label_Property": {
+    "message": "Свойство"
+  },
+  "maker_argument_label_Index": {
+    "message": "Индекс"
+  },
+  "maker_argument_label_Pattern": {
+    "message": "Шаблон"
+  },
+  "maker_argument_label_ReplaceTo": {
+    "message": "Замена"
+  },
+  "maker_argument_label_Format": {
+    "message": "Формат даты"
+  },
+  "maker_argument_label_Template": {
+    "message": "Шаблон даты"
+  },
+  "maker_help_argument_Attribute": {
+    "message": "Введите имя HTML-атрибута выбранного элемента."
+  },
+  "maker_help_argument_Attribute_usage": {
+    "message": "getAttr считывает значение из HTML. Например, в атрибуте href может быть относительный путь."
+  },
+  "maker_help_argument_Property": {
+    "message": "Введите имя DOM-свойства выбранного элемента."
+  },
+  "maker_help_argument_Property_usage": {
+    "message": "Свойство href у ссылки возвращает полный адрес. textContent возвращает текст элемента."
+  },
+  "maker_help_argument_Index": {
+    "message": "Укажите индекс дочернего узла."
+  },
+  "maker_help_argument_Index_usage": {
+    "message": "Используйте 0 для первого узла или -1 для последнего. Текстовые узлы тоже учитываются."
+  },
+  "maker_help_argument_PatternText": {
+    "message": "Введите текст, который нужно заменить."
+  },
+  "maker_help_argument_PatternText_usage": {
+    "message": "replace заменяет первое совпадение с учётом регистра. Пробелы и знаки препинания входят в текст."
+  },
+  "maker_help_argument_PatternRegex": {
+    "message": "Введите регулярное выражение для поиска заменяемого текста."
+  },
+  "maker_help_argument_PatternRegex_usage": {
+    "message": "Введите сам шаблон без обрамляющих косых черт и флагов. replaceRe находит все совпадения без учёта регистра."
+  },
+  "maker_help_argument_ReplaceTo": {
+    "message": "Введите текст, который нужно поставить на место совпадения."
+  },
+  "maker_help_argument_ReplaceTo_usage": {
+    "message": "Оставьте поле пустым, чтобы удалить совпавший текст."
+  },
+  "maker_help_argument_Format": {
+    "message": "Введите шаблон даты в том виде, в каком её показывает трекер."
+  },
+  "maker_help_argument_Format_usage": {
+    "message": "Используйте DD для дня, MM для месяца и YYYY для года. Сохраните разделители с сайта."
+  },
+  "maker_help_argument_Template": {
+    "message": "Выберите шаблон, соответствующий тексту даты на трекере."
+  },
+  "maker_help_argument_Template_usage": {
+    "message": "Сверьте порядок дня, месяца и года или выберите шаблон относительного времени."
+  },
+  "maker_argument_invalid_regex": {
+    "message": "Введите корректное регулярное выражение без обрамляющих косых черт."
+  },
+  "maker_argument_invalid_number": {
+    "message": "Введите число."
+  },
+  "maker_argument_invalid_string": {
+    "message": "Введите значение в формате из справки."
+  },
+  "maker_argument_invalid_select": {
+    "message": "Выберите шаблон из списка."
+  },
+  "maker_method_unknown": {
+    "message": "Выберите поддерживаемое преобразование."
+  },
+  "maker_check_request_unverified": {
+    "message": "Результаты получены с исходной страницы. Перед экспортом нажмите «Проверить», чтобы выполнить текущий запрос."
+  },
+  "maker_check_other_page": {
+    "message": "На другой проверенной странице есть ошибки, которые блокируют экспорт."
+  },
+  "maker_blocking_issues": {
+    "message": "Ошибки, блокирующие экспорт"
+  },
+  "maker_check_origin": {
+    "message": "Адрес запроса или вкладки не входит в список разрешённых для этого трекера."
+  },
+  "maker_help_desc_name_usage": {
+    "message": "Это название видно при выборе трекеров для поиска."
+  },
+  "maker_help_desc_description_usage": {
+    "message": "Уточните, какие материалы можно найти на этом трекере."
+  },
+  "maker_help_login_url_usage": {
+    "message": "Расширение предложит эту ссылку, если селектор входа совпадёт в ответе."
+  },
+  "maker_help_json_usage": {
+    "message": "Импорт заменяет черновик. Просмотрите или проверьте настройки перед созданием нового JSON."
+  },
+  "maker_collapse": {
+    "message": "Свернуть"
+  },
+  "maker_transformations_field": {
+    "message": "Преобразования — $1"
+  },
+  "settings_search": {
+    "message": "Поиск"
+  },
+  "kitOpenQuery": {
+    "message": "Поисковый запрос"
+  },
+  "kitQuery": {
+    "message": "Параметры URL"
+  },
+  "kitPostBody": {
+    "message": "Тело POST-запроса"
+  },
+  "kitTrackerUrl": {
+    "message": "Сайт трекера"
+  },
+  "kitSkip": {
+    "message": "Пропуск строк"
+  },
+  "kitSkipTop": {
+    "message": "С начала"
+  },
+  "kitSkipEnd": {
+    "message": "С конца"
+  },
+  "profile_edit_title": {
+    "message": "Редактирование списка «$1»"
+  },
+  "catalog_metadata_error": {
+    "message": "Не удалось загрузить сведения о трекере. Попробуйте ещё раз."
+  },
+  "catalog_add_error": {
+    "message": "Не удалось добавить трекер. Попробуйте ещё раз."
+  },
+  "catalog_remove_error": {
+    "message": "Не удалось удалить трекер. Попробуйте ещё раз."
+  },
+  "tracker_restore_error": {
+    "message": "Не удалось восстановить встроенный трекер. Попробуйте ещё раз."
+  },
+  "history_loading": {
+    "message": "Загружаем историю поиска…"
+  },
+  "history_load_error": {
+    "message": "Не удалось загрузить историю поиска."
+  },
+  "settings_loading": {
+    "message": "Загружаем настройки…"
+  },
+  "settings_load_error": {
+    "message": "Не удалось загрузить настройки."
+  },
+  "editor_loading": {
+    "message": "Загружаем редактор трекера…"
+  },
+  "editor_load_error": {
+    "message": "Не удалось открыть редактор трекера."
+  },
+  "explorer_load_error": {
+    "message": "Не удалось загрузить подборки."
+  },
+  "profiles_loading": {
+    "message": "Загружаем списки трекеров…"
+  },
+  "profiles_load_error": {
+    "message": "Не удалось загрузить списки трекеров."
+  },
+  "trackers_loading": {
+    "message": "Загружаем трекеры…"
+  },
+  "trackers_load_error": {
+    "message": "Не удалось загрузить трекеры."
+  },
+  "calendar_start": {
+    "message": "Начальная дата"
+  },
+  "calendar_end": {
+    "message": "Конечная дата"
+  },
+  "calendar_previous_month": {
+    "message": "Предыдущий месяц"
+  },
+  "calendar_next_month": {
+    "message": "Следующий месяц"
+  },
+  "calendar_choose_day": {
+    "message": "Выбрать"
+  },
+  "calendar_unavailable_day": {
+    "message": "Недоступно"
+  },
+  "ui_language": {
+    "message": "ru"
+  },
+  "tracker_retry": {
+    "message": "Повторить поиск"
+  },
+  "download_torrent": {
+    "message": "Скачать торрент ($1)"
+  },
+  "backup_entry_options": {
+    "message": "Настройки расширения"
+  },
+  "backup_entry_profiles": {
+    "message": "Списки трекеров"
+  },
+  "backup_entry_explorerFavorites": {
+    "message": "Избранное"
+  },
+  "backup_entry_explorerSections": {
+    "message": "Порядок и вид подборок"
+  },
+  "backup_entry_history": {
+    "message": "История поиска"
+  },
+  "backup_entry_profileId": {
+    "message": "Выбранный список трекеров"
+  },
+  "backup_entry_trackers": {
+    "message": "Установленные трекеры"
+  },
+  "backup_entry_explorerModules": {
+    "message": "Источники подборок"
+  },
+  "backup_entry_explorerCache": {
+    "message": "Кеш подборок"
+  },
+  "backup_entry_quickSearch": {
+    "message": "Сохранённые результаты быстрого поиска"
+  },
+  "backup_entry_lastCheckUpdateAt": {
+    "message": "Последняя проверка обновлений трекеров"
+  },
+  "backup_entry_qualitySettings": {
+    "message": "Правила оценки качества"
+  },
+  "catalog_open_source_file": {
+    "message": "Открыть файл в репозитории"
+  },
+  "tracker_http_error": {
+    "message": "Трекер ответил с кодом HTTP $1."
   }
 }

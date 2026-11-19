@@ -4,42 +4,43 @@
   "description": {
     "icon": "data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAQAQAABMLAAATCwAAAAAAAAAAAAAAAAAAAAAAAG5uchUAAAAAAAAAAAAAAAAAAAAAbm5yKm5ucmZubnKZbm5yzG5ucsxubnKTbm5yHgAAAAAAAAAAAAAAAG5ucidZWnFyDA9vewwPbxJubnJpbm5y825ucv9ubnL/bm5y7W5ucoEpK3AzDA9vfgAAAAAAAAAAAAAAAAAAAABubnJva2tydA4SevkOEnr2DhJ6mTY4d0hubnKTbm5ybBoeeUUOEnqxDhJ6/w4SesYAAAAAAAAAAAAAAAAAAAAAdHR3sXR0d4QPFIvYDxSL/w8Ui/8PFIv/DxSLtw8Ui8wPFIv/DxSL/w8Ui/8PFIuldHR3VwAAAAAAAAAAAAAAAHl5feR5eX2WEReetxEXnv8RF57/ERee/xEXnv8RF57/ERee/xEXnv8RF57/EReehHl5fcB5eX1aAAAAAICAgwmAgIP/gICDqBUbspMVG7L/FRuy/xUbsv8VG7L/FRuy/xUbsv8VG7L/FRuy/xUbsmaAgIPkgICD54CAgw+IiIsbiIiL/4iIi5AaIcaKGiHG/xohxv8aIcb/GiHG/xohxv8aIcb/GiHG/xohxv8aIcZXiIiLvYiIi/+IiIuBkZGTKpGRk8YoL9JGISnW+SEp1v8hKdb/ISnW/yEp1v8hKdb/ISnW/yEp1v8hKdb/ISnW6j9FxDGRkZPPkZGT85mZnB5JT88+KzPi8Csz4v8rM+L/KzPi/ysz4v8rM+L/KzPi/ysz4v8rM+L/KzPi/ysz4v8rM+LbX2PBKJmZnNs6QuUbOkLl5DpC5f86QuX/OkLl/zpC5f86QuX/OkLl/zpC5f86QuX/OkLl/zpC5f86QuX/OkLl/zpC5cmOj7IsTlXl205V5f9OVeX/TlXl/05V5f9OVeX/TlXl/05V5f9OVeX/TlXl/05V5f9OVeX/TlXl/05V5f9OVeX/TlXlrra2uFSKjdFSZWvlVGVr5X5la+WoZWvl8GVr5f9la+X/ZWvl/2Vr5f9la+XnZWvlnGdt5HiAhNZxhIjUOwAAAADAwMFywMDB9sDAwf/AwMHPwMDBln2B5WZ9geX/fYHl/32B5f99geX/horgP8DAwcbAwMH/wMDBpQAAAAAAAAAAAAAAAMrKyxXKyst1ysrL2MrKy//Iycxrk5fl2JOX5f+Tl+X/k5flq8rKy4fKysv/ysrLvcrKywYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADT09Q509PUkKut416mqOX/pqjl/Lq73kXT09T509PUxtPT1A8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAs7XlybO15Znb29y029vcxtvb3A8AAAAAAAAAAAAAAAAAAAAA3gNcQYAHbGmAB3RpgANcAIABVEgAAFQ9AABPTQAARVgAAC5CAAA7LgAARDsAAUJTAANWQoADLkrwBy5K/g87Lg==",
     "name": "vtracker.org",
-    "url": "http://vtracker.org/forum/",
+    "url": "https://vtracker.org/forum/",
     "description": "Томский трекер",
-    "version": "1.0"
+    "version": "1.2",
+    "requestMode": "tab"
   },
   "search": {
-    "url": "http://vtracker.org/forum/tracker.php",
+    "url": "https://vtracker.org/forum/tracker.php",
     "method": "POST",
     "body": "allw=1&nm=%search%&submit=%C8%F1%EA%E0%F2%FC",
     "encoding": "cp1251"
   },
   "auth": {
-    "url": "http://vtracker.org/forum/login.php",
+    "url": "https://vtracker.org/forum/login.php",
     "loginForm": {
-      "selector": "table.borderless.bCenter>tbody>tr:eq(0)>td:eq(1)>input"
+      "selector": "form[action='./login.php']:has(input[name='cookie_test']) input[name='login_password']"
     }
   },
   "selectors": {
-    "row": { "selector": "table.forumline>tbody>tr" },
+    "row": { "selector": "table.forumline > tbody > tr:has(> td > a[href^='./viewtopic.php?t='])" },
     "categoryTitle": {
-      "selector": "td.row1:eq(1)>a.gen:eq(0)",
+      "selector": "td > a[href^='tracker.php?f=']",
       "pipeline": [{ "name": "getText" }, { "name": "trim" }]
     },
     "categoryUrl": {
-      "selector": "td.row1:eq(1)>a.gen:eq(0)",
+      "selector": "td > a[href^='tracker.php?f=']",
       "pipeline": [{ "name": "getAttr", "args": ["href"] }]
     },
     "title": {
-      "selector": "td.row4.med.tLeft>a",
+      "selector": "td > a[href^='./viewtopic.php?t=']",
       "pipeline": [{ "name": "getText" }, { "name": "trim" }]
     },
     "url": {
-      "selector": "td.row4.med.tLeft>a",
+      "selector": "td > a[href^='./viewtopic.php?t=']",
       "pipeline": [{ "name": "getAttr", "args": ["href"] }]
     },
     "size": {
-      "selector": "td.row4.small.nowrap:eq(0)",
+      "selector": "td:has(> a[href^='./download.php?id=']) + td",
       "pipeline": [
         { "name": "getText" },
         { "name": "trim" },
@@ -47,7 +48,7 @@
       ]
     },
     "downloadUrl": {
-      "selector": "td.row4.med.nowrap>a",
+      "selector": "td > a[href^='./download.php?id=']",
       "pipeline": [{ "name": "getAttr", "args": ["href"] }]
     },
     "seeds": {
@@ -59,13 +60,17 @@
       "pipeline": [{ "name": "getText" }, { "name": "trim" }]
     },
     "date": {
-      "selector": "td.row4.small.nowrap:eq(1)>p:eq(1)",
+      "selector": "td:last-child > p:last-child",
       "pipeline": [
         { "name": "getText" },
         { "name": "trim" },
         { "name": "legacyReplaceMonth" },
         { "name": "legacyParseDate", "args": ["1"] }
       ]
+    },
+    "nextPageUrl": {
+      "selector": "b + a[href^='tracker.php?search_id='][href*='&start=']",
+      "pipeline": [{ "name": "getProp", "args": ["href"] }]
     }
   }
 }

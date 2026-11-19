@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "featureNames": [
+    "coverage",
+    "orderedCoverage",
+    "phrase",
+    "compactness",
+    "yearMatch",
+    "yearConflict",
+    "yearMissing"
+  ],
+  "weights": [
+    2.6824488,
+    0.5746617,
+    1.0585658,
+    1.061787,
+    0.635589,
+    -4.1112664,
+    -1.2930875
+  ],
+  "bias": -2.6756408
+}

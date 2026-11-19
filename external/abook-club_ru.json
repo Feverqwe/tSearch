@@ -6,7 +6,7 @@
     "name": "abook-club.ru",
     "url": "http://torrent.abook-club.ru/",
     "description": "Трекер Клуба Любителей Аудиокниг",
-    "version": "1.0"
+    "version": "1.1"
   },
   "search": {
     "url": "http://torrent.abook-club.ru/browse.php?incldead=0&search=%search%",
@@ -20,25 +20,27 @@
     }
   },
   "selectors": {
-    "row": { "selector": "form>table:eq(2)>tbody>tr" },
+    "row": {
+      "selector": "tr:has(> td > a[href^='browse.php?cat='] > img):has(> td table a[href^='details.php?id='])"
+    },
     "categoryTitle": {
-      "selector": "td:eq(0)>a>img",
+      "selector": "td > a[href^='browse.php?cat='] > img",
       "pipeline": [{ "name": "getAttr", "args": ["alt"] }]
     },
     "categoryUrl": {
-      "selector": "td:eq(0)>a",
+      "selector": "td > a[href^='browse.php?cat=']",
       "pipeline": [{ "name": "getAttr", "args": ["href"] }]
     },
     "title": {
-      "selector": "td:eq(1) a",
+      "selector": "td table a[href^='details.php?id=']",
       "pipeline": [{ "name": "getText" }, { "name": "trim" }]
     },
     "url": {
-      "selector": "td:eq(1) a",
+      "selector": "td table a[href^='details.php?id=']",
       "pipeline": [{ "name": "getAttr", "args": ["href"] }]
     },
     "size": {
-      "selector": "td:eq(7)",
+      "selector": ":scope > td:nth-last-child(4)",
       "pipeline": [
         { "name": "getText" },
         { "name": "trim" },
@@ -46,20 +48,27 @@
       ]
     },
     "seeds": {
-      "selector": "td:eq(8)",
+      "selector": ":scope > td:nth-last-child(3)",
       "pipeline": [{ "name": "getText" }, { "name": "trim" }]
     },
     "peers": {
-      "selector": "td:eq(9)",
+      "selector": ":scope > td:nth-last-child(2)",
       "pipeline": [{ "name": "getText" }, { "name": "trim" }]
     },
     "date": {
-      "selector": "td:eq(6)",
+      "selector": "td > nobr",
       "pipeline": [
         { "name": "getText" },
         { "name": "trim" },
         { "name": "replaceRe", "args": ["(.{10})(.+)", "$1 $2"] },
         { "name": "legacyParseDate", "args": [0] }
+      ]
+    },
+    "nextPageUrl": {
+      "selector": "p > br ~ b + a[href^='browse.php?search='][href*='&page=']",
+      "pipeline": [
+        { "name": "getAttr", "args": ["href"] },
+        { "name": "replaceRe", "args": ["^([^?]+\\?search=[^&]*.*?)&search=[^&]*", "$1"] }
       ]
     }
   }

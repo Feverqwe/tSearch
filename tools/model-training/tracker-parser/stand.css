@@ -1,0 +1,306 @@
+:root {
+  color-scheme: light;
+  font-family: 'Geist', system-ui, sans-serif;
+  color: #192631;
+  background: #eff2ef;
+  --ink: #192631;
+  --muted: #536473;
+  --line: #cfd8dc;
+  --paper: #fbfcfa;
+  --accent: #ab3d1c;
+  --code: #f3f6f5;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.stand {
+  width: min(100% - 3rem, 1400px);
+  margin: 0 auto;
+  padding: clamp(1.5rem, 4vw, 3.5rem) 0 1rem;
+}
+
+.stand-header {
+  padding: 0 0 1.35rem;
+}
+
+.project,
+.format {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.project {
+  margin: 0 0 0.7rem;
+  color: var(--accent);
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  line-height: 1.02;
+  letter-spacing: -0.045em;
+}
+
+.intro,
+.local-note {
+  color: var(--muted);
+}
+
+.intro {
+  margin: 0.7rem 0 0;
+  max-width: 60ch;
+  line-height: 1.55;
+}
+
+.panes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--accent);
+  background: var(--paper);
+}
+
+.pane {
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  min-width: 0;
+}
+
+.result-pane {
+  border-left: 1px solid var(--line);
+}
+
+.pane-heading,
+.pane-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  padding: 0.85rem 1rem;
+}
+
+.pane-heading {
+  border-bottom: 1px solid var(--line);
+}
+
+.pane-heading h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.format {
+  color: var(--muted);
+}
+
+.source-tools,
+.result-summary {
+  min-height: 7.9rem;
+  padding: 0.9rem 1rem;
+}
+
+.result-summary {
+  display: grid;
+  align-content: center;
+  gap: 0.7rem;
+}
+
+.source-tools,
+.request-fields {
+  display: grid;
+  align-content: start;
+  gap: 0.5rem;
+}
+
+label,
+.examples {
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.source-tools input,
+textarea,
+button,
+.file-button {
+  border: 1px solid var(--line);
+  border-radius: 0.35rem;
+  color: var(--ink);
+  font: inherit;
+}
+
+.source-tools input,
+.request-fields textarea {
+  width: 100%;
+  background: white;
+  padding: 0.55rem 0.65rem;
+  font-family: ui-monospace, monospace;
+  font-size: 0.85rem;
+}
+
+.request-evidence {
+  font-size: 0.82rem;
+}
+
+.request-evidence summary {
+  cursor: pointer;
+}
+
+.request-fields {
+  margin: 0.65rem 0;
+}
+
+.request-fields textarea {
+  resize: vertical;
+}
+
+.examples {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  align-items: center;
+  color: var(--muted);
+}
+
+button,
+.file-button {
+  background: white;
+  padding: 0.55rem 0.7rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.examples button {
+  padding: 0.3rem 0.5rem;
+  font-size: 0.76rem;
+}
+
+button:hover:not(:disabled),
+.file-button:hover {
+  border-color: var(--muted);
+}
+
+button:disabled {
+  color: var(--muted);
+  background: transparent;
+  cursor: default;
+}
+
+button.primary {
+  color: white;
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+button.primary:hover:not(:disabled) {
+  background: #8a3117;
+}
+
+:focus-visible,
+.file-button:focus-within {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.file-button input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.status-mark {
+  width: 0.55rem;
+  height: 0.55rem;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.status[data-tone='success'] {
+  color: #256242;
+}
+
+.status[data-tone='warning'] {
+  color: var(--accent);
+}
+
+.search-status {
+  border-left: 2px solid currentColor;
+  padding-left: 0.65rem;
+  color: #256242;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.search-status[data-tone='warning'] {
+  color: var(--accent);
+}
+
+.search-status-detail {
+  color: var(--muted);
+}
+
+.editor {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 0.45rem;
+  min-width: 0;
+  padding: 0 1rem;
+}
+
+.editor textarea {
+  width: 100%;
+  min-height: clamp(18rem, 44vh, 45rem);
+  padding: 0.7rem 0.8rem;
+  background: var(--code);
+  resize: vertical;
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 0.81rem;
+  line-height: 1.55;
+  white-space: pre;
+}
+
+.result-actions {
+  justify-content: flex-end;
+}
+
+.local-note {
+  font-size: 0.8rem;
+  margin: 0.8rem 0 0;
+}
+
+@media (max-width: 720px) {
+  .stand {
+    width: min(100% - 1.5rem, 1400px);
+  }
+
+  .panes {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .result-pane {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .result-summary {
+    min-height: auto;
+  }
+}

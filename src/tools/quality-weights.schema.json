@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Веса качества",
+  "description": "Черновик правил оценки раздач. Правило начисляет веса один раз, если совпало хотя бы одно из его слов или шаблонов.",
+  "type": "object",
+  "required": ["version"],
+  "anyOf": [
+    {"required": ["rules"]},
+    {"required": ["includeSeeds"]},
+    {"required": ["seedMin"]},
+    {"required": ["seedPoints"]},
+    {"required": ["includeLeeches"]},
+    {"required": ["leechMin"]},
+    {"required": ["leechPoints"]},
+    {"required": ["includeDate"]},
+    {"required": ["categoryMargin"]}
+  ],
+  "properties": {
+    "version": {"const": 1},
+    "includeSeeds": {"type": "boolean"},
+    "seedMin": {"type": "integer", "minimum": 1, "maximum": 999999, "default": 1},
+    "seedPoints": {"$ref": "#/$defs/points", "default": 50},
+    "includeLeeches": {"type": "boolean", "default": false},
+    "leechMin": {"type": "integer", "minimum": 1, "maximum": 999999, "default": 1},
+    "leechPoints": {"$ref": "#/$defs/points", "default": 10},
+    "includeDate": {"type": "boolean", "default": false},
+    "categoryMargin": {"type": "number", "exclusiveMinimum": 0},
+    "rules": {"type": "array", "items": {"$ref": "#/$defs/rule"}}
+  },
+  "$defs": {
+    "points": {"type": "number", "minimum": -999, "maximum": 999},
+    "criterion": {"enum": ["resolution", "video", "audio", "game", "category", "size", "date"]},
+    "pattern": {
+      "type": "object",
+      "required": ["text"],
+      "properties": {
+        "text": {"type": "string", "pattern": "\\S"},
+        "regex": {"type": "boolean", "default": false, "description": "Использовать регулярное выражение JavaScript без внешних косых черт и флагов."},
+        "sensitive": {"type": "boolean", "default": false, "description": "Учитывать регистр при сопоставлении."}
+      }
+    },
+    "weight": {
+      "type": "object",
+      "required": ["criterion", "points"],
+      "properties": {
+        "criterion": {"$ref": "#/$defs/criterion"},
+        "points": {"$ref": "#/$defs/points"},
+        "categoryId": {"type": "integer", "minimum": 0, "maximum": 11}
+      }
+    },
+    "condition": {
+      "allOf": [{"$ref": "#/$defs/pattern"}, {"$ref": "#/$defs/weight"}],
+      "type": "object",
+      "required": ["scope"],
+      "properties": {
+        "scope": {"enum": ["any", "before", "after"], "description": "Искать во всём названии, до совпавшего признака или после него."}
+      }
+    },
+    "rule": {
+      "type": "object",
+      "required": ["patterns", "weights"],
+      "properties": {
+        "title": {"type": "string"},
+        "minBytes": {"type": "integer", "minimum": 0},
+        "maxBytes": {"type": "integer", "minimum": 0},
+        "minAgeDays": {"type": "integer", "minimum": 0},
+        "maxAgeDays": {"type": "integer", "minimum": 0},
+        "patterns": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/pattern"}},
+        "weights": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/weight"}},
+        "conditions": {"type": "array", "items": {"$ref": "#/$defs/condition"}}
+      }
+    }
+  }
+}

@@ -1,0 +1,38 @@
+.ts-vertical-split {
+  flex: 1;
+  min-height: 0;
+}
+.ts-vertical-split__pane {
+  min-height: 0;
+  min-width: 0;
+  overflow: auto;
+}
+.ts-vertical-split__separator {
+  display: grid;
+  place-items: center;
+  min-height: 24px;
+  background:
+    linear-gradient(var(--line), var(--line)) center / 100% 1px no-repeat,
+    var(--canvas);
+  color: var(--muted);
+  cursor: ns-resize;
+  touch-action: none;
+
+  &::before {
+    content: '';
+    width: 36px;
+    height: 4px;
+    border-radius: var(--radius);
+    background: currentColor;
+  }
+  &:hover, &[data-separator=active] { color: var(--accent); background: var(--accent-soft); }
+  &:focus-visible { outline-offset: -2px; }
+}
+.ts-vertical-split:has([data-separator=active]) iframe { pointer-events: none; }
+.ts-vertical-split[data-orientation=horizontal] .ts-vertical-split__separator {
+  min-width: 16px;
+  min-height: 0;
+  cursor: ew-resize;
+  background-size: 1px 100%;
+  &::before { width: 4px; height: 36px; }
+}

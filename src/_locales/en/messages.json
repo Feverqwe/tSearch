@@ -3,19 +3,19 @@
         "message": "TMS - Torrent search"
     },
     "extDesc": {
-        "message": "Torrents MultiSearch - search on some of the trackers at once!"
+        "message": "Search multiple torrent trackers at once."
     },
     "search": {
         "message": "Search"
     },
     "searchPlaceholder": {
-        "message": " "
+        "message": "Enter a search query"
     },
     "clear": {
         "message": "Clear"
     },
     "main": {
-        "message": "Main"
+        "message": "Home"
     },
     "history": {
         "message": "History"
@@ -27,16 +27,16 @@
         "message": "Filter by words"
     },
     "sizeFilterLabel": {
-        "message": "Filter by size GB"
+        "message": "Size (GiB)"
     },
     "timeFilterLabel": {
-        "message": "Filter by date"
+        "message": "Date added"
     },
     "seedFilterLabel": {
-        "message": "Filter by seeders"
+        "message": "Seeders"
     },
     "peerFilterLabel": {
-        "message": "Filter by peers"
+        "message": "Leechers"
     },
     "rangeFromPlaceholder": {
         "message": "from"
@@ -45,31 +45,31 @@
         "message": "to"
     },
     "timeFilterAll": {
-        "message": "For all the time"
+        "message": "Any time"
     },
     "timeFilter1h": {
-        "message": "For an hour"
+        "message": "Past hour"
     },
     "timeFilter24h": {
-        "message": "For the day"
+        "message": "Past 24 hours"
     },
     "timeFilter72h": {
-        "message": "For the 3 day"
+        "message": "Past 3 days"
     },
     "timeFilter1w": {
-        "message": "For the week"
+        "message": "Past 7 days"
     },
     "timeFilter1m": {
-        "message": "For the month"
+        "message": "Past 30 days"
     },
     "timeFilter1y": {
-        "message": "For the year"
+        "message": "Past 365 days"
     },
     "timeFilterRange": {
-        "message": "For the period..."
+        "message": "Custom range…"
     },
     "scrollTop": {
-        "message": "Up!"
+        "message": "Back to top"
     },
     "manageProfiles": {
         "message": "Manage tracker lists"
@@ -82,9 +82,6 @@
     },
     "delete": {
         "message": "Delete"
-    },
-    "advanced_options": {
-        "message": "Advanced view"
     },
     "save": {
         "message": "Save"
@@ -99,10 +96,10 @@
         "message": "Update"
     },
     "exportZip": {
-        "message": "Export to the ZIP-file"
+        "message": "Download ZIP backup"
     },
     "importZip": {
-        "message": "Import from ZIP-file"
+        "message": "Import ZIP backup"
     },
     "row_date": {
         "message": "Date"
@@ -126,10 +123,10 @@
         "message": "S"
     },
     "row_peers": {
-        "message": "Peers"
+        "message": "Leechers"
     },
     "row_peers__short": {
-        "message": "P"
+        "message": "L"
     },
     "loadMore": {
         "message": "Load more"
@@ -138,43 +135,49 @@
         "message": "Create list"
     },
     "contextMenuTitle": {
-        "message": "Search torrent"
+        "message": "Search for torrents"
     },
     "basic": {
-        "message": "Main"
+        "message": "General"
     },
     "mainPage": {
         "message": "Main page"
     },
     "backupRestore": {
-        "message": "Backup / Restore"
+        "message": "Backup and restore"
     },
     "hidePeerRow": {
-        "message": "Hide \"Peers\" row"
+        "message": "Hide the Leechers column"
     },
     "hideSeedRow": {
-        "message": "Hide \"Seeders\" row"
+        "message": "Hide the Seeders column"
     },
     "categoryWordFilter": {
-        "message": "Consider the category in \"Filter by words\""
+        "message": "Include category names when filtering by words"
     },
     "contextMenu": {
-        "message": "Add search in the context menu"
+        "message": "Add torrent search to the context menu"
     },
     "disablePopup": {
         "message": "Disable search popup"
     },
     "invertIcon": {
-        "message": "To invert the color of the icon"
+        "message": "Invert the extension icon colors"
     },
     "defineCategory": {
-        "message": "Trying to define the category"
+        "message": "Show automatically detected categories"
     },
-    "requestQueryDescription": {
-        "message": "Find description of a search query via Google"
+    "rankByReleaseDate": {
+        "message": "Consider the torrent date when sorting by quality"
+    },
+    "rankBySeeds": {
+        "message": "Consider seeders when sorting by quality"
+    },
+    "rankByLeeches": {
+        "message": "Consider leechers when sorting by quality"
     },
     "singleResultTable": {
-        "message": "Join search results in single table"
+        "message": "Combine results in one table"
     },
     "favorites": {
         "message": "Favorites"
@@ -183,7 +186,7 @@
         "message": "Kinopoisk: Favorites"
     },
     "kpInCinema": {
-        "message": "Now in movie"
+        "message": "Now in theaters"
     },
     "kpPopular": {
         "message": "Movies"
@@ -192,52 +195,61 @@
         "message": "TV Series"
     },
     "imdbInCinema": {
-        "message": "IMDB: Now in movie"
+        "message": "IMDb: US Box Office"
     },
     "imdbPopular": {
-        "message": "IMDB: Movies"
+        "message": "IMDb: Movies"
     },
     "imdbSeries": {
-        "message": "IMDB: TV Series"
+        "message": "IMDb: TV Series"
+    },
+    "tmdbInCinema": {
+        "message": "TMDB: In Theaters"
+    },
+    "tmdbPopular": {
+        "message": "TMDB: Movies"
+    },
+    "tmdbSeries": {
+        "message": "TMDB: TV Series"
     },
     "ggGamesTop": {
-        "message": "Games: Best"
+        "message": "Games: Popular on PC"
     },
     "ggGamesNew": {
         "message": "Games: New"
     },
     "showSections": {
-        "message": "Show section:"
+        "message": "Collections to show"
     },
     "originalPosterName": {
-        "message": "Show original names"
+        "message": "Show original titles"
     },
     "favoriteSync": {
-        "message": "Synchronize the favorites"
+        "message": "Sync favorites"
     },
     "syncProfiles": {
         "message": "To synchronize the tracker list"
     },
     "kpFolderId": {
-        "message": "ID category kinopoisk.ru site"
+        "message": "Kinopoisk folder ID"
     },
     "addInFavorite": {
-        "message": "Add in favorites"
+        "message": "Add to favorites"
     },
     "removeFromFavorite": {
-        "message": "Delete from the favorites"
+        "message": "Remove from favorites"
     },
     "move": {
         "message": "Move"
     },
     "readMore": {
-        "message": "Read More"
+        "message": "Read more"
     },
     "default": {
         "message": "Default"
     },
     "goToTheWebsite": {
-        "message": "Go to the site"
+        "message": "Open website"
     },
     "setupView": {
         "message": "Customize"
@@ -249,10 +261,10 @@
         "message": "Original title"
     },
     "imageUrl": {
-        "message": "URL picture"
+        "message": "Image URL"
     },
     "descUrl": {
-        "message": "URL description"
+        "message": "Details page URL"
     },
     "cancel": {
         "message": "Cancel"
@@ -261,19 +273,19 @@
         "message": "Change"
     },
     "login": {
-        "message": "Login"
+        "message": "Sign in"
     },
     "categoryFilms": {
         "message": "Films"
     },
     "categorySerials": {
-        "message": "Serials"
+        "message": "TV series"
     },
     "categoryAnime": {
         "message": "Anime"
     },
     "categoryDocumentary": {
-        "message": "Doc."
+        "message": "Documentaries"
     },
     "categoryHumor": {
         "message": "Humor"
@@ -294,7 +306,7 @@
         "message": "Software"
     },
     "categorySport": {
-        "message": "Sport"
+        "message": "Sports"
     },
     "categoryXXX": {
         "message": "XXX"
@@ -306,7 +318,10 @@
         "message": "All"
     },
     "createCode": {
-        "message": "Create code"
+        "message": "Open tracker builder"
+    },
+    "addTracker": {
+        "message": "Add tracker"
     },
     "addTrackerCode": {
         "message": "Add code"
@@ -315,16 +330,13 @@
         "message": "Add"
     },
     "enterTrackerCode": {
-        "message": "Copy and paste the tracker code:"
+        "message": "Paste tracker code"
     },
     "autoUpdate": {
-        "message": "Auto update"
+        "message": "Update automatically"
     },
     "enableProxy": {
-        "message": "Enable proxy support"
-    },
-    "doNotSendStatistics": {
-        "message": "Do not send statistics"
+        "message": "Requests via site tab"
     },
     "quickSearch": {
         "message": "Quick search"
@@ -333,7 +345,7 @@
         "message": "All"
     },
     "filter_withoutList": {
-        "message": "Without list"
+        "message": "Not in this list"
     },
     "filter_selected": {
         "message": "Selected"
@@ -342,7 +354,7 @@
         "message": "External"
     },
     "fetchMeta": {
-        "message": "Fetch metadata"
+        "message": "Load metadata"
     },
     "sources": {
         "message": "Sources"
@@ -393,22 +405,22 @@
         "message": "Search query"
     },
     "kitQuery": {
-        "message": "Query string (use %search% as template for search query)"
+        "message": "URL parameters"
     },
     "kitSearchQueryEncoding": {
         "message": "Search query encoding"
     },
     "kitPageCharset": {
-        "message": "Page charset"
+        "message": "Response encoding"
     },
     "kitPostBody": {
-        "message": "Post body"
+        "message": "POST body"
     },
     "kitBaseUrl": {
         "message": "Base URL"
     },
     "kitTrackerUrl": {
-        "message": "URL"
+        "message": "Tracker website"
     },
     "kitLoginUrl": {
         "message": "Login page URL"
@@ -420,19 +432,25 @@
         "message": "Select"
     },
     "kitRowSelector": {
-        "message": "Rows selector"
+        "message": "Result row selector"
     },
     "kitTableRow": {
         "message": "Table row"
     },
     "kitCategoryName": {
-        "message": "Category name"
+        "message": "Tracker section"
+    },
+    "kitSuggestedTrackerSection": {
+        "message": "Use suggested section: $1"
+    },
+    "kitAdvancedResultFields": {
+        "message": "Advanced fields"
     },
     "kitAttribute": {
         "message": "Attribute"
     },
     "kitCategoryLink": {
-        "message": "Category link"
+        "message": "Section link"
     },
     "kitTorrentTitle": {
         "message": "Torrent title"
@@ -450,25 +468,25 @@
         "message": "Seed count"
     },
     "kitPeerCount": {
-        "message": "Peer count"
+        "message": "Leecher count"
     },
     "kitAddTime": {
-        "message": "Add time"
+        "message": "Date added"
     },
     "kitSkipFirstRows": {
-        "message": "Skip first N rows"
+        "message": "Rows to skip at the start"
     },
     "kitSkip": {
         "message": "Skip rows"
     },
     "kitSkipTop": {
-        "message": "From top"
+        "message": "From the start"
     },
     "kitSkipEnd": {
-        "message": "From end"
+        "message": "From the end"
     },
     "kitSkipLastRows": {
-        "message": "Skip last N rows"
+        "message": "Rows to skip at the end"
     },
     "kitRegexpPattern": {
         "message": "Regexp pattern"
@@ -516,7 +534,7 @@
         "message": "Version"
     },
     "kitGetCode": {
-        "message": "Get code"
+        "message": "Generate JSON"
     },
     "kitReadCode": {
         "message": "Read code"
@@ -526,5 +544,1298 @@
     },
     "kitPreview": {
         "message": "Preview"
+    },
+  "theme": {
+    "message": "Appearance"
+  },
+  "theme_system": {
+    "message": "System"
+  },
+  "theme_light": {
+    "message": "Light"
+  },
+  "theme_dark": {
+    "message": "Dark"
+  },
+  "history_empty": {
+    "message": "No search history yet"
+  },
+  "history_remove_error": {
+    "message": "Could not delete the entry. Try again."
+  },
+  "page_loading": {
+    "message": "Loading the extension…"
+  },
+  "search_loading": {
+    "message": "Searching trackers…"
+  },
+  "search_preparing": {
+    "message": "Loading search settings…"
+  },
+  "search_prepare_error": {
+    "message": "Could not load the search settings."
+  },
+  "search_no_trackers": {
+    "message": "There are no available trackers in this list."
+  },
+  "search_empty": {
+    "message": "No results found."
+  },
+  "search_filtered": {
+    "message": "No results match the current filters."
+  },
+  "search_category_empty": {
+    "message": "There are no results in this category."
+  },
+  "search_reset_filters": {
+    "message": "Clear filters"
+  },
+  "tracker_unavailable": {
+    "message": "Tracker unavailable"
+  },
+  "tracker_error": {
+    "message": "Tracker error"
+  },
+  "profile": {
+    "message": "Tracker list"
+  },
+  "explorer_full_search": {
+    "message": "All results"
+  },
+  "explorer_cache_error": {
+    "message": "Could not refresh this collection. Try again."
+  },
+  "explorer_loading": {
+    "message": "Loading collection…"
+  },
+  "explorer_empty": {
+    "message": "This collection is empty."
+  },
+  "explorer_poster_size": {
+    "message": "Poster size"
+  },
+  "quick_search_empty": {
+    "message": "No releases found."
+  },
+  "explorer_refresh": {
+    "message": "Refresh collection"
+  },
+  "explorer_poster_size_reset": {
+    "message": "Reset poster size"
+  },
+  "explorer_rows": {
+    "message": "Rows"
+  },
+  "explorer_move_earlier": {
+    "message": "Move earlier"
+  },
+  "explorer_move_later": {
+    "message": "Move later"
+  },
+  "favorite_edit": {
+    "message": "Edit favorite"
+  },
+  "favorite_title_required": {
+    "message": "Enter a title."
+  },
+  "favorite_invalid_url": {
+    "message": "Enter an address that starts with http:// or https://."
+  },
+  "favorite_url_conflict": {
+    "message": "This address is already in favorites."
+  },
+  "favorite_write_error": {
+    "message": "Could not save your changes. Try again."
+  },
+  "settings_results": {
+    "message": "Results table"
+  },
+  "tab_proxy_mode": {
+    "message": "Open tracker pages in"
+  },
+  "tab_proxy_tab": {
+    "message": "Background tab"
+  },
+  "tab_proxy_window": {
+    "message": "Separate window"
+  },
+  "settings_browser": {
+    "message": "Browser"
+  },
+  "settings_showcase": {
+    "message": "Showcase"
+  },
+  "settings_backup": {
+    "message": "Backup"
+  },
+  "filter_builtIn": {
+    "message": "Built-in"
+  },
+  "filter_installed": {
+    "message": "Installed"
+  },
+  "profile_find_tracker": {
+    "message": "Find tracker"
+  },
+  "profile_edit": {
+    "message": "Edit tracker list"
+  },
+  "profile_name": {
+    "message": "List name"
+  },
+  "quality_rule": {
+    "message": "Rule"
+  },
+  "settings_titles": {
+    "message": "Release titles"
+  },
+  "settings_preview": {
+    "message": "Preview"
+  },
+  "settings_save_error": {
+    "message": "Could not save the setting. Try again."
+  },
+  "titles_highlight": {
+    "message": "Highlight search terms"
+  },
+  "titles_round": {
+    "message": "Parentheses"
+  },
+  "titles_square": {
+    "message": "Square brackets"
+  },
+  "titles_curly": {
+    "message": "Curly brackets"
+  },
+  "titles_angle": {
+    "message": "Angle brackets"
+  },
+  "titles_preview_query": {
+    "message": "Search query: “$1”"
+  },
+  "titles_normal": {
+    "message": "Regular"
+  },
+  "titles_muted": {
+    "message": "Muted"
+  },
+  "titles_accent": {
+    "message": "Emphasized"
+  },
+  "backup_wait": {
+    "message": "Working with the archive…"
+  },
+  "backup_review": {
+    "message": "Review backup"
+  },
+  "backup_replace_description": {
+    "message": "These entries will be replaced. Other entries will stay as they are."
+  },
+  "backup_skipped": {
+    "message": "Entries that will be skipped"
+  },
+  "backup_confirm": {
+    "message": "Restore data"
+  },
+  "backup_exported": {
+    "message": "Backup downloaded."
+  },
+  "backup_export_error": {
+    "message": "Could not save the backup."
+  },
+  "backup_invalid": {
+    "message": "Could not read this archive. Choose an extension backup in ZIP format."
+  },
+  "backup_restored": {
+    "message": "Data restored."
+  },
+  "backup_failed": {
+    "message": "Could not restore from the backup. Your previous data is unchanged."
+  },
+  "backup_partial": {
+    "message": "Some data may have changed. Use “Restore previous data” to try to recover it."
+  },
+  "backup_retry_restore": {
+    "message": "Restore previous data"
+  },
+  "backup_recovered": {
+    "message": "Your previous data has been restored."
+  },
+  "maker_split": {
+    "message": "Resize form and tracker preview"
+  },
+  "maker_loading": {
+    "message": "Loading the tracker page…"
+  },
+  "maker_request_error": {
+    "message": "Could not load the tracker page. Check the address and try again."
+  },
+  "maker_no_preview": {
+    "message": "Open a tracker page to preview it here."
+  },
+  "maker_transformations": {
+    "message": "Transformations"
+  },
+  "maker_no_transformations": {
+    "message": "There are no transformations yet."
+  },
+  "maker_method": {
+    "message": "Method"
+  },
+  "maker_argument_error": {
+    "message": "Check this argument."
+  },
+  "maker_selector_error": {
+    "message": "Check the selector or load a preview first."
+  },
+  "maker_selector_empty": {
+    "message": "This selector did not match an element."
+  },
+  "maker_import_error": {
+    "message": "Could not read this tracker definition."
+  },
+  "editor_import_file": {
+    "message": "Import file"
+  },
+  "editor_import_error": {
+    "message": "Could not read the tracker file."
+  },
+  "editor_enable_script": {
+    "message": "Enable script"
+  },
+  "editor_script_confirm": {
+    "message": "This script will run in an isolated frame and may make requests to $1 using your tracker session. Enable scripts from sources you trust."
+  },
+  "editor_save_error": {
+    "message": "Could not save the tracker. Check the definition and try again."
+  },
+  "editor_script_invalid": {
+    "message": "Could not start this tracker script. Check that it registers a search with the current tracker API."
+  },
+  "tracker_restore_builtin": {
+    "message": "Restore built-in tracker"
+  },
+  "discard_changes": {
+    "message": "Close without saving your changes?"
+  },
+  "profile_missing": {
+    "message": "This tracker list no longer exists."
+  },
+  "profiles_empty": {
+    "message": "No tracker lists yet."
+  },
+  "profile_conflict": {
+    "message": "The saved tracker lists have changed. Refresh them to continue editing."
+  },
+  "catalog_loading": {
+    "message": "Loading the external catalog…"
+  },
+  "catalog_unavailable": {
+    "message": "Could not load the catalog. Check the sources and try again."
+  },
+  "catalog_partial": {
+    "message": "Some catalog sources are unavailable."
+  },
+  "catalog_empty": {
+    "message": "The catalog has no trackers."
+  },
+  "catalog_install_error": {
+    "message": "Could not update the tracker. Try again."
+  },
+  "tracker_builtin": {
+    "message": "Built-in"
+  },
+  "tracker_custom": {
+    "message": "Installed"
+  },
+  "tracker_support": {
+    "message": "Support"
+  },
+  "quality_settings": {
+    "message": "Quality scoring"
+  },
+  "quality_description": {
+    "message": "Rules award points based on release details. Category scores help classify results; they do not count toward quality."
+  },
+  "quality_rules": {
+    "message": "Scoring rules"
+  },
+  "quality_new_rule": {
+    "message": "Add rule"
+  },
+  "quality_edit_rule": {
+    "message": "Edit rule"
+  },
+  "quality_find": {
+    "message": "Find rules"
+  },
+  "quality_empty": {
+    "message": "No matching rules."
+  },
+  "quality_defaults": {
+    "message": "Restore defaults"
+  },
+  "quality_conflict": {
+    "message": "Another tab saved changes. Export your draft before refreshing the settings."
+  },
+  "quality_includeSeeds": {
+    "message": "Consider seeders"
+  },
+  "quality_seedMin": {
+    "message": "Minimum seeders"
+  },
+  "quality_seedPoints": {
+    "message": "Seeder points"
+  },
+  "quality_includeLeeches": {
+    "message": "Consider leechers"
+  },
+  "quality_leechMin": {
+    "message": "Minimum leechers"
+  },
+  "quality_leechPoints": {
+    "message": "Leecher points"
+  },
+  "quality_margin": {
+    "message": "Category score margin"
+  },
+  "quality_patterns": {
+    "message": "Match alternatives"
+  },
+  "quality_pattern": {
+    "message": "Word or pattern"
+  },
+  "quality_add_pattern": {
+    "message": "Add alternative"
+  },
+  "quality_unconditional": {
+    "message": "Match any title"
+  },
+  "quality_regex": {
+    "message": "Regular expression"
+  },
+  "quality_sensitive": {
+    "message": "Match case"
+  },
+  "quality_weights": {
+    "message": "Weights"
+  },
+  "quality_add_weight": {
+    "message": "Add weight"
+  },
+  "quality_bounds": {
+    "message": "Size and age limits"
+  },
+  "quality_minBytes": {
+    "message": "At least, bytes"
+  },
+  "quality_maxBytes": {
+    "message": "Less than, bytes"
+  },
+  "quality_minAgeDays": {
+    "message": "At least, days"
+  },
+  "quality_maxAgeDays": {
+    "message": "Less than, days"
+  },
+  "quality_conditions": {
+    "message": "Additional conditions"
+  },
+  "quality_add_condition": {
+    "message": "Add condition"
+  },
+  "quality_scope": {
+    "message": "Look for a match"
+  },
+  "quality_any": {
+    "message": "Anywhere in the title"
+  },
+  "quality_before": {
+    "message": "Before the main match"
+  },
+  "quality_after": {
+    "message": "After the main match"
+  },
+  "quality_criterion": {
+    "message": "Criterion"
+  },
+  "quality_category": {
+    "message": "Category"
+  },
+  "quality_points": {
+    "message": "Points"
+  },
+  "quality_resolution": {
+    "message": "Resolution"
+  },
+  "quality_video": {
+    "message": "Video format"
+  },
+  "quality_audio": {
+    "message": "Audio format"
+  },
+  "quality_game": {
+    "message": "Game edition"
+  },
+  "quality_size": {
+    "message": "Size"
+  },
+  "quality_date": {
+    "message": "Age"
+  },
+  "quality_transfer": {
+    "message": "Import and export JSON"
+  },
+  "quality_transfer_help": {
+    "message": "Paste JSON or select a file. Checking it shows what would change in your draft."
+  },
+  "quality_import_json": {
+    "message": "JSON to import"
+  },
+  "quality_upload": {
+    "message": "Load from a file"
+  },
+  "quality_mode": {
+    "message": "Import mode"
+  },
+  "quality_merge": {
+    "message": "Add new rules and update points in matching rules"
+  },
+  "quality_replace": {
+    "message": "Replace the current rules with the imported rules"
+  },
+  "quality_check": {
+    "message": "Check JSON"
+  },
+  "quality_import_impact": {
+    "message": "Add: $1. Update: $2. Replace: $3."
+  },
+  "quality_apply_draft": {
+    "message": "Apply to draft"
+  },
+  "quality_schema": {
+    "message": "Download JSON schema"
+  },
+  "quality_export_draft": {
+    "message": "Export draft"
+  },
+  "quality_export_json": {
+    "message": "Current draft as JSON"
+  },
+  "quality_copy": {
+    "message": "Copy JSON"
+  },
+  "quality_download": {
+    "message": "Download JSON"
+  },
+  "quality_copied": {
+    "message": "JSON copied."
+  },
+  "quality_copy_error": {
+    "message": "Could not copy JSON. You can still download it."
+  },
+  "quality_error_version": {
+    "message": "Only version 1 is supported."
+  },
+  "quality_error_syntax": {
+    "message": "Check JSON syntax."
+  },
+  "quality_error_field": {
+    "message": "This field is not supported."
+  },
+  "quality_error_regex": {
+    "message": "Check the regular expression syntax."
+  },
+  "quality_error_complexity": {
+    "message": "This regular expression is too complex."
+  },
+  "quality_error_length": {
+    "message": "This document is too large."
+  },
+  "quality_error_text": {
+    "message": "Enter text within the allowed length."
+  },
+  "quality_error_number": {
+    "message": "Enter a number in the allowed range."
+  },
+  "quality_error_range": {
+    "message": "The upper limit must exceed the lower limit."
+  },
+  "quality_error_category": {
+    "message": "Choose a supported category."
+  },
+  "quality_error_criterion": {
+    "message": "Choose a supported criterion."
+  },
+  "quality_error_list": {
+    "message": "Check the number of entries in the list."
+  },
+  "quality_error_object": {
+    "message": "Expected an object."
+  },
+  "quality_error_boolean": {
+    "message": "Expected true or false."
+  },
+  "quality_error_scope": {
+    "message": "Choose where in the title to look for a match."
+  },
+  "maker_heading": {
+    "message": "Tracker builder"
+  },
+  "tracker_code": {
+    "message": "Tracker code"
+  },
+  "editor_heading": {
+    "message": "Tracker editor"
+  },
+  "page_not_found": {
+    "message": "Page not found"
+  },
+  "maker_preview_title": {
+    "message": "Page preview"
+  },
+  "maker_origin": {
+    "message": "Site tab URL"
+  },
+  "maker_headers": {
+    "message": "HTTP headers (JSON)"
+  },
+  "maker_auto_title": {
+    "message": "Detect fields"
+  },
+  "maker_auto_open_first": {
+    "message": "Open a search results page first."
+  },
+  "maker_auto_pending": {
+    "message": "Analyzing the page and checking the results…"
+  },
+  "maker_auto_results": {
+    "message": "Detected fields in $1 result rows."
+  },
+  "maker_auto_login": {
+    "message": "Sign in to the tracker"
+  },
+  "maker_auto_empty": {
+    "message": "No search results. Open a page with results to detect fields."
+  },
+  "maker_auto_unsupported": {
+    "message": "Could not identify search results. You can select the fields manually."
+  },
+  "maker_auto_error": {
+    "message": "Could not analyze or verify this page. Your settings were kept."
+  },
+  "maker_auto_search_unknown": {
+    "message": "Search query template not found. Check the search URL or POST body before exporting."
+  },
+  "maker_auto_search_found": {
+    "message": "Search query template found and filled."
+  },
+  "maker_auto_format_detected": {
+    "message": "format detected"
+  },
+  "maker_auto_format_ambiguous": {
+    "message": "ambiguous format; field omitted"
+  },
+  "maker_auto_format_unsupported": {
+    "message": "format not identified. Check this field."
+  },
+  "maker_auto_login_required": {
+    "message": "This page requires sign-in. Sign in on the tracker website, then load the results again."
+  },
+  "maker_auto_request_failed": {
+    "message": "The tracker returned an error. Load the results again."
+  },
+  "maker_auto_format_invalid": {
+    "message": "invalid values; field omitted"
+  },
+  "maker_auto_not_found": {
+    "message": "Not found on this page"
+  },
+  "maker_auto_next_incompatible": {
+    "message": "Found $1. This layout needs a manual pagination rule."
+  },
+    "maker_setup": {
+        "message": "Setup"
+    },
+    "maker_check": {
+        "message": "Check"
+    },
+    "maker_code": {
+        "message": "Code"
+    },
+    "maker_result": {
+        "message": "Result"
+    },
+    "maker_fields": {
+        "message": "Fields"
+    },
+    "maker_tracker_lists": {
+        "message": "Tracker lists"
+    },
+    "maker_source_address": {
+        "message": "Results page address"
+    },
+    "maker_source_phrase": {
+        "message": "Query on this page"
+    },
+    "maker_help_label": {
+        "message": "Help — $1"
+    },
+    "maker_help_address": {
+        "message": "Paste the address of a page that already shows tracker results."
+    },
+    "maker_help_phrase": {
+        "message": "Enter the query that produced the results on the page above."
+    },
+    "maker_request_options": {
+        "message": "Request options"
+    },
+    "maker_request_tab": {
+        "message": "Requests through a tab"
+    },
+    "maker_open_detect": {
+        "message": "Open and detect fields"
+    },
+    "maker_open_manual": {
+        "message": "Open for manual setup"
+    },
+    "maker_check_phrase": {
+        "message": "Test query"
+    },
+    "maker_check_run": {
+        "message": "Run check"
+    },
+    "maker_check_stale": {
+        "message": "The settings or query changed. Run the check again."
+    },
+    "maker_result_count": {
+        "message": "Results extracted: $1"
+    },
+    "maker_all_fields": {
+        "message": "All fields"
+    },
+    "maker_main_fields": {
+        "message": "Main fields"
+    },
+    "maker_previous": {
+        "message": "Previous page"
+    },
+    "maker_next": {
+        "message": "Next page"
+    },
+    "maker_current_page": {
+        "message": "Page $1"
+    },
+    "maker_required_issues": {
+        "message": "Required fields to check"
+    },
+    "maker_optional_issues": {
+        "message": "Optional field issues"
+    },
+    "maker_continue": {
+        "message": "Continue to code"
+    },
+    "maker_fix": {
+        "message": "Fix"
+    },
+    "maker_all_issues": {
+        "message": "All issues ($1)"
+    },
+    "maker_issue_row": {
+        "message": "Row $1"
+    },
+    "maker_issue_selector": {
+        "message": "Invalid selector"
+    },
+    "maker_issue_no_match": {
+        "message": "No matching nodes"
+    },
+    "maker_issue_pipeline": {
+        "message": "Transformation failed"
+    },
+    "maker_issue_value": {
+        "message": "Missing or invalid value"
+    },
+    "maker_issue_link": {
+        "message": "Invalid link"
+    },
+    "maker_model_report": {
+        "message": "Automatic detection report"
+    },
+    "maker_model_manual": {
+        "message": "Edited manually"
+    },
+    "maker_model_kept": {
+        "message": "Kept from draft"
+    },
+    "maker_model_found": {
+        "message": "Detected fields"
+    },
+    "maker_preview_position": {
+        "message": "Preview position"
+    },
+    "maker_preview_bottom": {
+        "message": "Bottom"
+    },
+    "maker_preview_right": {
+        "message": "Right"
+    },
+    "maker_preview_window": {
+        "message": "Separate window"
+    },
+    "maker_preview_collapse": {
+        "message": "Collapse preview"
+    },
+    "maker_preview_blocked": {
+        "message": "The window was blocked. The tracker page opened below."
+    },
+    "maker_selecting": {
+        "message": "Selecting for $1"
+    },
+    "maker_cancel_selection": {
+        "message": "Cancel selection"
+    },
+    "maker_match_count": {
+        "message": "$1 · Matches: $2"
+    },
+    "maker_highlight_field": {
+        "message": "Highlight matches — $1"
+    },
+    "maker_icon_generate": {
+        "message": "Generate"
+    },
+    "maker_icon_file": {
+        "message": "From file"
+    },
+    "maker_icon_url": {
+        "message": "From URL"
+    },
+    "maker_icon_address": {
+        "message": "Image URL"
+    },
+    "maker_icon_load": {
+        "message": "Load image"
+    },
+    "maker_icon_error": {
+        "message": "Use a valid PNG, JPEG, SVG, or ICO image up to 1 MB."
+    },
+    "maker_description_example": {
+        "message": "Independent films and open media"
+    },
+    "maker_publication": {
+        "message": "Publication"
+    },
+    "maker_code_url": {
+        "message": "JSON file URL"
+    },
+    "maker_github_help": {
+        "message": "Publish on GitHub"
+    },
+    "maker_github_repo": {
+        "message": "Create a public GitHub repository. This example uses a repository named trackers and a branch named main."
+    },
+    "maker_github_files": {
+        "message": "Upload the exported JSON to the repository. This example uses open-media.json at the root."
+    },
+    "maker_github_raw": {
+        "message": "Paste the direct link to the JSON file into the JSON file URL field. In this example, replace <github-user> with your username."
+    },
+    "maker_github_update": {
+        "message": "To publish an update, increase the version and replace the JSON in the same file."
+    },
+    "maker_import": {
+        "message": "Import JSON"
+    },
+    "maker_import_replace": {
+        "message": "A successful import replaces the current draft."
+    },
+    "maker_code_json": {
+        "message": "Tracker JSON"
+    },
+    "maker_export_stale": {
+        "message": "Code is out of date."
+    },
+    "maker_export_check": {
+        "message": "Check the tracker and fix any blocking issues before generating JSON."
+    },
+    "maker_export_error": {
+        "message": "Check the tracker URLs and version before generating code."
+    },
+    "maker_copy": {
+        "message": "Copy"
+    },
+    "maker_copied": {
+        "message": "JSON copied."
+    },
+    "maker_copy_error": {
+        "message": "Select the JSON and copy it manually."
+    },
+    "maker_download": {
+        "message": "Download JSON"
+    },
+    "maker_help_method": {
+        "message": "Choose a method to read a selected element or transform its value."
+    },
+    "maker_method_help": {
+        "message": "Transformation help"
+    },
+    "maker_empty_source": {
+        "message": "The source contains no results."
+    },
+  "maker_tracker_page": {
+    "message": "Tracker page"
+  },
+  "maker_help_search_url": {
+    "message": "This is the address the extension uses for future searches."
+  },
+  "maker_help_search_method": {
+    "message": "Choose the HTTP method used by the tracker’s search form."
+  },
+  "maker_help_search_encoding": {
+    "message": "Choose the character encoding that the tracker expects for the search query."
+  },
+  "maker_help_search_charset": {
+    "message": "Set the response encoding if the page’s text is unreadable."
+  },
+  "maker_help_search_body": {
+    "message": "Enter the data sent in the POST request body."
+  },
+  "maker_help_search_query": {
+    "message": "Enter any parameters that need to be added to the request address."
+  },
+  "maker_help_search_baseUrl": {
+    "message": "This field preserves the base URL saved in older tracker definitions."
+  },
+  "maker_help_search_originUrl": {
+    "message": "This is the page opened for requests through a tab."
+  },
+  "maker_help_search_headers": {
+    "message": "Enter extra HTTP headers as a JSON object."
+  },
+  "maker_help_search_tab": {
+    "message": "Run requests from a tab on the tracker’s site."
+  },
+  "maker_help_check_phrase": {
+    "message": "Enter a query to test the current tracker settings."
+  },
+  "maker_help_selector_row": {
+    "message": "Select the repeated element that contains one result."
+  },
+  "maker_help_login_url": {
+    "message": "Enter the address of the tracker’s sign-in page."
+  },
+  "maker_help_desc_name": {
+    "message": "Enter a name users will recognize in tracker lists."
+  },
+  "maker_help_desc_url": {
+    "message": "Enter the tracker’s home page."
+  },
+  "maker_help_desc_description": {
+    "message": "Write a short description of what people can find on this tracker."
+  },
+  "maker_help_desc_version": {
+    "message": "Set the version of the tracker definition."
+  },
+  "maker_help_icon": {
+    "message": "Use a hex color or an image for this tracker’s icon."
+  },
+  "maker_help_code_url": {
+    "message": "Enter a direct HTTP or HTTPS link to the tracker’s JSON file."
+  },
+  "maker_help_json": {
+    "message": "Paste the contents of a tracker JSON file exported from the builder."
+  },
+  "maker_source_invalid": {
+    "message": "Enter a complete HTTP or HTTPS address."
+  },
+  "maker_configure": {
+    "message": "Configure"
+  },
+  "maker_configure_field": {
+    "message": "Configure — $1"
+  },
+  "maker_help_usage": {
+    "message": "How it works"
+  },
+  "maker_help_example": {
+    "message": "Example"
+  },
+  "maker_help_address_usage": {
+    "message": "Automatic setup uses this page to find the result fields and the place to substitute the search query."
+  },
+  "maker_help_phrase_usage": {
+    "message": "The extension uses the complete phrase to work out where future queries go."
+  },
+  "maker_help_search_url_usage": {
+    "message": "Put %search% where the search phrase belongs. The request can also take the phrase from the query parameters or POST body."
+  },
+  "maker_help_search_method_usage": {
+    "message": "GET sends parameters in the address. For POST, fill in the request body if the form sends data there."
+  },
+  "maker_help_search_encoding_usage": {
+    "message": "The extension encodes the query before substituting %search%. Most sites use UTF-8. Some older sites expect Windows-1251."
+  },
+  "maker_help_search_charset_usage": {
+    "message": "Leave it empty to use the response headers. The extension falls back to UTF-8."
+  },
+  "maker_help_search_body_usage": {
+    "message": "Use %search% for the query. If the body is JSON, set Content-Type in HTTP headers."
+  },
+  "maker_help_search_query_usage": {
+    "message": "The extension adds the separator and substitutes %search%. Enter each parameter once across the address and this field."
+  },
+  "maker_legacy_base_url": {
+    "message": "Base URL (legacy)"
+  },
+  "maker_help_search_baseUrl_usage": {
+    "message": "The extension resolves relative links using the actual response address. Leave this field empty when setting up a new tracker."
+  },
+  "maker_help_search_originUrl_usage": {
+    "message": "Use the page that should provide the tracker session. Leave it empty to use the request’s origin."
+  },
+  "maker_help_search_headers_usage": {
+    "message": "Put header names and values in double quotes. Include headers that the tracker needs for this request."
+  },
+  "maker_help_search_tab_usage": {
+    "message": "The browser can use the site session from the tab. Turn this on if the tracker only shows results after you sign in there."
+  },
+  "maker_help_check_phrase_usage": {
+    "message": "Try a second query to make sure both the request and the results change."
+  },
+  "maker_help_selector_row_usage": {
+    "message": "The extension looks for the title, link and other fields inside each matching result row."
+  },
+  "maker_help_selector_title": {
+    "message": "Select the element that contains the result’s title."
+  },
+  "maker_help_selector_title_usage": {
+    "message": "Read its text inside each result row. A result needs a title to appear in search."
+  },
+  "maker_help_selector_url": {
+    "message": "Select the link that opens the result’s details."
+  },
+  "maker_help_selector_url_usage": {
+    "message": "Read href to get the address. Results need a details link to appear in search."
+  },
+  "maker_help_selector_size": {
+    "message": "Select the element that contains the result’s size."
+  },
+  "maker_help_selector_size_usage": {
+    "message": "The finished value is in bytes. Use parseSize for text such as 1.5 GB."
+  },
+  "maker_help_selector_downloadUrl": {
+    "message": "Select the direct download link for the result."
+  },
+  "maker_help_selector_downloadUrl_usage": {
+    "message": "Read href. Leave the field empty if the results page has no download link."
+  },
+  "maker_help_selector_seeds": {
+    "message": "Select the element that contains the seed count."
+  },
+  "maker_help_selector_seeds_usage": {
+    "message": "Return a whole number. Remove any label with a transformation before converting the value."
+  },
+  "maker_help_selector_peers": {
+    "message": "Select the leecher count as displayed by the tracker."
+  },
+  "maker_help_selector_peers_usage": {
+    "message": "Use the element with the right counter and return a whole number for each result."
+  },
+  "maker_help_selector_date": {
+    "message": "Select the result’s publication date."
+  },
+  "maker_help_selector_date_usage": {
+    "message": "Choose a transformation that matches the site’s date format. For an ISO date in datetime, read the attribute and use parseIsoDate."
+  },
+  "maker_help_selector_nextPageUrl": {
+    "message": "Select the link to the next results page."
+  },
+  "maker_help_selector_nextPageUrl_usage": {
+    "message": "The extension looks for the link across the entire page. If it finds no match, it stops loading results."
+  },
+  "maker_help_selector_categoryTitle": {
+    "message": "Select the category name shown for the result."
+  },
+  "maker_help_selector_categoryTitle_usage": {
+    "message": "Read the category text. Add a category link separately if the name is clickable on the tracker."
+  },
+  "maker_help_selector_categoryUrl": {
+    "message": "Select the link to the result’s category."
+  },
+  "maker_help_selector_categoryUrl_usage": {
+    "message": "Read href from the category link. If the field is empty, the category name still appears as text."
+  },
+  "maker_help_selector_loginForm": {
+    "message": "Select a form or other element that identifies the sign-in page."
+  },
+  "maker_help_selector_loginForm_usage": {
+    "message": "The extension prompts users to sign in when the selector matches. Choose an element that appears only when sign-in is required."
+  },
+  "maker_help_skipFromStart": {
+    "message": "Enter how many matching rows to skip at the start."
+  },
+  "maker_help_skipFromStart_usage": {
+    "message": "Use 1 to skip a matching table header. Use 0 if the selector only finds result rows."
+  },
+  "maker_help_skipFromEnd": {
+    "message": "Enter how many matching rows to skip at the end."
+  },
+  "maker_help_skipFromEnd_usage": {
+    "message": "Use 1 to skip a matching navigation row. Use 0 if the selector only finds result rows."
+  },
+  "maker_help_desc_url_usage": {
+    "message": "Users can visit this address from the tracker’s site icon."
+  },
+  "maker_help_desc_version_usage": {
+    "message": "Increase the version when you replace a published JSON file, so the extension can detect the update."
+  },
+  "maker_help_icon_usage": {
+    "message": "The file and URL buttons embed the image in the exported tracker. They support PNG, JPEG, SVG and ICO."
+  },
+  "maker_help_code_url_usage": {
+    "message": "The extension uses this address to install and update the tracker. Leave it empty for a local draft."
+  },
+  "maker_help_export": {
+    "message": "This is the JSON generated from the current draft after a successful check."
+  },
+  "maker_help_export_usage": {
+    "message": "Copy or download the code to publish it or open it later with Import JSON."
+  },
+  "maker_help_method_usage": {
+    "message": "Steps run in order. Each step receives the previous step’s result. Open help next to an argument for the format expected by that method."
+  },
+  "maker_argument_label_Attribute": {
+    "message": "Attribute"
+  },
+  "maker_argument_label_Property": {
+    "message": "Property"
+  },
+  "maker_argument_label_Index": {
+    "message": "Index"
+  },
+  "maker_argument_label_Pattern": {
+    "message": "Pattern"
+  },
+  "maker_argument_label_ReplaceTo": {
+    "message": "Replacement"
+  },
+  "maker_argument_label_Format": {
+    "message": "Date format"
+  },
+  "maker_argument_label_Template": {
+    "message": "Date template"
+  },
+  "maker_help_argument_Attribute": {
+    "message": "Enter the name of an HTML attribute on the selected element."
+  },
+  "maker_help_argument_Attribute_usage": {
+    "message": "getAttr reads the value as written in the HTML. An href attribute can contain a relative path."
+  },
+  "maker_help_argument_Property": {
+    "message": "Enter the name of a DOM property on the selected element."
+  },
+  "maker_help_argument_Property_usage": {
+    "message": "For a link, the href property returns the resolved address. textContent returns its text."
+  },
+  "maker_help_argument_Index": {
+    "message": "Enter the index of the child node to select."
+  },
+  "maker_help_argument_Index_usage": {
+    "message": "Use 0 for the first node or -1 for the last. Text nodes are included in the count."
+  },
+  "maker_help_argument_PatternText": {
+    "message": "Enter the exact text to replace."
+  },
+  "maker_help_argument_PatternText_usage": {
+    "message": "replace matches the first occurrence and is case-sensitive. Spaces and punctuation are part of the text."
+  },
+  "maker_help_argument_PatternRegex": {
+    "message": "Enter a regular expression to find text to replace."
+  },
+  "maker_help_argument_PatternRegex_usage": {
+    "message": "Enter only the pattern, without surrounding slashes or flags. replaceRe finds all matches and ignores case."
+  },
+  "maker_help_argument_ReplaceTo": {
+    "message": "Enter the text to insert at each match."
+  },
+  "maker_help_argument_ReplaceTo_usage": {
+    "message": "Leave this field empty to remove matching text."
+  },
+  "maker_help_argument_Format": {
+    "message": "Enter a pattern that describes the date text on the tracker."
+  },
+  "maker_help_argument_Format_usage": {
+    "message": "Use DD for the day, MM for the month and YYYY for the year. Include the separators used on the site."
+  },
+  "maker_help_argument_Template": {
+    "message": "Select the date template that matches the tracker’s text."
+  },
+  "maker_help_argument_Template_usage": {
+    "message": "Compare the order of the day, month and year, or select a relative time template."
+  },
+  "maker_argument_invalid_regex": {
+    "message": "Enter a valid regular expression without surrounding slashes."
+  },
+  "maker_argument_invalid_number": {
+    "message": "Enter a number."
+  },
+  "maker_argument_invalid_string": {
+    "message": "Enter a value in the format shown in the help."
+  },
+  "maker_argument_invalid_select": {
+    "message": "Select a template from the list."
+  },
+  "maker_method_unknown": {
+    "message": "Choose a supported transformation."
+  },
+  "maker_check_request_unverified": {
+    "message": "These results came from the supplied page. Run a check with the current request before exporting."
+  },
+  "maker_check_other_page": {
+    "message": "Another checked page has errors that block export."
+  },
+  "maker_blocking_issues": {
+    "message": "Issues blocking export"
+  },
+  "maker_check_origin": {
+    "message": "The request address or tab origin is outside the tracker’s allowed origins."
+  },
+  "maker_help_desc_name_usage": {
+    "message": "This is the name users see when they select trackers for a search."
+  },
+  "maker_help_desc_description_usage": {
+    "message": "Mention the kind of content people can find on this tracker."
+  },
+  "maker_help_login_url_usage": {
+    "message": "The extension offers this link if the login selector matches a response."
+  },
+  "maker_help_json_usage": {
+    "message": "Import replaces the draft. You can review or check its settings before generating a new JSON file."
+  },
+  "maker_collapse": {
+    "message": "Collapse"
+  },
+  "maker_transformations_field": {
+    "message": "Transformations — $1"
+  },
+    "settings_search": {
+        "message": "Search"
+    },
+    "profile_edit_title": {
+        "message": "Edit tracker list “$1”"
+    },
+    "catalog_metadata_error": {
+        "message": "Could not load tracker details. Try again."
+    },
+    "catalog_add_error": {
+        "message": "Could not add the tracker. Try again."
+    },
+    "catalog_remove_error": {
+        "message": "Could not remove the tracker. Try again."
+    },
+    "tracker_restore_error": {
+        "message": "Could not restore the built-in tracker. Try again."
+    },
+    "history_loading": {
+        "message": "Loading search history…"
+    },
+    "history_load_error": {
+        "message": "Could not load search history."
+    },
+    "settings_loading": {
+        "message": "Loading settings…"
+    },
+    "settings_load_error": {
+        "message": "Could not load settings."
+    },
+    "editor_loading": {
+        "message": "Loading the tracker editor…"
+    },
+    "editor_load_error": {
+        "message": "Could not open the tracker editor."
+    },
+    "explorer_load_error": {
+        "message": "Could not load collections."
+    },
+    "profiles_loading": {
+        "message": "Loading tracker lists…"
+    },
+    "profiles_load_error": {
+        "message": "Could not load tracker lists."
+    },
+    "trackers_loading": {
+        "message": "Loading trackers…"
+    },
+    "trackers_load_error": {
+        "message": "Could not load trackers."
+    },
+    "calendar_start": {
+        "message": "Start date"
+    },
+    "calendar_end": {
+        "message": "End date"
+    },
+    "calendar_previous_month": {
+        "message": "Previous month"
+    },
+    "calendar_next_month": {
+        "message": "Next month"
+    },
+    "calendar_choose_day": {
+        "message": "Choose"
+    },
+    "calendar_unavailable_day": {
+        "message": "Unavailable"
+    },
+    "ui_language": {
+        "message": "en"
+    },
+    "tracker_retry": {
+        "message": "Retry search"
+    },
+    "download_torrent": {
+        "message": "Download torrent ($1)"
+    },
+    "backup_entry_options": {
+        "message": "Extension settings"
+    },
+    "backup_entry_profiles": {
+        "message": "Tracker lists"
+    },
+    "backup_entry_explorerFavorites": {
+        "message": "Favorites"
+    },
+    "backup_entry_explorerSections": {
+        "message": "Collection layout"
+    },
+    "backup_entry_history": {
+        "message": "Search history"
+    },
+    "backup_entry_profileId": {
+        "message": "Selected tracker list"
+    },
+    "backup_entry_trackers": {
+        "message": "Installed trackers"
+    },
+    "backup_entry_explorerModules": {
+        "message": "Collection sources"
+    },
+    "backup_entry_explorerCache": {
+        "message": "Cached collections"
+    },
+    "backup_entry_quickSearch": {
+        "message": "Cached quick search results"
+    },
+    "backup_entry_lastCheckUpdateAt": {
+        "message": "Last tracker update check"
+    },
+    "backup_entry_qualitySettings": {
+        "message": "Quality scoring rules"
+    },
+    "catalog_open_source_file": {
+        "message": "Open source file"
+    },
+    "tracker_http_error": {
+        "message": "The tracker returned HTTP $1."
     }
 }

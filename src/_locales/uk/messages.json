@@ -3,7 +3,10 @@
       "message": "Додати"
    },
    "addInFavorite": {
-      "message": "В обране"
+      "message": "Додати до вибраного"
+   },
+   "addTracker": {
+     "message": "Додати трекер"
    },
    "addTrackerCode": {
       "message": "Додати код"
@@ -12,7 +15,7 @@
       "message": "Оновлювати автоматично"
    },
    "backupRestore": {
-      "message": "Архівація / Відновлення"
+      "message": "Копіювання й відновлення"
    },
    "basic": {
       "message": "Основні"
@@ -21,7 +24,7 @@
       "message": "Скасувати"
    },
    "categoryAll": {
-      "message": "Все"
+      "message": "Усі"
    },
    "categoryAnime": {
       "message": "Аніме"
@@ -33,7 +36,7 @@
       "message": "Мультфільми"
    },
    "categoryDocumentary": {
-      "message": "Докум."
+      "message": "Документальне кіно"
    },
    "categoryFilms": {
       "message": "Фільми"
@@ -60,7 +63,7 @@
       "message": "Спорт"
    },
    "categoryWordFilter": {
-      "message": "Враховувати категорію при фільтрації слів"
+      "message": "Враховувати назви рубрик у фільтрі за словами"
    },
    "categoryXXX": {
       "message": "XXX"
@@ -75,13 +78,13 @@
       "message": "Закрити"
    },
    "contextMenu": {
-      "message": "Додати пошук в контекстне меню"
+      "message": "Додати пошук торрентів у контекстне меню"
    },
    "contextMenuTitle": {
-      "message": "Знайти торрент"
+      "message": "Знайти торренти"
    },
    "createCode": {
-      "message": "Створити код"
+      "message": "Відкрити конструктор трекерів"
    },
    "default": {
       "message": "За замовчуванням"
@@ -90,37 +93,43 @@
       "message": "Стандартний"
    },
    "defineCategory": {
-      "message": "Автоматично визначати категорію роздачі"
+      "message": "Показувати автоматично визначені категорії"
+   },
+   "rankByReleaseDate": {
+      "message": "Враховувати дату роздачі під час сортування за якістю"
+   },
+   "rankBySeeds": {
+      "message": "Враховувати кількість сідів під час сортування за якістю"
+   },
+   "rankByLeeches": {
+      "message": "Враховувати кількість лічерів під час сортування за якістю"
    },
    "descUrl": {
-      "message": "URL опису"
+      "message": "Адреса сторінки з описом"
    },
    "disablePopup": {
-      "message": "Не відображати вікно пошуку при натисканні на іконку розширення"
-   },
-   "doNotSendStatistics": {
-      "message": "Не відправляти статистику"
+      "message": "Вимкнути вікно пошуку за піктограмою розширення"
    },
    "edit": {
       "message": "Редагувати"
    },
    "enableProxy": {
-      "message": "Включити підтримку проксі"
+      "message": "Запити через вкладку"
    },
    "enterTrackerCode": {
-      "message": "Вставте код трекера:"
+      "message": "Вставте код трекера"
    },
    "exportZip": {
-      "message": "Експорт в ZIP-файл"
+      "message": "Завантажити резервну копію (ZIP)"
    },
    "extDesc": {
-      "message": "Torrents MultiSearch - пошук на декількох трекерах відразу!"
+      "message": "Шукайте торренти одразу на кількох трекерах."
    },
    "extName": {
       "message": "TMS - Пошук торрентів"
    },
    "favoriteSync": {
-      "message": "Синхронізувати список обраного"
+      "message": "Синхронізувати вибране"
    },
    "favorites": {
       "message": "Вибране"
@@ -132,22 +141,22 @@
       "message": "Обрані"
    },
    "filter_withoutList": {
-      "message": "Без списку"
+      "message": "Поза цим списком"
    },
    "ggGamesNew": {
       "message": "Ігри: Нові"
    },
    "ggGamesTop": {
-      "message": "Ігри: Кращі"
+      "message": "Ігри: Популярні на ПК"
    },
    "goToTheWebsite": {
-      "message": "Перейти на сайт"
+      "message": "Відкрити сайт"
    },
    "hidePeerRow": {
-      "message": "Приховати стовпець \"піри\" (скачують)"
+      "message": "Приховати стовпець «Лічери»"
    },
    "hideSeedRow": {
-      "message": "Приховати стовпець \"сіди\" (роздають)"
+      "message": "Приховати стовпець «Сіди»"
    },
    "history": {
       "message": "Історія"
@@ -156,25 +165,34 @@
       "message": "Поки що тут порожньо..."
    },
    "imageUrl": {
-      "message": "URL зображення"
+      "message": "Адреса зображення"
    },
    "imdbInCinema": {
-      "message": "IMDB: Зараз в кіно"
+      "message": "IMDb: Прокат США"
    },
    "imdbPopular": {
-      "message": "IMDB: Фільми"
+      "message": "IMDb: Фільми"
    },
    "imdbSeries": {
-      "message": "IMDB: Серіали"
+      "message": "IMDb: Серіали"
+   },
+   "tmdbInCinema": {
+      "message": "TMDB: У кіно"
+   },
+   "tmdbPopular": {
+      "message": "TMDB: Фільми"
+   },
+   "tmdbSeries": {
+      "message": "TMDB: Серіали"
    },
    "importZip": {
-      "message": "Імпорт з ZIP-файлу"
+      "message": "Імпортувати резервну копію (ZIP)"
    },
    "invertIcon": {
-      "message": "Інвертувати колір іконки розширення"
+      "message": "Інвертувати кольори піктограми розширення"
    },
    "kitAddTime": {
-      "message": "Час додавання"
+      "message": "Дата додавання"
    },
    "kitAttribute": {
       "message": "Атрибут"
@@ -183,10 +201,16 @@
       "message": "Основний URL"
    },
    "kitCategoryLink": {
-      "message": "Посилання на категорію"
+      "message": "Посилання на рубрику"
    },
    "kitCategoryName": {
-      "message": "Категорія"
+      "message": "Рубрика трекера"
+   },
+   "kitSuggestedTrackerSection": {
+      "message": "Використати рубрику «$1»"
+   },
+   "kitAdvancedResultFields": {
+      "message": "Додаткові поля"
    },
    "kitConvert": {
       "message": "Конвертація"
@@ -201,19 +225,19 @@
       "message": "Опис"
    },
    "kitGetCode": {
-      "message": "Отримати код"
+      "message": "Створити JSON"
    },
    "kitIcon": {
       "message": "Іконка трекера (16x16)"
    },
    "kitLogin": {
-      "message": "Авторизація"
+      "message": "Вхід"
    },
    "kitLoginFormSelector": {
-      "message": "Селектор форми авторизації"
+      "message": "Селектор форми входу"
    },
    "kitLoginUrl": {
-      "message": "URL сторінки авторизації"
+      "message": "Адреса сторінки входу"
    },
    "kitNextPageLink": {
       "message": "Посилання на наступну сторінку"
@@ -225,16 +249,16 @@
       "message": "Пошуковий запит"
    },
    "kitPageCharset": {
-      "message": "Кодування сторінки"
+      "message": "Кодування відповіді"
    },
    "kitPeerCount": {
-      "message": "Кількість пірів"
+      "message": "Кількість лічерів"
    },
    "kitPostBody": {
-      "message": "POST запит"
+      "message": "Тіло POST-запиту"
    },
    "kitQuery": {
-      "message": "Пошуковий запит (використовуйте %search% як шаблон для пошукового запиту)"
+      "message": "Параметри URL"
    },
    "kitReadCode": {
       "message": "Прочитати код"
@@ -255,7 +279,7 @@
       "message": "Результат"
    },
    "kitRowSelector": {
-      "message": "Селектор рядка"
+      "message": "Селектор рядка результату"
    },
    "kitSaveLoad": {
       "message": "Зберегти / Завантажити"
@@ -288,10 +312,10 @@
       "message": "З кінця"
    },
    "kitSkipFirstRows": {
-      "message": "Пропустити перші N рядків"
+      "message": "Скільки рядків пропустити на початку"
    },
    "kitSkipLastRows": {
-      "message": "Пропустити останні N рядків"
+      "message": "Скільки рядків пропустити в кінці"
    },
    "kitSkipTop": {
       "message": "З початку"
@@ -303,7 +327,7 @@
       "message": "Рядок таблиці"
    },
    "kitTorrentDownloadLink": {
-      "message": "URL завантаження"
+      "message": "Посилання для завантаження"
    },
    "kitTorrentLink": {
       "message": "Посилання на роздачу"
@@ -330,7 +354,7 @@
       "message": "Назва трекера"
    },
    "kitTrackerUrl": {
-      "message": "URL"
+      "message": "Сайт трекера"
    },
    "kitTrackerVersion": {
       "message": "Версія"
@@ -339,13 +363,13 @@
       "message": "Застосувати шаблон до рядка"
    },
    "kpFavorites": {
-      "message": "КіноПошук: Вибране"
+      "message": "Кінопошук: Вибране"
    },
    "kpFolderId": {
-      "message": "ID категорії  КіноПошука"
+      "message": "ID папки Кінопошуку"
    },
    "kpInCinema": {
-      "message": "Зараз в кіно"
+      "message": "Зараз у кіно"
    },
    "kpPopular": {
       "message": "Фільми"
@@ -369,7 +393,7 @@
       "message": "Редагування списку"
    },
    "manageProfiles": {
-      "message": "Управління списками"
+      "message": "Керування списками трекерів"
    },
    "move": {
       "message": "Перемістити"
@@ -381,13 +405,13 @@
       "message": "Налаштування"
    },
    "originalPosterName": {
-      "message": "Відображати оригінальні назви"
+      "message": "Показувати оригінальні назви"
    },
    "originalTitle": {
       "message": "Оригінальний заголовок"
    },
    "peerFilterLabel": {
-      "message": "Піри"
+      "message": "Лічери"
    },
    "quickSearch": {
       "message": "Швидкий пошук"
@@ -399,25 +423,22 @@
       "message": "до"
    },
    "readMore": {
-      "message": "Детальніше"
+      "message": "Докладніше"
    },
    "remove": {
       "message": "Видалити"
    },
    "removeFromFavorite": {
-      "message": "Видалити з обраного"
-   },
-   "requestQueryDescription": {
-      "message": "Отримувати опис пошукового запиту з Google"
+      "message": "Видалити з вибраного"
    },
    "row_date": {
       "message": "Додано"
    },
    "row_peers": {
-      "message": "Піри (скачують)"
+      "message": "Лічери"
    },
    "row_peers__short": {
-      "message": "П"
+      "message": "Л"
    },
    "row_quality": {
       "message": "Якість"
@@ -426,7 +447,7 @@
       "message": "Я"
    },
    "row_seeds": {
-      "message": "Сіди (роздають)"
+      "message": "Сіди"
    },
    "row_seeds__short": {
       "message": "С"
@@ -441,7 +462,7 @@
       "message": "Зберегти"
    },
    "scrollTop": {
-      "message": "Вгору!"
+      "message": "На початок сторінки"
    },
    "search": {
       "message": "Знайти"
@@ -456,40 +477,40 @@
       "message": "Налаштувати вигляд"
    },
    "showSections": {
-      "message": "Відображати секції:"
+      "message": "Добірки на головній"
    },
    "sizeFilterLabel": {
-      "message": "Розмір ГБ"
+      "message": "Розмір (ГіБ)"
    },
    "syncProfiles": {
       "message": "Синхронізувати списки трекерів"
    },
    "timeFilter1h": {
-      "message": "За годину"
+      "message": "За останню годину"
    },
    "timeFilter1m": {
-      "message": "За місяць"
+      "message": "За останні 30 днів"
    },
    "timeFilter1w": {
-      "message": "За тиждень"
+      "message": "За останні 7 днів"
    },
    "timeFilter1y": {
-      "message": "За рік"
+      "message": "За останні 365 днів"
    },
    "timeFilter24h": {
-      "message": "За добу"
+      "message": "За останню добу"
    },
    "timeFilter72h": {
-      "message": "За 3 доби"
+      "message": "За останні 3 дні"
    },
    "timeFilterAll": {
       "message": "За весь час"
    },
    "timeFilterLabel": {
-      "message": "Дата"
+      "message": "Дата додавання"
    },
    "timeFilterRange": {
-      "message": "За період..."
+      "message": "Вибрати період…"
    },
    "title": {
       "message": "Заголовок"
@@ -498,15 +519,1326 @@
       "message": "Оновити"
    },
    "wordFilterLabel": {
-      "message": "Фільтр слів"
+      "message": "Фільтр за словами"
    },
     "kitPreview": {
         "message": "Попередній перегляд"
    },
-    "advanced_options": {
-        "message": "Розширений перегляд"
-   },
    "singleResultTable": {
-        "message": "Об'єднати результати пошуку в єдину таблицю"
+        "message": "Об’єднувати результати в одній таблиці"
+   },
+  "theme": {
+    "message": "Тема"
+  },
+  "theme_system": {
+    "message": "Системна"
+  },
+  "theme_light": {
+    "message": "Світла"
+  },
+  "theme_dark": {
+    "message": "Темна"
+  },
+  "history_empty": {
+    "message": "Історія пошуку порожня"
+  },
+  "history_remove_error": {
+    "message": "Не вдалося видалити запис. Спробуйте ще раз."
+  },
+  "page_loading": {
+    "message": "Завантаження розширення…"
+  },
+  "search_loading": {
+    "message": "Шукаємо на трекерах…"
+  },
+  "search_preparing": {
+    "message": "Завантажуємо налаштування пошуку…"
+  },
+  "search_prepare_error": {
+    "message": "Не вдалося завантажити налаштування пошуку."
+  },
+  "search_no_trackers": {
+    "message": "У цьому списку немає доступних трекерів."
+  },
+  "search_empty": {
+    "message": "Нічого не знайдено."
+  },
+  "search_filtered": {
+    "message": "За цими фільтрами нічого не знайдено."
+  },
+  "search_category_empty": {
+    "message": "У цій категорії немає результатів."
+  },
+  "search_reset_filters": {
+    "message": "Скинути фільтри"
+  },
+  "tracker_unavailable": {
+    "message": "Трекер недоступний"
+  },
+  "tracker_error": {
+    "message": "Помилка трекера"
+  },
+  "profile": {
+    "message": "Список трекерів"
+  },
+  "explorer_full_search": {
+    "message": "Усі результати"
+  },
+  "explorer_cache_error": {
+    "message": "Не вдалося оновити добірку. Спробуйте ще раз."
+  },
+  "explorer_loading": {
+    "message": "Завантажуємо добірку…"
+  },
+  "explorer_empty": {
+    "message": "У добірці поки нічого немає."
+  },
+  "explorer_poster_size": {
+    "message": "Розмір постерів"
+  },
+  "quick_search_empty": {
+    "message": "Роздач не знайдено"
+  },
+  "explorer_refresh": {
+    "message": "Оновити добірку"
+  },
+  "explorer_poster_size_reset": {
+    "message": "Скинути розмір постерів"
+  },
+  "explorer_rows": {
+    "message": "Ряди"
+  },
+  "explorer_move_earlier": {
+    "message": "Перемістити раніше"
+  },
+  "explorer_move_later": {
+    "message": "Перемістити пізніше"
+  },
+  "favorite_edit": {
+    "message": "Редагування картки"
+  },
+  "favorite_title_required": {
+    "message": "Введіть назву."
+  },
+  "favorite_invalid_url": {
+    "message": "Введіть адресу, яка починається з http:// або https://."
+  },
+  "favorite_url_conflict": {
+    "message": "Ця адреса вже є у вибраному."
+  },
+  "favorite_write_error": {
+    "message": "Не вдалося зберегти зміни. Спробуйте ще раз."
+  },
+  "settings_results": {
+    "message": "Таблиця результатів"
+  },
+  "tab_proxy_mode": {
+    "message": "Де відкривати сайт трекера"
+  },
+  "tab_proxy_tab": {
+    "message": "Фонова вкладка"
+  },
+  "tab_proxy_window": {
+    "message": "Окреме вікно"
+  },
+  "settings_browser": {
+    "message": "Браузер"
+  },
+  "settings_showcase": {
+    "message": "Вітрина"
+  },
+  "settings_backup": {
+    "message": "Резервне копіювання"
+  },
+  "filter_builtIn": {
+    "message": "Вбудовані"
+  },
+  "filter_installed": {
+    "message": "Установлені"
+  },
+  "profile_find_tracker": {
+    "message": "Знайти трекер"
+  },
+  "profile_edit": {
+    "message": "Редагування списку"
+  },
+  "profile_name": {
+    "message": "Назва списку"
+  },
+  "quality_rule": {
+    "message": "Правило"
+  },
+  "settings_titles": {
+    "message": "Назви роздач"
+  },
+  "settings_preview": {
+    "message": "Попередній перегляд"
+  },
+  "settings_save_error": {
+    "message": "Не вдалося зберегти налаштування. Спробуйте ще раз."
+  },
+  "titles_highlight": {
+    "message": "Виділяти слова з пошукового запиту"
+  },
+  "titles_round": {
+    "message": "Круглі дужки"
+  },
+  "titles_square": {
+    "message": "Квадратні дужки"
+  },
+  "titles_curly": {
+    "message": "Фігурні дужки"
+  },
+  "titles_angle": {
+    "message": "Кутові дужки"
+  },
+  "titles_preview_query": {
+    "message": "Запит «$1»"
+  },
+  "titles_normal": {
+    "message": "Звичайний текст"
+  },
+  "titles_muted": {
+    "message": "Приглушити"
+  },
+  "titles_accent": {
+    "message": "Виділити"
+  },
+  "backup_wait": {
+    "message": "Обробляємо архів…"
+  },
+  "backup_review": {
+    "message": "Перевірка резервної копії"
+  },
+  "backup_replace_description": {
+    "message": "Ці записи буде замінено. Інші дані залишаться без змін."
+  },
+  "backup_skipped": {
+    "message": "Записи, які буде пропущено"
+  },
+  "backup_confirm": {
+    "message": "Відновити дані"
+  },
+  "backup_exported": {
+    "message": "Резервну копію завантажено."
+  },
+  "backup_export_error": {
+    "message": "Не вдалося зберегти резервну копію."
+  },
+  "backup_invalid": {
+    "message": "Не вдалося прочитати архів. Виберіть резервну копію розширення у форматі ZIP."
+  },
+  "backup_restored": {
+    "message": "Дані відновлено."
+  },
+  "backup_failed": {
+    "message": "Не вдалося відновити дані з копії. Попередні дані збережено."
+  },
+  "backup_partial": {
+    "message": "Частина даних могла змінитися. Натисніть «Повернути попередні дані», щоб спробувати їх відновити."
+  },
+  "backup_retry_restore": {
+    "message": "Повернути попередні дані"
+  },
+  "backup_recovered": {
+    "message": "Попередні дані відновлено."
+  },
+  "maker_split": {
+    "message": "Змінити висоту форми й перегляду"
+  },
+  "maker_loading": {
+    "message": "Завантажуємо сторінку трекера…"
+  },
+  "maker_request_error": {
+    "message": "Не вдалося завантажити сторінку трекера. Перевірте адресу й спробуйте ще раз."
+  },
+  "maker_no_preview": {
+    "message": "Відкрийте сторінку трекера для перегляду."
+  },
+  "maker_transformations": {
+    "message": "Перетворення"
+  },
+  "maker_no_transformations": {
+    "message": "Перетворень поки немає."
+  },
+  "maker_method": {
+    "message": "Метод"
+  },
+  "maker_argument_error": {
+    "message": "Перевірте значення аргументу."
+  },
+  "maker_selector_error": {
+    "message": "Перевірте селектор або відкрийте перегляд."
+  },
+  "maker_selector_empty": {
+    "message": "Селектор не знайшов жодного елемента."
+  },
+  "maker_import_error": {
+    "message": "Не вдалося прочитати опис трекера."
+  },
+  "editor_import_file": {
+    "message": "Імпортувати файл"
+  },
+  "editor_import_error": {
+    "message": "Не вдалося прочитати файл трекера."
+  },
+  "editor_enable_script": {
+    "message": "Дозволити скрипт"
+  },
+  "editor_script_confirm": {
+    "message": "Скрипт працюватиме в пісочниці й зможе надсилати запити до $1 від імені вашого облікового запису на трекері. Дозволяйте скрипти лише з джерел, яким довіряєте."
+  },
+  "editor_save_error": {
+    "message": "Не вдалося зберегти трекер. Перевірте опис і спробуйте ще раз."
+  },
+  "editor_script_invalid": {
+    "message": "Не вдалося запустити скрипт. Перевірте, чи він реєструє пошук через актуальний API трекерів."
+  },
+  "tracker_restore_builtin": {
+    "message": "Відновити вбудований трекер"
+  },
+  "discard_changes": {
+    "message": "Закрити без збереження змін?"
+  },
+  "profile_missing": {
+    "message": "Цього списку трекерів більше немає."
+  },
+  "profiles_empty": {
+    "message": "Списків трекерів поки немає."
+  },
+  "profile_conflict": {
+    "message": "Збережені списки змінилися. Натисніть «Оновити», щоб завантажити актуальні дані."
+  },
+  "catalog_loading": {
+    "message": "Завантажуємо зовнішній каталог…"
+  },
+  "catalog_unavailable": {
+    "message": "Не вдалося завантажити каталог. Перевірте джерела та спробуйте ще раз."
+  },
+  "catalog_partial": {
+    "message": "Деякі джерела каталогу недоступні."
+  },
+  "catalog_empty": {
+    "message": "У каталозі немає трекерів."
+  },
+  "catalog_install_error": {
+    "message": "Не вдалося оновити трекер. Спробуйте ще раз."
+  },
+  "tracker_builtin": {
+    "message": "Вбудований"
+  },
+  "tracker_custom": {
+    "message": "Установлений"
+  },
+  "tracker_support": {
+    "message": "Підтримка"
+  },
+  "quality_settings": {
+    "message": "Оцінка якості"
+  },
+  "quality_description": {
+    "message": "Правила нараховують бали за даними роздачі. Бали категорії допомагають класифікувати результати й не входять до оцінки якості."
+  },
+  "quality_rules": {
+    "message": "Правила оцінювання"
+  },
+  "quality_new_rule": {
+    "message": "Додати правило"
+  },
+  "quality_edit_rule": {
+    "message": "Змінити правило"
+  },
+  "quality_find": {
+    "message": "Знайти правила"
+  },
+  "quality_empty": {
+    "message": "Немає відповідних правил."
+  },
+  "quality_defaults": {
+    "message": "Відновити стандартні налаштування"
+  },
+  "quality_conflict": {
+    "message": "Налаштування змінилися в іншій вкладці. Експортуйте чернетку перед оновленням налаштувань."
+  },
+  "quality_includeSeeds": {
+    "message": "Ураховувати сідів"
+  },
+  "quality_seedMin": {
+    "message": "Мінімум сідів"
+  },
+  "quality_seedPoints": {
+    "message": "Бали за сідів"
+  },
+  "quality_includeLeeches": {
+    "message": "Враховувати лічерів"
+  },
+  "quality_leechMin": {
+    "message": "Мінімальна кількість лічерів"
+  },
+  "quality_leechPoints": {
+    "message": "Бали за лічерів"
+  },
+  "quality_margin": {
+    "message": "Мінімальний розрив балів категорій"
+  },
+  "quality_patterns": {
+    "message": "Варіанти збігу"
+  },
+  "quality_pattern": {
+    "message": "Слово або шаблон"
+  },
+  "quality_add_pattern": {
+    "message": "Додати варіант"
+  },
+  "quality_unconditional": {
+    "message": "Будь-яка назва"
+  },
+  "quality_regex": {
+    "message": "Регулярний вираз"
+  },
+  "quality_sensitive": {
+    "message": "Зважати на регістр"
+  },
+  "quality_weights": {
+    "message": "Ваги"
+  },
+  "quality_add_weight": {
+    "message": "Додати вагу"
+  },
+  "quality_bounds": {
+    "message": "Обмеження розміру й віку"
+  },
+  "quality_minBytes": {
+    "message": "Не менше, байтів"
+  },
+  "quality_maxBytes": {
+    "message": "Менше, байтів"
+  },
+  "quality_minAgeDays": {
+    "message": "Не менше, днів"
+  },
+  "quality_maxAgeDays": {
+    "message": "Менше, днів"
+  },
+  "quality_conditions": {
+    "message": "Додаткові умови"
+  },
+  "quality_add_condition": {
+    "message": "Додати умову"
+  },
+  "quality_scope": {
+    "message": "Де шукати збіг"
+  },
+  "quality_any": {
+    "message": "У всій назві"
+  },
+  "quality_before": {
+    "message": "Перед основним збігом"
+  },
+  "quality_after": {
+    "message": "Після основного збігу"
+  },
+  "quality_criterion": {
+    "message": "Критерій"
+  },
+  "quality_category": {
+    "message": "Категорія"
+  },
+  "quality_points": {
+    "message": "Бали"
+  },
+  "quality_resolution": {
+    "message": "Роздільність"
+  },
+  "quality_video": {
+    "message": "Формат відео"
+  },
+  "quality_audio": {
+    "message": "Формат аудіо"
+  },
+  "quality_game": {
+    "message": "Версія гри"
+  },
+  "quality_size": {
+    "message": "Розмір"
+  },
+  "quality_date": {
+    "message": "Вік"
+  },
+  "quality_transfer": {
+    "message": "Імпорт та експорт JSON"
+  },
+  "quality_transfer_help": {
+    "message": "Вставте JSON або виберіть файл. Після перевірки побачите, як зміниться чернетка."
+  },
+  "quality_import_json": {
+    "message": "JSON для імпорту"
+  },
+  "quality_upload": {
+    "message": "Завантажити з файла"
+  },
+  "quality_mode": {
+    "message": "Спосіб імпорту"
+  },
+  "quality_merge": {
+    "message": "Додати нові правила й оновити бали в тих, що збігаються"
+  },
+  "quality_replace": {
+    "message": "Замінити поточні правила правилами з JSON"
+  },
+  "quality_check": {
+    "message": "Перевірити JSON"
+  },
+  "quality_import_impact": {
+    "message": "Додати: $1. Оновити: $2. Замінити: $3."
+  },
+  "quality_apply_draft": {
+    "message": "Застосувати до чернетки"
+  },
+  "quality_schema": {
+    "message": "Завантажити схему JSON"
+  },
+  "quality_export_draft": {
+    "message": "Експорт чернетки"
+  },
+  "quality_export_json": {
+    "message": "Чернетка у форматі JSON"
+  },
+  "quality_copy": {
+    "message": "Скопіювати JSON"
+  },
+  "quality_download": {
+    "message": "Завантажити JSON"
+  },
+  "quality_copied": {
+    "message": "JSON скопійовано."
+  },
+  "quality_copy_error": {
+    "message": "Не вдалося скопіювати JSON. Його можна завантажити."
+  },
+  "quality_error_version": {
+    "message": "Підтримується лише версія 1."
+  },
+  "quality_error_syntax": {
+    "message": "Перевірте синтаксис JSON."
+  },
+  "quality_error_field": {
+    "message": "Це поле не підтримується."
+  },
+  "quality_error_regex": {
+    "message": "Перевірте синтаксис регулярного виразу."
+  },
+  "quality_error_complexity": {
+    "message": "Занадто складний регулярний вираз."
+  },
+  "quality_error_length": {
+    "message": "Документ завеликий."
+  },
+  "quality_error_text": {
+    "message": "Введіть текст допустимої довжини."
+  },
+  "quality_error_number": {
+    "message": "Введіть число в допустимому діапазоні."
+  },
+  "quality_error_range": {
+    "message": "Верхня межа має бути більшою за нижню."
+  },
+  "quality_error_category": {
+    "message": "Виберіть підтримувану категорію."
+  },
+  "quality_error_criterion": {
+    "message": "Виберіть підтримуваний критерій."
+  },
+  "quality_error_list": {
+    "message": "Перевірте кількість елементів у списку."
+  },
+  "quality_error_object": {
+    "message": "Очікується об’єкт."
+  },
+  "quality_error_boolean": {
+    "message": "Очікується true або false."
+  },
+  "quality_error_scope": {
+    "message": "Виберіть, у якій частині назви шукати збіг."
+  },
+  "maker_heading": {
+    "message": "Конструктор трекера"
+  },
+  "tracker_code": {
+    "message": "Код трекера"
+  },
+  "editor_heading": {
+    "message": "Редактор трекера"
+  },
+  "page_not_found": {
+    "message": "Сторінку не знайдено"
+  },
+  "maker_preview_title": {
+    "message": "Попередній перегляд сторінки"
+  },
+  "maker_origin": {
+    "message": "Адреса вкладки сайту"
+  },
+  "maker_headers": {
+    "message": "Заголовки HTTP (JSON)"
+  },
+  "maker_auto_title": {
+    "message": "Визначити поля"
+  },
+  "maker_auto_open_first": {
+    "message": "Спочатку відкрийте сторінку з результатами пошуку."
+  },
+  "maker_auto_pending": {
+    "message": "Аналізуємо сторінку й перевіряємо результати…"
+  },
+  "maker_auto_results": {
+    "message": "Поля визначено за рядками результатів ($1)."
+  },
+  "maker_auto_login": {
+    "message": "Увійти на трекер"
+  },
+  "maker_auto_empty": {
+    "message": "Результатів пошуку немає. Відкрийте сторінку з результатами, щоб визначити поля."
+  },
+  "maker_auto_unsupported": {
+    "message": "Не вдалося розпізнати результати пошуку. Виберіть поля вручну."
+  },
+  "maker_auto_error": {
+    "message": "Не вдалося проаналізувати або перевірити сторінку. Налаштування збережено."
+  },
+  "maker_auto_search_unknown": {
+    "message": "Шаблон запиту не знайдено. Перед експортом перевірте адресу пошуку або тіло POST-запиту."
+  },
+  "maker_auto_search_found": {
+    "message": "Шаблон пошукового запиту знайдено та заповнено."
+  },
+  "maker_auto_format_detected": {
+    "message": "формат визначено"
+  },
+  "maker_auto_format_ambiguous": {
+    "message": "неоднозначний формат; поле пропущено"
+  },
+  "maker_auto_format_unsupported": {
+    "message": "формат не визначено. Перевірте поле."
+  },
+  "maker_auto_login_required": {
+    "message": "Для перегляду цієї сторінки потрібно ввійти. Увійдіть на сайті трекера й завантажте результати знову."
+  },
+  "maker_auto_request_failed": {
+    "message": "Трекер повернув помилку. Спробуйте завантажити результати знову."
+  },
+  "maker_auto_format_invalid": {
+    "message": "неприпустимі значення; поле пропущено"
+  },
+  "maker_auto_not_found": {
+    "message": "На цій сторінці не знайдено"
+  },
+  "maker_auto_next_incompatible": {
+    "message": "Знайдено посилання $1. Налаштуйте перехід на наступну сторінку вручну."
+  },
+    "maker_setup": {
+        "message": "Налаштування"
+    },
+    "maker_check": {
+        "message": "Перевірка"
+    },
+    "maker_code": {
+        "message": "Код"
+    },
+    "maker_result": {
+        "message": "Результат"
+    },
+    "maker_fields": {
+        "message": "Поля"
+    },
+    "maker_tracker_lists": {
+        "message": "До списків трекерів"
+    },
+    "maker_source_address": {
+        "message": "Адреса сторінки з результатами"
+    },
+    "maker_source_phrase": {
+        "message": "Запит на цій сторінці"
+    },
+    "maker_help_label": {
+        "message": "Довідка — $1"
+    },
+    "maker_help_address": {
+        "message": "Вставте адресу сторінки, на якій уже видно роздачі трекера."
+    },
+    "maker_help_phrase": {
+        "message": "Введіть запит, за яким відкрито сторінку вище."
+    },
+    "maker_request_options": {
+        "message": "Параметри запиту"
+    },
+    "maker_request_tab": {
+        "message": "Запити через вкладку"
+    },
+    "maker_open_detect": {
+        "message": "Відкрити й визначити поля"
+    },
+    "maker_open_manual": {
+        "message": "Відкрити для ручного налаштування"
+    },
+    "maker_check_phrase": {
+        "message": "Фраза для перевірки"
+    },
+    "maker_check_run": {
+        "message": "Перевірити"
+    },
+    "maker_check_stale": {
+        "message": "Налаштування або запит змінилися. Перевірте ще раз."
+    },
+    "maker_result_count": {
+        "message": "Отримано роздач: $1"
+    },
+    "maker_all_fields": {
+        "message": "Усі поля"
+    },
+    "maker_main_fields": {
+        "message": "Основні поля"
+    },
+    "maker_previous": {
+        "message": "Попередня сторінка"
+    },
+    "maker_next": {
+        "message": "Наступна сторінка"
+    },
+    "maker_current_page": {
+        "message": "Сторінка $1"
+    },
+    "maker_required_issues": {
+        "message": "Обов’язкові поля для перевірки"
+    },
+    "maker_optional_issues": {
+        "message": "Зауваження до необов’язкових полів"
+    },
+    "maker_continue": {
+        "message": "Перейти до коду"
+    },
+    "maker_fix": {
+        "message": "Виправити"
+    },
+    "maker_all_issues": {
+        "message": "Усі зауваження ($1)"
+    },
+    "maker_issue_row": {
+        "message": "Рядок $1"
+    },
+    "maker_issue_selector": {
+        "message": "Помилка синтаксису селектора"
+    },
+    "maker_issue_no_match": {
+        "message": "Немає збігів"
+    },
+    "maker_issue_pipeline": {
+        "message": "Помилка перетворення"
+    },
+    "maker_issue_value": {
+        "message": "Немає значення або хибний формат"
+    },
+    "maker_issue_link": {
+        "message": "Неприпустиме посилання"
+    },
+    "maker_model_report": {
+        "message": "Звіт про визначення полів"
+    },
+    "maker_model_manual": {
+        "message": "Змінено вручну"
+    },
+    "maker_model_kept": {
+        "message": "Збережено з чернетки"
+    },
+    "maker_model_found": {
+        "message": "Визначені поля"
+    },
+    "maker_preview_position": {
+        "message": "Розташування попереднього перегляду"
+    },
+    "maker_preview_bottom": {
+        "message": "Знизу"
+    },
+    "maker_preview_right": {
+        "message": "Праворуч"
+    },
+    "maker_preview_window": {
+        "message": "Окреме вікно"
+    },
+    "maker_preview_collapse": {
+        "message": "Згорнути попередній перегляд"
+    },
+    "maker_preview_blocked": {
+        "message": "Браузер заблокував вікно. Сторінка трекера відкрита знизу."
+    },
+    "maker_selecting": {
+        "message": "Вибір для поля «$1»"
+    },
+    "maker_cancel_selection": {
+        "message": "Скасувати вибір"
+    },
+    "maker_match_count": {
+        "message": "$1 · Збігів: $2"
+    },
+    "maker_highlight_field": {
+        "message": "Підсвітити збіги — $1"
+    },
+    "maker_icon_generate": {
+        "message": "Згенерувати"
+    },
+    "maker_icon_file": {
+        "message": "З файлу"
+    },
+    "maker_icon_url": {
+        "message": "За посиланням"
+    },
+    "maker_icon_address": {
+        "message": "Посилання на зображення"
+    },
+    "maker_icon_load": {
+        "message": "Завантажити зображення"
+    },
+    "maker_icon_error": {
+        "message": "Виберіть коректне зображення PNG, JPEG, SVG або ICO розміром до 1 МБ."
+    },
+    "maker_description_example": {
+        "message": "Незалежне кіно та відкриті медіа"
+    },
+    "maker_publication": {
+        "message": "Публікація"
+    },
+    "maker_code_url": {
+        "message": "Адреса файлу JSON"
+    },
+    "maker_github_help": {
+        "message": "Публікація на GitHub"
+    },
+    "maker_github_repo": {
+        "message": "Створіть публічний репозиторій на GitHub. У прикладі репозиторій має назву trackers, а гілка — main."
+    },
+    "maker_github_files": {
+        "message": "Завантажте JSON трекера в репозиторій. У прикладі файл open-media.json розташовано в корені."
+    },
+    "maker_github_raw": {
+        "message": "Вставте пряме посилання на файл у поле «Адреса файлу JSON». У прикладі замініть <github-user> на своє ім’я користувача."
+    },
+    "maker_github_update": {
+        "message": "Для оновлення збільште версію та замініть JSON у тому самому файлі."
+    },
+    "maker_import": {
+        "message": "Імпортувати JSON"
+    },
+    "maker_import_replace": {
+        "message": "Після успішного імпорту поточну чернетку буде замінено."
+    },
+    "maker_code_json": {
+        "message": "JSON трекера"
+    },
+    "maker_export_stale": {
+        "message": "Код застарів."
+    },
+    "maker_export_check": {
+        "message": "Перевірте трекер і виправте помилки, що заважають створити JSON."
+    },
+    "maker_export_error": {
+        "message": "Перевірте адреси й версію трекера перед отриманням коду."
+    },
+    "maker_copy": {
+        "message": "Скопіювати"
+    },
+    "maker_copied": {
+        "message": "JSON скопійовано."
+    },
+    "maker_copy_error": {
+        "message": "Виділіть JSON і скопіюйте вручну."
+    },
+    "maker_download": {
+        "message": "Завантажити JSON"
+    },
+    "maker_help_method": {
+        "message": "Виберіть операцію, що зчитує вибраний елемент або перетворює його значення."
+    },
+    "maker_method_help": {
+        "message": "Довідка з перетворень"
+    },
+    "maker_empty_source": {
+        "message": "Джерело не містить результатів."
+    },
+  "maker_tracker_page": {
+    "message": "Сторінка трекера"
+  },
+  "maker_help_search_url": {
+    "message": "За цією адресою розширення виконує нові пошуки."
+  },
+  "maker_help_search_method": {
+    "message": "Виберіть HTTP-метод форми пошуку трекера."
+  },
+  "maker_help_search_encoding": {
+    "message": "Виберіть кодування, у якому трекер очікує запит."
+  },
+  "maker_help_search_charset": {
+    "message": "Укажіть кодування відповіді, якщо текст сторінки відображається неправильно."
+  },
+  "maker_help_search_body": {
+    "message": "Укажіть дані, які форма надсилає в тілі POST."
+  },
+  "maker_help_search_query": {
+    "message": "Укажіть параметри, які потрібно додати до адреси запиту."
+  },
+  "maker_help_search_baseUrl": {
+    "message": "Поле зберігає основний URL зі старих описів трекерів."
+  },
+  "maker_help_search_originUrl": {
+    "message": "Це сторінка, яку розширення відкриває для запитів через вкладку."
+  },
+  "maker_help_search_headers": {
+    "message": "Укажіть додаткові HTTP-заголовки у вигляді об’єкта JSON."
+  },
+  "maker_help_search_tab": {
+    "message": "Виконуйте запити з вкладки на сайті трекера."
+  },
+  "maker_help_check_phrase": {
+    "message": "Введіть запит, щоб перевірити поточні налаштування трекера."
+  },
+  "maker_help_selector_row": {
+    "message": "Укажіть повторюваний елемент з даними однієї роздачі."
+  },
+  "maker_help_login_url": {
+    "message": "Укажіть адресу сторінки входу на трекер."
+  },
+  "maker_help_desc_name": {
+    "message": "Введіть назву, за якою користувачі впізнають трекер."
+  },
+  "maker_help_desc_url": {
+    "message": "Укажіть головну сторінку трекера."
+  },
+  "maker_help_desc_description": {
+    "message": "Стисло опишіть, що можна знайти на цьому трекері."
+  },
+  "maker_help_desc_version": {
+    "message": "Укажіть версію опису трекера."
+  },
+  "maker_help_icon": {
+    "message": "Виберіть колір або зображення для іконки трекера."
+  },
+  "maker_help_code_url": {
+    "message": "Укажіть пряме HTTP- або HTTPS-посилання на JSON трекера."
+  },
+  "maker_help_json": {
+    "message": "Вставте вміст JSON-файлу трекера, отриманого в конструкторі."
+  },
+  "maker_source_invalid": {
+    "message": "Укажіть повну адресу з HTTP або HTTPS."
+  },
+  "maker_configure": {
+    "message": "Налаштувати"
+  },
+  "maker_configure_field": {
+    "message": "Налаштувати — $1"
+  },
+  "maker_help_usage": {
+    "message": "Як це працює"
+  },
+  "maker_help_example": {
+    "message": "Приклад"
+  },
+  "maker_help_address_usage": {
+    "message": "Під час автовизначення конструктор шукає на цій сторінці поля видачі й місце для підстановки запиту."
+  },
+  "maker_help_phrase_usage": {
+    "message": "Укажіть початкову фразу повністю. За нею розширення визначить, куди підставляти нові запити."
+  },
+  "maker_help_search_url_usage": {
+    "message": "Поставте %search% на місце пошукової фрази. Її також можна передати в параметрах або тілі POST."
+  },
+  "maker_help_search_method_usage": {
+    "message": "GET передає параметри в адресі. Для POST заповніть тіло запиту, якщо форма надсилає в ньому дані."
+  },
+  "maker_help_search_encoding_usage": {
+    "message": "Розширення кодує запит перед підстановкою замість %search%. Більшість сайтів використовують UTF-8. Деякі старі сайти очікують Windows-1251."
+  },
+  "maker_help_search_charset_usage": {
+    "message": "Залиште поле порожнім, щоб узяти кодування із заголовків відповіді. Якщо його там немає, розширення використовує UTF-8."
+  },
+  "maker_help_search_body_usage": {
+    "message": "Підставте %search% на місце запиту. Для тіла у форматі JSON укажіть Content-Type у HTTP-заголовках."
+  },
+  "maker_help_search_query_usage": {
+    "message": "Розширення додасть роздільник і підставить запит замість %search%. Указуйте кожен параметр один раз в адресі або в цьому полі."
+  },
+  "maker_legacy_base_url": {
+    "message": "Основний URL (сумісність)"
+  },
+  "maker_help_search_baseUrl_usage": {
+    "message": "Розширення розкриває відносні посилання за фактичною адресою відповіді. Для нового трекера залиште це поле порожнім."
+  },
+  "maker_help_search_originUrl_usage": {
+    "message": "Укажіть сторінку для сеансу сайту. Якщо поле порожнє, розширення візьме сайт з адреси запиту."
+  },
+  "maker_help_search_headers_usage": {
+    "message": "Візьміть імена й значення в подвійні лапки. Додайте заголовки, які потрібні трекеру для цього запиту."
+  },
+  "maker_help_search_tab_usage": {
+    "message": "Браузер може використати сеанс сайту у вкладці. Увімкніть це налаштування, якщо трекер показує роздачі після входу."
+  },
+  "maker_help_check_phrase_usage": {
+    "message": "Спробуйте інший запит і переконайтеся, що змінилися адреса або тіло запиту й самі результати."
+  },
+  "maker_help_selector_row_usage": {
+    "message": "Розширення шукатиме назву, посилання та решту полів у кожному такому рядку."
+  },
+  "maker_help_selector_title": {
+    "message": "Укажіть елемент із назвою роздачі."
+  },
+  "maker_help_selector_title_usage": {
+    "message": "Отримайте текст із кожного рядка. Роздача без назви не з’явиться в результатах пошуку."
+  },
+  "maker_help_selector_url": {
+    "message": "Укажіть посилання на сторінку роздачі."
+  },
+  "maker_help_selector_url_usage": {
+    "message": "Отримайте адресу з href. Роздача без посилання на сторінку не з’явиться в результатах пошуку."
+  },
+  "maker_help_selector_size": {
+    "message": "Укажіть елемент із розміром роздачі."
+  },
+  "maker_help_selector_size_usage": {
+    "message": "На виході потрібен розмір у байтах. Застосуйте parseSize до тексту на зразок 1.5 GB."
+  },
+  "maker_help_selector_downloadUrl": {
+    "message": "Укажіть пряме посилання на завантаження роздачі."
+  },
+  "maker_help_selector_downloadUrl_usage": {
+    "message": "Зчитайте значення href. Якщо в результатах пошуку немає прямого посилання, залиште поле порожнім."
+  },
+  "maker_help_selector_seeds": {
+    "message": "Укажіть елемент із кількістю сідів."
+  },
+  "maker_help_selector_seeds_usage": {
+    "message": "На виході потрібне ціле число. Приберіть підпис перетворенням перед переведенням у число."
+  },
+  "maker_help_selector_peers": {
+    "message": "Укажіть елемент із кількістю лічерів у результатах пошуку."
+  },
+  "maker_help_selector_peers_usage": {
+    "message": "Виберіть елемент з потрібним лічильником і вилучіть ціле число з кожного рядка."
+  },
+  "maker_help_selector_date": {
+    "message": "Укажіть дату публікації роздачі."
+  },
+  "maker_help_selector_date_usage": {
+    "message": "Виберіть перетворення для формату сайту. Для ISO-дати в datetime вилучіть атрибут і застосуйте parseIsoDate."
+  },
+  "maker_help_selector_nextPageUrl": {
+    "message": "Укажіть посилання на наступну сторінку видачі."
+  },
+  "maker_help_selector_nextPageUrl_usage": {
+    "message": "Розширення шукає посилання по всій сторінці. Якщо збігів немає, завантаження результатів на цьому завершується."
+  },
+  "maker_help_selector_categoryTitle": {
+    "message": "Укажіть назву рубрики в рядку роздачі."
+  },
+  "maker_help_selector_categoryTitle_usage": {
+    "message": "Отримайте назву рубрики. Якщо на сайті вона веде на сторінку рубрики, налаштуйте посилання окремо."
+  },
+  "maker_help_selector_categoryUrl": {
+    "message": "Укажіть посилання на рубрику роздачі."
+  },
+  "maker_help_selector_categoryUrl_usage": {
+    "message": "Зчитайте значення href із посилання на рубрику. Якщо залишити поле порожнім, у результатах буде видно назву рубрики."
+  },
+  "maker_help_selector_loginForm": {
+    "message": "Укажіть форму або інший елемент, за яким можна впізнати сторінку входу."
+  },
+  "maker_help_selector_loginForm_usage": {
+    "message": "Якщо селектор знаходить елемент, розширення пропонує ввійти. Виберіть елемент, який з’являється лише тоді, коли потрібно ввійти."
+  },
+  "maker_help_skipFromStart": {
+    "message": "Укажіть, скільки рядків зі збігами пропустити на початку."
+  },
+  "maker_help_skipFromStart_usage": {
+    "message": "Укажіть 1, якщо перший відповідний рядок — заголовок таблиці. Якщо селектор знаходить лише роздачі, укажіть 0."
+  },
+  "maker_help_skipFromEnd": {
+    "message": "Укажіть, скільки рядків зі збігами пропустити в кінці."
+  },
+  "maker_help_skipFromEnd_usage": {
+    "message": "Укажіть 1, якщо останній відповідний рядок містить навігацію. Якщо селектор знаходить лише роздачі, укажіть 0."
+  },
+  "maker_help_desc_url_usage": {
+    "message": "Користувач зможе відкрити цю адресу за іконкою сайту."
+  },
+  "maker_help_desc_version_usage": {
+    "message": "Під час заміни опублікованого JSON збільште версію, щоб розширення виявило оновлення."
+  },
+  "maker_help_icon_usage": {
+    "message": "Кнопки «З файлу» і «За посиланням» вбудовують зображення в експортований трекер. Підтримуються PNG, JPEG, SVG та ICO."
+  },
+  "maker_help_code_url_usage": {
+    "message": "Розширення використовує цю адресу для встановлення й оновлень. Для локальної чернетки залиште поле порожнім."
+  },
+  "maker_help_export": {
+    "message": "Це JSON поточної чернетки після успішної перевірки."
+  },
+  "maker_help_export_usage": {
+    "message": "Скопіюйте або завантажте код, щоб опублікувати його або згодом відкрити через імпорт JSON."
+  },
+  "maker_help_method_usage": {
+    "message": "Кроки виконуються за порядком. Кожен отримує результат попереднього. Довідка біля аргументу показує, якого формату очікує метод."
+  },
+  "maker_argument_label_Attribute": {
+    "message": "Атрибут"
+  },
+  "maker_argument_label_Property": {
+    "message": "Властивість"
+  },
+  "maker_argument_label_Index": {
+    "message": "Індекс"
+  },
+  "maker_argument_label_Pattern": {
+    "message": "Шаблон"
+  },
+  "maker_argument_label_ReplaceTo": {
+    "message": "Заміна"
+  },
+  "maker_argument_label_Format": {
+    "message": "Формат дати"
+  },
+  "maker_argument_label_Template": {
+    "message": "Шаблон дати"
+  },
+  "maker_help_argument_Attribute": {
+    "message": "Введіть ім’я HTML-атрибута вибраного елемента."
+  },
+  "maker_help_argument_Attribute_usage": {
+    "message": "getAttr зчитує значення з HTML. Наприклад, в атрибуті href може бути відносний шлях."
+  },
+  "maker_help_argument_Property": {
+    "message": "Введіть ім’я DOM-властивості вибраного елемента."
+  },
+  "maker_help_argument_Property_usage": {
+    "message": "Властивість href посилання повертає повну адресу. textContent повертає текст елемента."
+  },
+  "maker_help_argument_Index": {
+    "message": "Укажіть індекс дочірнього вузла."
+  },
+  "maker_help_argument_Index_usage": {
+    "message": "Використовуйте 0 для першого вузла або -1 для останнього. Текстові вузли також враховуються."
+  },
+  "maker_help_argument_PatternText": {
+    "message": "Введіть текст, який потрібно замінити."
+  },
+  "maker_help_argument_PatternText_usage": {
+    "message": "replace замінює перший збіг з урахуванням регістру. Пробіли й розділові знаки входять до тексту."
+  },
+  "maker_help_argument_PatternRegex": {
+    "message": "Введіть регулярний вираз для пошуку тексту, який потрібно замінити."
+  },
+  "maker_help_argument_PatternRegex_usage": {
+    "message": "Введіть сам шаблон без обрамлювальних косих рисок і прапорців. replaceRe знаходить усі збіги без урахування регістру."
+  },
+  "maker_help_argument_ReplaceTo": {
+    "message": "Введіть текст, який потрібно поставити на місце збігу."
+  },
+  "maker_help_argument_ReplaceTo_usage": {
+    "message": "Залиште поле порожнім, щоб видалити текст, що збігся."
+  },
+  "maker_help_argument_Format": {
+    "message": "Введіть шаблон дати в тому вигляді, у якому її показує трекер."
+  },
+  "maker_help_argument_Format_usage": {
+    "message": "Використовуйте DD для дня, MM для місяця й YYYY для року. Збережіть роздільники із сайту."
+  },
+  "maker_help_argument_Template": {
+    "message": "Виберіть шаблон, що відповідає тексту дати на трекері."
+  },
+  "maker_help_argument_Template_usage": {
+    "message": "Звірте порядок дня, місяця й року або виберіть шаблон відносного часу."
+  },
+  "maker_argument_invalid_regex": {
+    "message": "Введіть коректний регулярний вираз без обрамлювальних косих рисок."
+  },
+  "maker_argument_invalid_number": {
+    "message": "Введіть число."
+  },
+  "maker_argument_invalid_string": {
+    "message": "Введіть значення у форматі з довідки."
+  },
+  "maker_argument_invalid_select": {
+    "message": "Виберіть шаблон зі списку."
+  },
+  "maker_method_unknown": {
+    "message": "Виберіть підтримуване перетворення."
+  },
+  "maker_check_request_unverified": {
+    "message": "Результати отримано з початкової сторінки. Перед експортом натисніть «Перевірити», щоб виконати поточний запит."
+  },
+  "maker_check_other_page": {
+    "message": "На іншій перевіреній сторінці є помилки, які блокують експорт."
+  },
+  "maker_blocking_issues": {
+    "message": "Помилки, які блокують експорт"
+  },
+  "maker_check_origin": {
+    "message": "Адреса запиту або вкладки не входить до списку дозволених для цього трекера."
+  },
+  "maker_help_desc_name_usage": {
+    "message": "Цю назву видно під час вибору трекерів для пошуку."
+  },
+  "maker_help_desc_description_usage": {
+    "message": "Уточніть, які матеріали можна знайти на цьому трекері."
+  },
+  "maker_help_login_url_usage": {
+    "message": "Розширення запропонує це посилання, якщо селектор входу збігатиметься у відповіді."
+  },
+  "maker_help_json_usage": {
+    "message": "Імпорт замінює чернетку. Перегляньте або перевірте налаштування перед створенням нового JSON."
+  },
+  "maker_collapse": {
+    "message": "Згорнути"
+  },
+  "maker_transformations_field": {
+    "message": "Перетворення — $1"
+  },
+   "settings_search": {
+      "message": "Пошук"
+   },
+   "delete": {
+      "message": "Видалити"
+   },
+   "external_trackers": {
+      "message": "Зовнішні"
+   },
+   "fetchMeta": {
+      "message": "Завантажити відомості"
+   },
+   "sources": {
+      "message": "Джерела"
+   },
+   "refresh": {
+      "message": "Оновити"
+   },
+   "repositories": {
+      "message": "Репозиторії"
+   },
+   "add_repository": {
+      "message": "Додати репозиторій"
+   },
+   "profile_edit_title": {
+      "message": "Редагування списку «$1»"
+   },
+   "catalog_metadata_error": {
+      "message": "Не вдалося завантажити відомості про трекер. Спробуйте ще раз."
+   },
+   "catalog_add_error": {
+      "message": "Не вдалося додати трекер. Спробуйте ще раз."
+   },
+   "catalog_remove_error": {
+      "message": "Не вдалося видалити трекер. Спробуйте ще раз."
+   },
+   "tracker_restore_error": {
+      "message": "Не вдалося відновити вбудований трекер. Спробуйте ще раз."
+   },
+   "history_loading": {
+      "message": "Завантажуємо історію пошуку…"
+   },
+   "history_load_error": {
+      "message": "Не вдалося завантажити історію пошуку."
+   },
+   "settings_loading": {
+      "message": "Завантажуємо налаштування…"
+   },
+   "settings_load_error": {
+      "message": "Не вдалося завантажити налаштування."
+   },
+   "editor_loading": {
+      "message": "Завантажуємо редактор трекера…"
+   },
+   "editor_load_error": {
+      "message": "Не вдалося відкрити редактор трекера."
+   },
+   "explorer_load_error": {
+      "message": "Не вдалося завантажити добірки."
+   },
+   "profiles_loading": {
+      "message": "Завантажуємо списки трекерів…"
+   },
+   "profiles_load_error": {
+      "message": "Не вдалося завантажити списки трекерів."
+   },
+   "trackers_loading": {
+      "message": "Завантажуємо трекери…"
+   },
+   "trackers_load_error": {
+      "message": "Не вдалося завантажити трекери."
+   },
+   "calendar_start": {
+      "message": "Початкова дата"
+   },
+   "calendar_end": {
+      "message": "Кінцева дата"
+   },
+   "calendar_previous_month": {
+      "message": "Попередній місяць"
+   },
+   "calendar_next_month": {
+      "message": "Наступний місяць"
+   },
+   "calendar_choose_day": {
+      "message": "Вибрати"
+   },
+   "calendar_unavailable_day": {
+      "message": "Недоступно"
+   },
+   "ui_language": {
+      "message": "uk"
+   },
+   "tracker_retry": {
+      "message": "Повторити пошук"
+   },
+   "download_torrent": {
+      "message": "Завантажити торрент ($1)"
+   },
+   "backup_entry_options": {
+      "message": "Налаштування розширення"
+   },
+   "backup_entry_profiles": {
+      "message": "Списки трекерів"
+   },
+   "backup_entry_explorerFavorites": {
+      "message": "Вибране"
+   },
+   "backup_entry_explorerSections": {
+      "message": "Порядок і вигляд добірок"
+   },
+   "backup_entry_history": {
+      "message": "Історія пошуку"
+   },
+   "backup_entry_profileId": {
+      "message": "Вибраний список трекерів"
+   },
+   "backup_entry_trackers": {
+      "message": "Установлені трекери"
+   },
+   "backup_entry_explorerModules": {
+      "message": "Джерела добірок"
+   },
+   "backup_entry_explorerCache": {
+      "message": "Кеш добірок"
+   },
+   "backup_entry_quickSearch": {
+      "message": "Збережені результати швидкого пошуку"
+   },
+   "backup_entry_lastCheckUpdateAt": {
+      "message": "Остання перевірка оновлень трекерів"
+   },
+   "backup_entry_qualitySettings": {
+      "message": "Правила оцінювання якості"
+   },
+   "catalog_open_source_file": {
+      "message": "Відкрити файл у репозиторії"
+   },
+   "tracker_http_error": {
+      "message": "Трекер відповів із кодом HTTP $1."
    }
 }

@@ -4,51 +4,60 @@
   "description": {
     "icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAOwwAADsMBx2+oZAAAABp0RVh0U29mdHdhcmUAUGFpbnQuTkVUIHYzLjUuMTFH80I3AAABXUlEQVQ4T2P4Twg8/HQNygIDAhoef7npv573x++vUD5+DT/+fI3aJ+O2hmH3vYVQIWQN/8AAygGD25/OuW1jAGrI32757z9UCqGhoaHB09Nz5cqVUP7//+9/vgRqcF/L9ObbM6gQsoZbt26Zmpo6Ozv//v0bInL09QaghqSd6nDjgQDFSaGhocbGxidOnICIVF5wA2rY/RDhASBA8fSZM2eAGoDagOyvfz55HGDx3M76/c8XiCwEoGj4+/evm5sb0GFPnjzZ8mKG236GWddLoHIwgKIBCHbs2AG0JL8hLfSMmM9Bzk+/3kElYABdw8+fPx19rR1X87idZJh0JQcqigTQNQBB8TUn14sMzlvY3395CxVCAlg0ZF60sCqUMwvQhPJRARYN6SudnDZzuJ5mfP/nFVQICWBz0l0Hl/0sjit43v56DhVCAlg0FB70DIz2DggI+PXnB1QIDv7/BwCgoZWcJhmANwAAAABJRU5ErkJggg%3D%3D",
     "name": "New-Team.Org",
-    "url": "http://new-team.org/",
-    "version": "1.0"
+    "url": "https://new-team.org/",
+    "version": "1.2",
+    "requestMode": "tab"
   },
   "search": {
-    "url": "http://new-team.org/tracker.php",
+    "url": "https://new-team.org/tracker.php",
     "method": "POST",
     "body": "max=1&to=1&nm=%search%"
   },
+  "auth": {
+    "url": "https://new-team.org/login.php",
+    "loginForm": { "selector": "form[action='./login.php'] input[name='login_password']" }
+  },
   "selectors": {
-    "row": { "selector": "#tor-tbl>tbody>tr" },
+    "row": { "selector": "#tor-tbl > tbody > tr:has(> td a[href^='/viewtopic.php?t='])" },
     "categoryTitle": {
-      "selector": "td.row1:eq(2)>a",
+      "selector": "td > a[href^='tracker.php?f=']",
       "pipeline": [{ "name": "getText" }, { "name": "trim" }]
     },
     "categoryUrl": {
-      "selector": "td.row1:eq(2)>a",
+      "selector": "td > a[href^='tracker.php?f=']",
       "pipeline": [{ "name": "getAttr", "args": ["href"] }]
     },
     "title": {
-      "selector": "td.row4.med.tLeft>div>a",
+      "selector": "td a[href^='/viewtopic.php?t=']",
       "pipeline": [{ "name": "getText" }, { "name": "trim" }]
     },
     "url": {
-      "selector": "td.row4.med.tLeft>div>a",
+      "selector": "td a[href^='/viewtopic.php?t=']",
       "pipeline": [{ "name": "getAttr", "args": ["href"] }]
     },
     "size": {
-      "selector": "td.row1.small.nowrap:eq(0)>u",
-      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+      "selector": "td:has(> a[href^='/download.php?id=']) > u",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }, { "name": "toInt" }]
     },
     "downloadUrl": {
-      "selector": "td.row1.small.nowrap:eq(0)>a",
+      "selector": "td > a[href^='/download.php?id=']",
       "pipeline": [{ "name": "getAttr", "args": ["href"] }]
     },
     "seeds": {
-      "selector": "td.row1.seedmed",
+      "selector": "td.seedmed",
       "pipeline": [{ "name": "getText" }, { "name": "trim" }]
     },
     "peers": {
-      "selector": "td.row1.leechmed",
+      "selector": "td.leechmed",
       "pipeline": [{ "name": "getText" }, { "name": "trim" }]
     },
     "date": {
-      "selector": "td.row1.small.nowrap:eq(1)>u",
-      "pipeline": [{ "name": "getText" }, { "name": "trim" }]
+      "selector": "td:last-child > u",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }, { "name": "toInt" }]
+    },
+    "nextPageUrl": {
+      "selector": "b + a[href^='tracker.php?search_id='][href*='&start=']",
+      "pipeline": [{ "name": "getProp", "args": ["href"] }]
     }
   }
 }

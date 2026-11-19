@@ -4,24 +4,24 @@
   "description": {
     "icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAOwwAADsMBx2+oZAAAABh0RVh0U29mdHdhcmUAcGFpbnQubmV0IDQuMC4zjOaXUAAAAStJREFUOE+Vka1uAlEQhXmDPgIS2UfoC5Bg6zD15QFIrl1XRA2KYltBgqlAILBNMHUNqSJ1sLB0afnbfnfPcveWH8HJZDMze86Z2dlCciEywXC8uWlGVyYk7rsxnf5ordLFdWNO3wqm8Y4CBnnr7Zd3D4OfzvuKnA7AqxjMMCW3Al77TkT1+TtlWjCQDnqVmUDjjiEvnlntT/icbNUCWg/Xg2nACqCyIotqS9hsT65mSrOotBc8rQBAsl9mwpIJTW9Jxx3NRX4lIYp3d4356/4y55ALas2obEICmRLia7LFQrlouQDQ1QR4t8HMTXvsxsP0DOC0ADz1lvCUB96hzgqwZAgfRvJy8B8cfAHQDZjDhlnrWICZ8yOptxeESuGfgF39IR/jjSxUWiTJHzo6j94HyCFCAAAAAElFTkSuQmCC",
     "name": "EZTV",
-    "url": "https://eztv.ch/",
+    "url": "https://eztvx.to/",
     "description": "EZTV, your one stop source for all your favorite TV shows.",
-    "version": "1.0"
+    "version": "1.1",
+    "requestMode": "tab"
   },
-  "search": { "url": "https://eztv.io/search/%search%", "method": "GET" },
+  "search": { "url": "https://eztvx.to/search/%search%", "method": "GET" },
   "selectors": {
-    "row": { "selector": "#header_holder > table:eq(4) > tbody > tr" },
-    "skipFromStart": 2,
+    "row": { "selector": "tr:has(td > a[href^='/ep/'])" },
     "title": {
-      "selector": "td:eq(1) > a",
+      "selector": "td > a[href^='/ep/']",
       "pipeline": [{ "name": "getText" }, { "name": "trim" }]
     },
     "url": {
-      "selector": "td:eq(1)>a",
+      "selector": "td > a[href^='/ep/']",
       "pipeline": [{ "name": "getAttr", "args": ["href"] }]
     },
     "size": {
-      "selector": "td:eq(3)",
+      "selector": "td:nth-last-child(3)",
       "pipeline": [
         { "name": "getText" },
         { "name": "trim" },
@@ -29,8 +29,12 @@
       ]
     },
     "downloadUrl": {
-      "selector": "td:eq(2)>a:eq(1)",
+      "selector": "td > a[href^='magnet:']",
       "pipeline": [{ "name": "getAttr", "args": ["href"] }]
+    },
+    "seeds": {
+      "selector": "td:last-child",
+      "pipeline": [{ "name": "getText" }, { "name": "trim" }, { "name": "toInt" }]
     }
   }
 }

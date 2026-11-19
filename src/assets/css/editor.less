@@ -1,62 +1,50 @@
 .page-ctr--editor {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  overflow: auto;
+  height: 100dvh;
+  min-height: 0;
 
   .editor__head {
-    background-color: #f7f7f7;
+    background: var(--surface);
     display: flex;
-    flex-direction: row;
-    height: 46px;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 1px solid #ddd;
-    padding: 0 10px;
+    gap: var(--space-2);
+    min-height: 44px;
+    flex: none;
+    border-bottom: 1px solid var(--line);
+    padding-inline: var(--gutter);
   }
-
-  .editor__head .head__action {
-    margin-left: 10px;
+  .editor__head label, .head__action {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
   }
-
   .editor__body {
-    height: calc(100% - 47px);
+    flex: 1;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 2px;
+    min-height: 0;
+    padding: var(--space-3) var(--gutter) var(--space-4);
+    > span { font-size: 13px; }
   }
-
-  .CodeMirror {
-    height: 100% !important;
+  .cm-editor {
+    box-sizing: border-box;
+    height: 100%;
+    border: 1px solid var(--edge);
   }
-
-  .button {
-    display: inline-block;
-    padding: 4px 10px;
-    background-color: #ffffff;
-    border-radius: 3px;
-    border: 1px solid rgba(0, 0, 0, 0.3);
-  }
-
-  a.button {
-    color: #0051D8;
-    text-decoration: none;
-  }
-
-  .button:hover {
-    border-color: rgba(0, 0, 0, 0.5);
-  }
-
-  .button:focus {
-    border: 1px solid #3366ff;
-  }
-
-  .option-hidden {
-    display: none;
-  }
+  .editor-error { color: var(--error); margin: var(--space-1) var(--gutter); }
 }
 
-.dialog__body.dialog-code {
-  width: 450px;
+.page-ctr--editor .editor__head {
+  flex-wrap: wrap;
+  padding-block: var(--space-1);
+  h1 { margin: 0; font-size: 20px; font-weight: 500; flex: 1; }
+}
 
-  .dialog__textarea {
-    height: 250px;
+@media (max-width: 480px) {
+  .page-ctr--editor .editor__head {
+    align-items: flex-start;
+    flex-direction: column;
+    padding-block: var(--space-2);
   }
 }

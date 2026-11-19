@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="img-src 'none'; frame-src 'none'; object-src 'none'"
+    />
+    <title>Стенд парсера tSearch</title>
+    <link rel="stylesheet" href="./stand.css" />
+  </head>
+  <body>
+    <main class="stand">
+      <header class="stand-header">
+        <div>
+          <p class="project">tSearch / эксперименты</p>
+          <h1>Стенд парсера</h1>
+          <p class="intro">
+            Вставь HTML выдачи и её адрес. Модель соберёт конфиг, а парсер проверит его на том же
+            HTML.
+          </p>
+        </div>
+      </header>
+
+      <div class="panes">
+        <form id="source-form" class="pane" aria-labelledby="source-title">
+          <div class="pane-heading">
+            <h2 id="source-title">Входные данные</h2>
+            <span class="format" aria-hidden="true">HTML</span>
+          </div>
+          <div class="source-tools">
+            <label for="page-url">URL страницы</label>
+            <input id="page-url" type="url" required placeholder="https://tracker.example/search" />
+            <details class="request-evidence">
+              <summary>Уточнить поисковый запрос</summary>
+              <div class="request-fields">
+                <label for="search-phrase">Поисковая фраза</label>
+                <input id="search-phrase" type="text" placeholder="linux" />
+                <label for="request-url">Исходный URL запроса, если отличается</label>
+                <input id="request-url" type="url" placeholder="https://tracker.example/search" />
+                <label for="request-body">Тело POST (необязательно)</label>
+                <textarea
+                  id="request-body"
+                  rows="3"
+                  spellcheck="false"
+                  placeholder="q=linux&category=all"
+                ></textarea>
+              </div>
+            </details>
+            <div class="examples">
+              <span>Примеры</span>
+              <button type="button" id="results-example">Выдача</button>
+              <button type="button" id="login-example">Страница входа</button>
+            </div>
+          </div>
+          <div class="editor">
+            <label for="source-html">HTML страницы</label>
+            <textarea
+              id="source-html"
+              required
+              spellcheck="false"
+              placeholder="Вставь исходный HTML или открой файл"
+            ></textarea>
+          </div>
+          <div class="pane-actions">
+            <label class="file-button">
+              <input id="html-file" type="file" accept=".html,.htm,.txt,text/html,text/plain" />
+              Открыть HTML
+            </label>
+            <button type="submit" class="primary">Разобрать</button>
+          </div>
+        </form>
+
+        <section class="pane result-pane" aria-labelledby="result-title">
+          <div class="pane-heading">
+            <h2 id="result-title">Результат</h2>
+            <span class="format" aria-hidden="true">JSON</span>
+          </div>
+          <div class="result-summary">
+            <div id="value-formats" aria-live="polite" hidden></div>
+            <div class="status" id="status" role="status">
+              <span class="status-mark" aria-hidden="true"></span>
+              <span id="status-text">Ожидает HTML</span>
+            </div>
+            <div class="search-status" id="search-status" aria-live="polite" hidden>
+              <strong id="search-status-title"></strong>
+              <div class="search-status-detail" id="search-status-detail"></div>
+            </div>
+          </div>
+          <div class="editor">
+            <label for="result-json">Конфиг или статус</label>
+            <textarea
+              id="result-json"
+              readonly
+              spellcheck="false"
+              placeholder="Здесь появится JSON"
+            ></textarea>
+          </div>
+          <div class="pane-actions result-actions">
+            <button type="button" id="copy-json" disabled>Скопировать JSON</button>
+          </div>
+        </section>
+      </div>
+      <p class="local-note">HTML обрабатывается в браузере. URL нужен для относительных ссылок.</p>
+    </main>
+    <script type="module" src="./stand.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,23 @@
+.page-loading {
+  box-sizing: border-box;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: var(--space-3);
+  min-block-size: 100dvh;
+  padding: var(--space-4);
+  text-align: center;
+}
+
+.page-loading__message {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--muted);
+
+  .ts-loading { color: var(--focus); }
+}
+
+:root[data-theme='dark'] .page-loading__logo {
+  filter: brightness(0) invert(.65);
+}

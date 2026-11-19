@@ -1,0 +1,7 @@
+{
+  "manifest_version": 3,
+  "name": "tSearch Test Bridge",
+  "version": "1.0.0",
+  "permissions": ["scripting"],
+  "background": {"service_worker": "bridge-worker.js"}
+}
