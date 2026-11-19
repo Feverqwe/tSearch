@@ -89,5 +89,8 @@
     "typescript": "^7.0.2",
     "vite": "^8.3.8"
   },
+  "overrides": {
+    "glob": "14.0.6"
+  },
   "type": "module"
 }
