@@ -1,4 +1,4 @@
-import {parse, type DefaultTreeAdapterTypes} from 'parse5';
+import {type DefaultTreeAdapterTypes, parse} from 'parse5';
 
 const maxBytes = 1024 * 1024;
 

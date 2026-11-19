@@ -1,4 +1,5 @@
 import {useEffect, useLayoutEffect, useState} from 'react';
+
 import {useLocation, useNavigate} from 'react-router-dom';
 
 import {currentTheme, initTheme, parseTheme, saveTheme, setDocumentTheme} from './theme';

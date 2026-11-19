@@ -1,5 +1,7 @@
-import logo from '../assets/img/icon_48.png';
 import LoadingIndicator from './ui/LoadingIndicator';
+
+import logo from '../assets/img/icon_48.png';
+
 import './pageLoading.less';
 
 export default function PageLoading() {

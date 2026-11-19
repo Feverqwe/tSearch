@@ -1,4 +1,5 @@
 import {makeAutoObservable} from 'mobx';
+
 import type SearchResult from './ResultPageItemStore';
 
 export default class FiltersStore {

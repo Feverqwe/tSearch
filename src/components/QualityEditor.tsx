@@ -1,12 +1,14 @@
 import {useState} from 'react';
 
-import {defaults, type QualityConfig} from '../tools/qualityConfig';
+import {type QualityConfig, defaults} from '../tools/qualityConfig';
+
 import QualityRuleDialog from './QualityRuleDialog';
 import QualityTransfer from './QualityTransfer';
+import {criterionLabel, message} from './qualityLabels';
 import Button from './ui/Button';
 import Field from './ui/Field';
 import IconButton from './ui/IconButton';
-import {message, criterionLabel} from './qualityLabels';
+
 import '../assets/css/quality.less';
 
 export interface QualityEditorProps {

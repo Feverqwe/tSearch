@@ -1,13 +1,15 @@
 import {useContext, useEffect, useLayoutEffect, useState} from 'react';
+
 import {observer} from 'mobx-react-lite';
-import QuickSearchStore from '../stores/QuickSearchStore';
-import {RootContext} from '../stores/rootContext';
+
+import Explorer from '../components/Explorer/Explorer';
+import Filters from '../components/Filters';
 import Header from '../components/Header';
 import Profiles from '../components/Profiles';
 import ScrollTop from '../components/ScrollTop';
 import SearchLayout from '../components/SearchLayout';
-import Filters from '../components/Filters';
-import Explorer from '../components/Explorer/Explorer';
+import QuickSearchStore from '../stores/QuickSearchStore';
+import {RootContext} from '../stores/rootContext';
 import getTitle from '../tools/getTitle';
 
 export default observer(function Main() {

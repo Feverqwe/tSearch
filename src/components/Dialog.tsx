@@ -1,4 +1,5 @@
-import {useLayoutEffect, useRef, type ComponentPropsWithoutRef, type RefObject} from 'react';
+import {type ComponentPropsWithoutRef, type RefObject, useLayoutEffect, useRef} from 'react';
+
 import {createPortal} from 'react-dom';
 
 import '../assets/css/dialog.less';

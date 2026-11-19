@@ -1,13 +1,13 @@
 import {parse as parseContentType} from 'content-type';
 import {deserializeError} from 'serialize-error';
 
-import {ErrorWithCode, StatusCodeError} from './errors';
 import base64ToArrayBuffer from './base64ToArrayBuffer';
+import {ErrorWithCode, StatusCodeError} from './errors';
 import {
-  tabProxyPort,
   type TabProxyReply,
   type TabProxyRequest,
   type TrackerRequestMode,
+  tabProxyPort,
 } from './tabProxy';
 
 export interface TrackerRequestOptions {

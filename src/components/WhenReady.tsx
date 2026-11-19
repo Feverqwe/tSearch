@@ -1,5 +1,7 @@
 import {useContext, useEffect, useRef} from 'react';
+
 import {useQuery} from '@tanstack/react-query';
+
 import {
   getTabProfile,
   initialProfileQuery,
@@ -7,8 +9,8 @@ import {
   setTabProfile,
   trackersQuery,
 } from '../data/catalog';
-import {qualitySettingsQuery} from '../data/qualitySettings';
 import {optionsQuery} from '../data/options';
+import {qualitySettingsQuery} from '../data/qualitySettings';
 import {RootContext} from '../stores/rootContext';
 
 export default function WhenReady() {

@@ -1,4 +1,4 @@
-import {useEffect, useId, useState, type ReactNode, type RefCallback} from 'react';
+import {type ReactNode, type RefCallback, useEffect, useId, useState} from 'react';
 
 import AnchoredPanel from './AnchoredPanel';
 

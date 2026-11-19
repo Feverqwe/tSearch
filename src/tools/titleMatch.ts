@@ -1,5 +1,6 @@
+import {type TitleQuery, titleMatchFeatures} from './titleMatchFeatures.ts';
+
 import model from './titleMatchWeights.json' with {type: 'json'};
-import {titleMatchFeatures, type TitleQuery} from './titleMatchFeatures.ts';
 
 export interface TitleMatchScore {
   score: number;

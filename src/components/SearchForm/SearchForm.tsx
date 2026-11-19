@@ -1,9 +1,11 @@
-import {useQuery} from '@tanstack/react-query';
 import {useState} from 'react';
 
-import SearchInput from './SearchInput';
+import {useQuery} from '@tanstack/react-query';
+
 import {historyQuery} from '../../data/history';
 import {StatusCodeError} from '../../tools/errors';
+
+import SearchInput from './SearchInput';
 
 interface SearchFormProps {
   initialQuery?: string;

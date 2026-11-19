@@ -1,5 +1,6 @@
-import Transport from '../tools/transport';
 import type {ModuleSource} from '../tools/moduleWorker';
+import Transport from '../tools/transport';
+
 import BaseApi from './baseApi';
 
 type ModuleTask = () => unknown;

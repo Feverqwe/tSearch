@@ -1,8 +1,9 @@
 import type {Meta, StoryObj} from '@storybook/react-vite';
 import {MemoryRouter} from 'react-router-dom';
 
-import HeaderView from './HeaderView';
 import {HeaderFixture} from '../storybook/searchFixtures';
+
+import HeaderView from './HeaderView';
 
 const meta = {
   title: 'Navigation/Header',

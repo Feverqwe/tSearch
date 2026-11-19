@@ -1,11 +1,12 @@
-import {Route, Routes, useLocation, useParams} from 'react-router-dom';
-import {RouteRedirect as Navigate} from './ui/navigation';
-import {profileRoute} from './ui/profileRoutes';
 import {useState} from 'react';
+
+import {Route, Routes, useLocation, useParams} from 'react-router-dom';
 
 import ComponentLoader from './components/ComponentLoader';
 import NotFound from './pages/NotFound';
 import Search from './pages/Search';
+import {RouteRedirect as Navigate} from './ui/navigation';
+import {profileRoute} from './ui/profileRoutes';
 
 export default function ExtensionRoutes() {
   return (

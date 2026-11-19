@@ -1,13 +1,14 @@
-import {useQuery} from '@tanstack/react-query';
 import {useContext, useEffect, useState} from 'react';
+
+import {useQuery} from '@tanstack/react-query';
 import {observer} from 'mobx-react-lite';
 
-import {profilesQuery} from '../data/catalog';
-import {RootContext} from '../stores/rootContext';
-import type {ProfileRecord} from '../stores/ProfileStore';
-import ProfileEditorStore from '../stores/ProfileEditorStore';
-import ProfileEditorProfiles from '../components/ProfileEditor/ProfileEditorProfiles';
 import ProfileEditorProfile from '../components/ProfileEditor/ProfileEditorProfile';
+import ProfileEditorProfiles from '../components/ProfileEditor/ProfileEditorProfiles';
+import {profilesQuery} from '../data/catalog';
+import ProfileEditorStore from '../stores/ProfileEditorStore';
+import type {ProfileRecord} from '../stores/ProfileStore';
+import {RootContext} from '../stores/rootContext';
 import {RouteRedirect, useRouteNavigate} from '../ui/navigation';
 import {profileRoute} from '../ui/profileRoutes';
 

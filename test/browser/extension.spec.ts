@@ -1,15 +1,16 @@
-import {test as base, expect, chromium, type BrowserContext, type Worker} from '@playwright/test';
-import {createServer} from 'node:http';
-import {filesize} from 'filesize';
-import JSZip from 'jszip';
 import {mkdtemp, readFile, rm} from 'node:fs/promises';
+import {createServer} from 'node:http';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
 
+import {type BrowserContext, type Worker, test as base, chromium, expect} from '@playwright/test';
+import {filesize} from 'filesize';
+import JSZip from 'jszip';
+
 import {extensionDir} from '../../builder/paths.ts';
-import {prepareTrackerDefinition} from '../../src/tools/trackerDefinition.ts';
 import type {HistoryEntry} from '../../src/data/history';
 import type {QuickResult} from '../../src/data/quickSearch';
+import {prepareTrackerDefinition} from '../../src/tools/trackerDefinition.ts';
 
 const test = base.extend<{extension: {context: BrowserContext; worker: Worker; url: string}}>({
   extension: async ({viewport}, use, testInfo) => {

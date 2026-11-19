@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
+
 import {inferDateFormat, inferSizeFormat} from '../value-formats.ts';
 
 test('numeric date order requires evidence from values or a regional locale', () => {

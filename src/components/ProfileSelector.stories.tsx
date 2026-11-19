@@ -2,8 +2,9 @@ import type {Meta, StoryObj} from '@storybook/react-vite';
 import {MemoryRouter} from 'react-router-dom';
 import {fn} from 'storybook/test';
 
-import ProfileSelector from './ProfileSelector';
 import {ProfileFixture} from '../storybook/searchFixtures';
+
+import ProfileSelector from './ProfileSelector';
 
 const meta = {
   component: ProfileSelector,

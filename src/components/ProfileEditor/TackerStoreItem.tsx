@@ -1,19 +1,21 @@
-import {useMutation, useQuery} from '@tanstack/react-query';
-import {observer} from 'mobx-react-lite';
 import {useContext, useState} from 'react';
 
-import blankSvg from '../../assets/img/blank.svg';
-import getIconFromMeta from '../../tools/getIconFromMeta';
+import {useMutation, useQuery} from '@tanstack/react-query';
+import {observer} from 'mobx-react-lite';
+
 import {
+  type RepositoryFile,
   installRepositoryTracker,
   repositoryTracker,
-  type RepositoryFile,
 } from '../../data/repositories';
-import {removeTrackerRecord, type TrackerMeta} from '../../data/trackerRecords';
+import {type TrackerMeta, removeTrackerRecord} from '../../data/trackerRecords';
 import {RootContext} from '../../stores/rootContext';
 import getHash from '../../tools/getHash';
+import getIconFromMeta from '../../tools/getIconFromMeta';
 import Button from '../ui/Button';
 import IconButton from '../ui/IconButton';
+
+import blankSvg from '../../assets/img/blank.svg';
 
 const message = (key: string) => chrome.i18n.getMessage(key);
 

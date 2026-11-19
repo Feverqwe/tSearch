@@ -1,13 +1,14 @@
 import {queryOptions, useMutation, useQueryClient} from '@tanstack/react-query';
-import type {ExplorerModule} from '../tools/getExplorerModules';
-import getExplorerModules from '../tools/getExplorerModules';
-import ExplorerModuleWorker from '../tools/explorerModuleWorker';
+
 import {
   findExplorerCacheEntry,
   getExplorerCache,
   readExplorerCache,
   setExplorerCache,
 } from '../tools/explorerCache';
+import ExplorerModuleWorker from '../tools/explorerModuleWorker';
+import type {ExplorerModule} from '../tools/getExplorerModules';
+import getExplorerModules from '../tools/getExplorerModules';
 import parseModuleParams from '../tools/parseModuleParams';
 import storageGet from '../tools/storageGet';
 import storageSet from '../tools/storageSet';

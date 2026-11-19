@@ -1,7 +1,8 @@
-import type {BackupPlan} from './backupPlan';
+import downloadBlob from '../tools/downloadBlob';
 import storageGet from '../tools/storageGet';
 import storageSet from '../tools/storageSet';
-import downloadBlob from '../tools/downloadBlob';
+
+import type {BackupPlan} from './backupPlan';
 
 export async function exportZip() {
   const [{createBackup}, local, sync] = await Promise.all([

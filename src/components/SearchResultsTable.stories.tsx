@@ -1,8 +1,9 @@
 import type {Meta, StoryObj} from '@storybook/react-vite';
 import {fn} from 'storybook/test';
 
-import SearchResultsTable from './SearchResultsTable';
 import {columns, results, trackerNames} from '../storybook/searchFixtures';
+
+import SearchResultsTable from './SearchResultsTable';
 
 const meta = {
   component: SearchResultsTable,

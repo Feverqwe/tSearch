@@ -1,5 +1,6 @@
-import {draftExtraction, parseCodeDraft, type CodeDraft} from './codeDraft.ts';
 import type {TrackerInference} from '../tools/trackerInference/index.ts';
+
+import {type CodeDraft, draftExtraction, parseCodeDraft} from './codeDraft.ts';
 
 type Detection = Extract<TrackerInference, {status: 'results'}>;
 

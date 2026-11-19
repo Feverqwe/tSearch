@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
+
 import {getExplorerPoster} from '../explorerPoster.ts';
 
 test('upgrades thumbnails using the image providers’ larger renditions', () => {

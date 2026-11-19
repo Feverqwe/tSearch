@@ -1,7 +1,10 @@
 import {mkdir} from 'node:fs/promises';
 import path from 'node:path';
-import {chromium, type BrowserContext, type Worker} from '@playwright/test';
+
+import {type BrowserContext, type Worker, chromium} from '@playwright/test';
+
 import {extensionDir} from '../../builder/paths.ts';
+
 import manifest from '../../src/manifest.json' with {type: 'json'};
 
 export const profileDir = path.resolve(extensionDir, '../../.tsearch-test-profile');

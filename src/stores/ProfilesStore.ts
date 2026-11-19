@@ -1,6 +1,6 @@
 import {makeAutoObservable, observableRef} from 'mobx';
 
-import {defaultProfile, type ProfileRecord} from './ProfileStore';
+import {type ProfileRecord, defaultProfile} from './ProfileStore';
 
 export default class ProfilesStore {
   state: 'idle' | 'done' | 'error' = 'idle';

@@ -1,17 +1,18 @@
 import {useCallback, useEffect, useEffectEvent, useLayoutEffect, useMemo, useRef} from 'react';
 
-import type {Selection, SelectorLocation} from './selectorTypes';
+import getDoc5 from '../sandbox/getDoc5';
+import {StatusCodeError} from '../tools/errors';
+import exKitGetDoc from '../tools/exKitGetDoc';
 import exKitRequest, {
-  type TrackerRequestOptions,
   type TrackerRequestContext,
+  type TrackerRequestOptions,
   type TrackerResponse,
 } from '../tools/exKitRequest';
-import exKitGetDoc from '../tools/exKitGetDoc';
-import getDoc5 from '../sandbox/getDoc5';
 import getNodePath from '../tools/getNodePath';
-import {StatusCodeError} from '../tools/errors';
 import {sizzleQuerySelector, sizzleQuerySelectorAll} from '../tools/sizzleQuery';
 import type {TrackerRequestMode} from '../tools/tabProxy';
+
+import type {Selection, SelectorLocation} from './selectorTypes';
 
 export async function requestPreview(
   options: TrackerRequestOptions,

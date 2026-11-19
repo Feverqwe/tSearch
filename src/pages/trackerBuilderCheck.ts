@@ -1,16 +1,16 @@
 import {hasEmptyResultsNotice} from '../../packages/tracker-toolkit/src/inspection';
-import {draftExtraction, type CodeDraft} from '../data/codeDraft';
+import {type CodeDraft, draftExtraction} from '../data/codeDraft';
 import {extractionKey} from '../data/trackerBuilder';
 import ExKitTracker, {
-  buildNextSearchOptions,
-  buildSearchOptions,
   type ExtractionIssue,
   type SearchSession,
+  buildNextSearchOptions,
+  buildSearchOptions,
 } from '../sandbox/exKitTracker';
 import exKitBuildConnectRe from '../tools/exKitBuildConnectRe';
-import {trackerConnectOrigins} from '../tools/trackerDefinition';
-import exKitRequestOptionsNormalize from '../tools/exKitRequestOptionsNormalize';
 import type {TrackerRequestOptions, TrackerResponse} from '../tools/exKitRequest';
+import exKitRequestOptionsNormalize from '../tools/exKitRequestOptionsNormalize';
+import {trackerConnectOrigins} from '../tools/trackerDefinition';
 
 export function searchRequest(search: CodeDraft['search'], phrase: string, nextUrl?: string) {
   const options = nextUrl

@@ -1,4 +1,5 @@
 import {sizzleQuerySelectorAll} from '../../../src/tools/sizzleQuery.ts';
+
 import nextPageAfterCurrent from './next-page-after-current.ts';
 
 export const pageFields = ['name', 'description', 'loginUrl', 'nextPageUrl'] as const;

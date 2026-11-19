@@ -1,15 +1,18 @@
+import {useState} from 'react';
+
 import type {Meta, StoryObj} from '@storybook/react-vite';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
-import {useState} from 'react';
 import {MemoryRouter} from 'react-router-dom';
 import {expect} from 'storybook/test';
 
-import '../../assets/css/options.less';
-import RootStore from '../../stores/RootStore';
-import {RootContext} from '../../stores/rootContext';
 import ProfileEditorStore from '../../stores/ProfileEditorStore';
 import {profileTracker} from '../../stores/ProfileStore';
+import RootStore from '../../stores/RootStore';
+import {RootContext} from '../../stores/rootContext';
+
 import ProfileEditorProfile from './ProfileEditorProfile';
+
+import '../../assets/css/options.less';
 
 const meta = {
   title: 'Editors/Tracker list',

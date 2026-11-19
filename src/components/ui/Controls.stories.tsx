@@ -1,11 +1,13 @@
-import type {Meta, StoryObj} from '@storybook/react-vite';
 import {useState} from 'react';
+
+import type {Meta, StoryObj} from '@storybook/react-vite';
 import {expect, userEvent, waitFor, within} from 'storybook/test';
 
 import Dialog from '../Dialog';
+
 import Button from './Button';
-import IconButton from './IconButton';
 import Field from './Field';
+import IconButton from './IconButton';
 import Tooltip from './Tooltip';
 
 function Controls() {

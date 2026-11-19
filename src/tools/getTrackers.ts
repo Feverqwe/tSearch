@@ -1,8 +1,10 @@
-import builtInTrackers from '../trackers.json';
 import {readTrackerRecords} from '../data/trackerRecords';
-import loadLocalTrackerModule from './loadLocalTrackerModule';
+
 import getLogger from './getLogger';
+import loadLocalTrackerModule from './loadLocalTrackerModule';
 import {prepareTrackerDefinition} from './trackerDefinition';
+
+import builtInTrackers from '../trackers.json';
 
 const logger = getLogger('getTrackers');
 

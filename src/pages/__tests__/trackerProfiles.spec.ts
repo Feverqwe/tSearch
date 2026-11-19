@@ -1,8 +1,11 @@
+import {createServer} from 'node:http';
+
 import {expect} from '@playwright/test';
 import JSZip from 'jszip';
-import {createServer} from 'node:http';
-import {test} from './extensionTest';
+
 import {prepareTrackerDefinition} from '../../tools/trackerDefinition';
+
+import {test} from './extensionTest';
 
 test('saving a profile preserves the unsaved order of the profile list', async ({extension}) => {
   const {context, worker, app} = extension;

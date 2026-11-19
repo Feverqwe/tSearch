@@ -1,16 +1,17 @@
-import {useState, type Ref} from 'react';
-import {filesize} from 'filesize';
-import type {SelectorId} from '../components/selectorTypes';
+import {type Ref, useState} from 'react';
 
-import Button from '../components/ui/Button';
-import IconButton from '../components/ui/IconButton';
-import Field from '../components/ui/Field';
+import {filesize} from 'filesize';
+
 import BuilderHelp from '../components/TrackerFieldHelp';
+import type {SelectorId} from '../components/selectorTypes';
+import Button from '../components/ui/Button';
+import Field from '../components/ui/Field';
+import IconButton from '../components/ui/IconButton';
 import type {CodeDraft} from '../data/codeDraft';
 import type {TrackerDetectionReport} from '../data/trackerBuilder';
 import type {ExtractionIssue} from '../sandbox/exKitTracker';
-import {blocksExport, isRequired, type CheckResult} from './trackerBuilderCheck';
 
+import {type CheckResult, blocksExport, isRequired} from './trackerBuilderCheck';
 import {message, selectorLabels} from './trackerBuilderLabels';
 
 type DetectedField = Exclude<SelectorId, 'loginForm'>;

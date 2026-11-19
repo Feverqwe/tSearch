@@ -2,6 +2,7 @@ import {useQuery} from '@tanstack/react-query';
 
 import {optionsQuery} from '../../data/options';
 import {repositoryFiles} from '../../data/repositories';
+
 import TackerStoreItem from './TackerStoreItem';
 
 const message = (key: string) => chrome.i18n.getMessage(key);

@@ -1,8 +1,10 @@
 import type {Preview} from '@storybook/react-vite';
 
-import '../src/assets/css/index.less';
 import {setDocumentTheme} from '../src/ui/theme';
+
 import messages from '../src/_locales/en/messages.json';
+
+import '../src/assets/css/index.less';
 
 const labels: Record<string, {message: string}> = messages;
 

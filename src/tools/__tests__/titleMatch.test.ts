@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 
+import sortResults from '../sortResults.ts';
 import {evaluateTitleMatch} from '../titleMatch.ts';
 import {prepareTitleQuery} from '../titleMatchFeatures.ts';
-import sortResults from '../sortResults.ts';
 
 const match = (query: string, title: string) => evaluateTitleMatch(prepareTitleQuery(query), title);
 

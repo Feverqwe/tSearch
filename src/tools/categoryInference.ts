@@ -1,4 +1,4 @@
-import {defaults, type QualityRule} from './qualityConfig.ts';
+import {type QualityRule, defaults} from './qualityConfig.ts';
 
 // Stronger margins for labels that are easily confused in the title-only model.
 const categoryMargins: Readonly<Record<number, number>> = {

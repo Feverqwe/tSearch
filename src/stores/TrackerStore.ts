@@ -1,9 +1,9 @@
 import {makeAutoObservable, observableRef, runInAction} from 'mobx';
 
 import type {TrackerRecord} from '../data/trackerRecords';
-import TrackerWorker from '../tools/trackerWorker';
 import getIconFromMeta from '../tools/getIconFromMeta';
 import getLogger from '../tools/getLogger';
+import TrackerWorker from '../tools/trackerWorker';
 
 type UpdateState = 'idle' | 'pending' | 'done' | 'error';
 const logger = getLogger('tracker');

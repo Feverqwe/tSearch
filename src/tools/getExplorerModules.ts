@@ -2,6 +2,7 @@ import type getExploreModuleCodeMeta from './getExploreModuleCodeMeta';
 import getLogger from './getLogger';
 import loadLocalExplorerModule from './loadLocalExplorerModule';
 import storageGet from './storageGet';
+
 import builtInModules from '../explorers.json';
 
 export interface ExplorerModule {

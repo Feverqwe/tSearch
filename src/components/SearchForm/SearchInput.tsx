@@ -1,6 +1,8 @@
-import {useId, useLayoutEffect, useRef, useState, type KeyboardEvent} from 'react';
+import {type KeyboardEvent, useId, useLayoutEffect, useRef, useState} from 'react';
+
 import AnchoredPanel from '../ui/AnchoredPanel';
 import Button from '../ui/Button';
+
 import './searchForm.less';
 
 export interface SearchInputProps {

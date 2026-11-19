@@ -1,7 +1,7 @@
 import {serializeError} from 'serialize-error';
 
 import arrayBufferToBase64 from './tools/arrayBufferToBase64';
-import {tabProxyPort, type TabProxyRequest, type TabProxyResult} from './tools/tabProxy';
+import {type TabProxyRequest, type TabProxyResult, tabProxyPort} from './tools/tabProxy';
 
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   if (message?.action !== tabProxyPort) return;

@@ -1,12 +1,12 @@
-import ExtensionDataProvider from './data/ExtensionDataProvider';
 import {createRoot} from 'react-dom/client';
 
-import './assets/css/popup.less';
 import SearchForm from './components/SearchForm/SearchForm';
+import ExtensionDataProvider from './data/ExtensionDataProvider';
 import errorTracker from './tools/errorTracker';
 import getTitle from './tools/getTitle';
+import {initTheme, themeInSearch, themedSearch} from './ui/theme';
 
-import {initTheme, themedSearch, themeInSearch} from './ui/theme';
+import './assets/css/popup.less';
 
 initTheme();
 document.documentElement.lang = chrome.i18n.getMessage('ui_language');

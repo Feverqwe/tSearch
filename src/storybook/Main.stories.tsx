@@ -1,11 +1,13 @@
-import type {Meta, StoryObj} from '@storybook/react-vite';
 import {useState} from 'react';
+
+import type {Meta, StoryObj} from '@storybook/react-vite';
 import {MemoryRouter} from 'react-router-dom';
 import {fn} from 'storybook/test';
 
 import ExplorerCard from '../components/Explorer/ExplorerCard';
 import ExplorerSectionView from '../components/Explorer/ExplorerSectionView';
 import SearchLayout from '../components/SearchLayout';
+
 import {FiltersFixture, HeaderFixture, ProfileFixture} from './searchFixtures';
 
 const meta = {

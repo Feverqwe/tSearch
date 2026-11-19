@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
+
 import {catalogFromListings} from '../repositoryListing.ts';
 
 test('partial failure retains successful items and is distinct from an empty source', () => {

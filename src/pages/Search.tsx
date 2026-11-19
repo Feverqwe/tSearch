@@ -1,19 +1,20 @@
-import {optionsQuery} from '../data/options';
-import {useQuery} from '@tanstack/react-query';
-import {observer} from 'mobx-react-lite';
 import {useContext, useEffect, useLayoutEffect, useRef, useState} from 'react';
 
-import {RootContext} from '../stores/rootContext';
+import {useQuery} from '@tanstack/react-query';
+import {observer} from 'mobx-react-lite';
+
+import Filters from '../components/Filters';
 import Header from '../components/Header';
 import Profiles from '../components/Profiles';
-import Filters from '../components/Filters';
 import ScrollTop from '../components/ScrollTop';
 import SearchLayout from '../components/SearchLayout';
 import SearchPage from '../components/SearchPage';
-import getTitle from '../tools/getTitle';
-import {useChangeHistory} from '../data/history';
-import type SearchStore from '../stores/SearchStore';
 import Button from '../components/ui/Button';
+import {useChangeHistory} from '../data/history';
+import {optionsQuery} from '../data/options';
+import type SearchStore from '../stores/SearchStore';
+import {RootContext} from '../stores/rootContext';
+import getTitle from '../tools/getTitle';
 
 export default observer(function Search({query}: {query: string}) {
   const root = useContext(RootContext);

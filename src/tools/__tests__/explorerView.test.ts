@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
+
 import {clampPage, moveByKey, replaceFavorite} from '../explorerView.ts';
 
 test('removal of the last item on a page displays the preceding page', () => {

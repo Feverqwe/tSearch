@@ -1,20 +1,22 @@
+import {type FormEvent, useEffect, useId, useState} from 'react';
+
 import {useQuery} from '@tanstack/react-query';
 import {observer} from 'mobx-react-lite';
-import {useEffect, useId, useState, type FormEvent} from 'react';
 
-import {useChangeHistory} from '../../data/history';
 import {useSaveFavorites} from '../../data/explorer';
+import {useChangeHistory} from '../../data/history';
 import {savedQuickResults} from '../../data/quickSearch';
 import type QuickSearchStore from '../../stores/QuickSearchStore';
-import type {TitlePresentation} from '../../tools/titlePresentation';
 import {isWebAddress, moveByKey, replaceFavorite} from '../../tools/explorerView';
-import ExplorerCard from './ExplorerCard';
+import type {TitlePresentation} from '../../tools/titlePresentation';
 import Dialog from '../Dialog';
+import AnchoredPanel from '../ui/AnchoredPanel';
 import Button from '../ui/Button';
 import Field from '../ui/Field';
 import IconButton from '../ui/IconButton';
 import {useSortableItem} from '../ui/SortableList';
-import AnchoredPanel from '../ui/AnchoredPanel';
+
+import ExplorerCard from './ExplorerCard';
 
 interface ExplorerItemProps {
   item: PackagedExplorerItem;

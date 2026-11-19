@@ -3,11 +3,11 @@ import {queryOptions} from '@tanstack/react-query';
 import type SearchStore from '../stores/SearchStore';
 import getNow from '../tools/getNow';
 import isTrailer from '../tools/isTrailer';
-import {evaluateTitleMatch, type TitleMatchScore} from '../tools/titleMatch';
-import {prepareTitleQuery} from '../tools/titleMatchFeatures';
 import sortResults from '../tools/sortResults';
 import storageGet from '../tools/storageGet';
 import storageSet from '../tools/storageSet';
+import {type TitleMatchScore, evaluateTitleMatch} from '../tools/titleMatch';
+import {prepareTitleQuery} from '../tools/titleMatchFeatures';
 
 export interface QuickResult {
   label: string;

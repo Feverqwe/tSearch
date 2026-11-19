@@ -1,5 +1,7 @@
 import type {ReactNode} from 'react';
+
 import {Group, Panel, Separator} from 'react-resizable-panels';
+
 import './verticalSplit.less';
 
 interface VerticalSplitProps {

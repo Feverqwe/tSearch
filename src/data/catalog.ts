@@ -1,9 +1,10 @@
 import {queryOptions} from '@tanstack/react-query';
 
-import {defaultProfile, normalizeProfiles, type ProfileRecord} from '../stores/ProfileStore';
+import {type ProfileRecord, defaultProfile, normalizeProfiles} from '../stores/ProfileStore';
 import getTrackers from '../tools/getTrackers';
 import storageGet from '../tools/storageGet';
 import storageSet from '../tools/storageSet';
+
 import {mergeProfileDraft, mergeProfileOrder} from './profileChanges';
 
 export const trackersQuery = queryOptions({

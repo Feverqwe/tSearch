@@ -4,10 +4,11 @@ import path from 'node:path';
 import {before, test} from 'node:test';
 
 import JSZip from 'jszip';
-import {parse, type DefaultTreeAdapterTypes} from 'parse5';
-import sourceManifest from '../src/manifest.json' with {type: 'json'};
+import {type DefaultTreeAdapterTypes, parse} from 'parse5';
 
 import {extensionDir, outputDir} from '../builder/paths.ts';
+
+import sourceManifest from '../src/manifest.json' with {type: 'json'};
 
 let zip: JSZip;
 let manifest: typeof sourceManifest;

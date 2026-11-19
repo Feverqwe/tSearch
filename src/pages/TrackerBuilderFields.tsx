@@ -1,13 +1,15 @@
 import {useMemo} from 'react';
+
+import {getResultRows} from '../components/CodeMakerFrame';
+import SelectorField from '../components/SelectorField';
+import BuilderHelp from '../components/TrackerFieldHelp';
+import type {Selector, SelectorPreview} from '../components/selectorTypes';
 import Button from '../components/ui/Button';
 import Field from '../components/ui/Field';
-import BuilderHelp from '../components/TrackerFieldHelp';
-import SelectorField from '../components/SelectorField';
-import {getResultRows} from '../components/CodeMakerFrame';
-import type {Selector, SelectorPreview} from '../components/selectorTypes';
-import {defaultPipeline, type CodeDraft} from '../data/codeDraft';
+import {type CodeDraft, defaultPipeline} from '../data/codeDraft';
 import getNodePath from '../tools/getNodePath';
 import {sizzleQuerySelector} from '../tools/sizzleQuery';
+
 import {message} from './trackerBuilderLabels';
 
 const fields = [

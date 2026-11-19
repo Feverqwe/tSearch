@@ -3,6 +3,7 @@ import path from 'node:path';
 
 import getExploreModuleCodeMeta from '../src/tools/getExploreModuleCodeMeta.ts';
 import getTrackerCodeMeta from '../src/tools/getTrackerCodeMeta.ts';
+
 import {sourceDir} from './paths.ts';
 
 const catalogs = {

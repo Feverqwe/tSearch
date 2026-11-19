@@ -1,5 +1,6 @@
-import type {Meta, StoryObj} from '@storybook/react-vite';
 import {useState} from 'react';
+
+import type {Meta, StoryObj} from '@storybook/react-vite';
 import {expect, fn} from 'storybook/test';
 
 import SearchInput, {type SearchInputProps} from './SearchInput';

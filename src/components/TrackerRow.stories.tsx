@@ -1,8 +1,9 @@
 import type {Meta, StoryObj} from '@storybook/react-vite';
 import {fn} from 'storybook/test';
 
-import TrackerRow from './TrackerRow';
 import {trackers} from '../storybook/searchFixtures';
+
+import TrackerRow from './TrackerRow';
 
 const meta = {
   component: TrackerRow,

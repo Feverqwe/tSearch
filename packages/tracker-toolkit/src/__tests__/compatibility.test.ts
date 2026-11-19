@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
+
 import {assertPortableRules} from '../compatibility.ts';
 
 test('tracker generation accepts existing ExKit rules and rejects an HTML research operation', () => {

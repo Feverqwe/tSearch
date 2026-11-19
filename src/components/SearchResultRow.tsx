@@ -1,9 +1,11 @@
+import type SearchResult from '../stores/ResultPageItemStore';
+import type {TitlePresentation} from '../tools/titlePresentation';
+
 import QualityMeter from './QualityMeter';
 import ResultTitle from './ResultTitle';
-import type {TitlePresentation} from '../tools/titlePresentation';
-import blankSvg from '../assets/img/blank.svg';
 import Tooltip from './ui/Tooltip';
-import type SearchResult from '../stores/ResultPageItemStore';
+
+import blankSvg from '../assets/img/blank.svg';
 
 export type ResultRow = Pick<
   SearchResult,

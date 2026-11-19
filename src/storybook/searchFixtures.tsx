@@ -1,14 +1,15 @@
-import {useState, type ComponentProps} from 'react';
+import {type ComponentProps, useState} from 'react';
+
 import {useNavigate} from 'react-router-dom';
 
 import FiltersPanel from '../components/FiltersPanel';
 import HeaderView from '../components/HeaderView';
 import ProfileSelector from '../components/ProfileSelector';
 import SearchInput from '../components/SearchForm/SearchInput';
+import type {ResultRow} from '../components/SearchResultRow';
 import TrackerList from '../components/TrackerList';
 import TrackerRow from '../components/TrackerRow';
 import highlight from '../tools/highlight';
-import type {ResultRow} from '../components/SearchResultRow';
 
 export const columns = ['date', 'quality', 'title', 'size', 'seeds', 'peers'];
 

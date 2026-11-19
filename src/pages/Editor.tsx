@@ -1,15 +1,18 @@
-import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import {useEffect, useId, useRef, useState} from 'react';
 
-import '../assets/css/editor.less';
-import Button from '../components/ui/Button';
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
+
 import Dialog from '../components/Dialog';
 import TrackerEditor from '../components/TrackerEditor';
-import {editableTracker, saveEditableTracker, type TrackerDraft} from '../data/editableTracker';
+import Button from '../components/ui/Button';
+import {type TrackerDraft, editableTracker, saveEditableTracker} from '../data/editableTracker';
+import getTitle from '../tools/getTitle';
 import {parseTrackerDefinition} from '../tools/trackerDefinition';
 import {isTrackerScript, prepareTrackerScript} from '../tools/trackerScript';
-import getTitle from '../tools/getTitle';
+
 import builtInTrackers from '../trackers.json';
+
+import '../assets/css/editor.less';
 
 interface EditorProps {
   type: string;

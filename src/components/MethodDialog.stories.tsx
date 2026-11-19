@@ -2,6 +2,7 @@ import type {Meta, StoryObj} from '@storybook/react-vite';
 import {expect, fn, userEvent, waitFor, within} from 'storybook/test';
 
 import MethodDialog from './MethodDialog';
+
 import '../assets/css/magic.less';
 
 const meta = {

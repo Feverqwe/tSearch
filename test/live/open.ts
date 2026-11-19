@@ -3,6 +3,7 @@ import {once} from 'node:events';
 import {access, mkdir} from 'node:fs/promises';
 import path from 'node:path';
 import {promisify} from 'node:util';
+
 import {profileDir} from './profile.ts';
 
 const destination = process.argv[2] ? new URL(process.argv[2]) : undefined;

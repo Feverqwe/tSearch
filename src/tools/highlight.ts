@@ -1,8 +1,8 @@
 import escapeRegExp from 'lodash.escaperegexp';
 
-import sortByLength from './sortByLength';
 import isBoundary from './isBoundary';
 import normalizeSearchText from './normalizeSearchText';
+import sortByLength from './sortByLength';
 import type {TitleMatch} from './titlePresentation';
 
 export type HighlightMap = RegExp | 0;

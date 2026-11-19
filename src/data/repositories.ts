@@ -1,11 +1,12 @@
 import {queryOptions} from '@tanstack/react-query';
 import {compareVersions} from 'compare-versions';
-import {prepareTrackerDefinition} from '../tools/trackerDefinition';
-import getHash from '../tools/getHash';
-import {updateTrackerRecords} from './trackerRecords';
 
 import {isWebAddress} from '../tools/explorerView';
-import {catalogFromListings, type RepositoryFile} from './repositoryListing';
+import getHash from '../tools/getHash';
+import {prepareTrackerDefinition} from '../tools/trackerDefinition';
+
+import {type RepositoryFile, catalogFromListings} from './repositoryListing';
+import {updateTrackerRecords} from './trackerRecords';
 
 export type {RepositoryFile} from './repositoryListing';
 

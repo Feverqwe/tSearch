@@ -1,20 +1,21 @@
-import {useRef, useState, type FormEvent} from 'react';
+import {type FormEvent, useRef, useState} from 'react';
 
 import {
-  criteria,
-  qualityCategoryIds,
-  QualityValidationError,
-  validateQualityRule,
   type Condition,
   type Pattern,
   type QualityRule,
+  QualityValidationError,
   type Weight,
+  criteria,
+  qualityCategoryIds,
+  validateQualityRule,
 } from '../tools/qualityConfig';
+
 import Dialog from './Dialog';
+import {criterionLabel, message, qualityCategory} from './qualityLabels';
 import Button from './ui/Button';
-import IconButton from './ui/IconButton';
 import Field from './ui/Field';
-import {message, criterionLabel, qualityCategory} from './qualityLabels';
+import IconButton from './ui/IconButton';
 
 const boundFields = ['minBytes', 'maxBytes', 'minAgeDays', 'maxAgeDays'] as const;
 const initialPattern: Pattern = {text: ''};

@@ -2,6 +2,7 @@ import {useState} from 'react';
 
 import highlight from '../tools/highlight';
 import type {Bracket, TitlePresentation, TitleTone} from '../tools/titlePresentation';
+
 import ResultTitle from './ResultTitle';
 import Field from './ui/Field';
 

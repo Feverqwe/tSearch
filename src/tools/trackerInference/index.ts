@@ -1,15 +1,17 @@
-import metadata from './model.json';
-import pageMetadata from './page-model.json';
-import {createMlp} from './runtime';
 import {
+  type SearchEvidence,
   assertPortableRules,
   inferPageDetails,
   inspectPageDetails,
   pageElementPath,
-  type SearchEvidence,
 } from '../../../packages/tracker-toolkit/src/index';
 import ExKitTracker from '../../sandbox/exKitTracker';
 import type {TrackerResponse} from '../exKitRequest';
+
+import {createMlp} from './runtime';
+
+import metadata from './model.json';
+import pageMetadata from './page-model.json';
 
 let model:
   Promise<{rows: ReturnType<typeof createMlp>; pages: ReturnType<typeof createMlp>}> | undefined;

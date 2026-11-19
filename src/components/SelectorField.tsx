@@ -1,6 +1,13 @@
 import {useEffect, useId, useRef, useState} from 'react';
+
 import {filesize} from 'filesize';
 
+import {isNumber, isString} from '../tools/assertType';
+import {compilePipeline} from '../tools/trackerPipeline';
+
+import MethodDialog from './MethodDialog';
+import PipelineChain from './PipelineChain';
+import BuilderHelp from './TrackerFieldHelp';
 import type {
   PipelineStep,
   Selector,
@@ -8,13 +15,8 @@ import type {
   SelectorLocation,
   SelectorPreview,
 } from './selectorTypes';
-import {isNumber, isString} from '../tools/assertType';
-import {compilePipeline} from '../tools/trackerPipeline';
-import MethodDialog from './MethodDialog';
-import PipelineChain from './PipelineChain';
 import Button from './ui/Button';
 import IconButton from './ui/IconButton';
-import BuilderHelp from './TrackerFieldHelp';
 
 interface SelectorFieldProps {
   id: SelectorId;

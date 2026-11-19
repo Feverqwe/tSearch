@@ -1,6 +1,7 @@
 import {useRef} from 'react';
 
 import getTrackerIconClassName from '../tools/getTrackerIconClassName';
+
 import TrackerStatusPanel from './TrackerStatusPanel';
 import LoadingIndicator from './ui/LoadingIndicator';
 

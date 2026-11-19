@@ -1,12 +1,12 @@
+import {categoryInference} from './categoryInference.ts';
 import {
-  defaults,
-  isBuiltinRegex,
-  qualityCategoryIds,
   type Pattern,
   type QualityConfig,
   type Weight,
+  defaults,
+  isBuiltinRegex,
+  qualityCategoryIds,
 } from './qualityConfig.ts';
-import {categoryInference} from './categoryInference.ts';
 
 function compile({text, regex, sensitive}: Pattern) {
   const expression = regex

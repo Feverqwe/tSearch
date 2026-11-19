@@ -1,28 +1,30 @@
-import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import {useEffect, useId, useMemo, useRef, useState} from 'react';
+
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import debounce from 'lodash.debounce';
 
-import ExplorerItem from './ExplorerItem';
-import type QuickSearchStore from '../../stores/QuickSearchStore';
-import Button from '../ui/Button';
-import IconButton from '../ui/IconButton';
-import {SortableList, useSortableItem} from '../ui/SortableList';
-import {clampPage} from '../../tools/explorerView';
-import ExplorerSectionView from './ExplorerSectionView';
-import ExplorerViewSettings from './ExplorerViewSettings';
 import {
+  type ExplorerSection,
   cachedSectionItems,
   fetchSectionItems,
   sectionItemsKey,
   useSaveFavorites,
   useSaveSections,
-  type ExplorerSection,
 } from '../../data/explorer';
 import type {ExtensionOptions} from '../../data/options';
+import type QuickSearchStore from '../../stores/QuickSearchStore';
+import {clampPage} from '../../tools/explorerView';
 import type {ExplorerModule} from '../../tools/getExplorerModules';
 import getLocale from '../../tools/getLocale';
 import moveBetween from '../../tools/moveBetween';
 import processLocale from '../../tools/processLocale';
+import Button from '../ui/Button';
+import IconButton from '../ui/IconButton';
+import {SortableList, useSortableItem} from '../ui/SortableList';
+
+import ExplorerItem from './ExplorerItem';
+import ExplorerSectionView from './ExplorerSectionView';
+import ExplorerViewSettings from './ExplorerViewSettings';
 
 const empty: PackagedExplorerItem[] = [];
 

@@ -1,10 +1,12 @@
-import {useQuery} from '@tanstack/react-query';
-import {observer} from 'mobx-react-lite';
 import {useContext} from 'react';
 
-import FiltersPanel from './FiltersPanel';
+import {useQuery} from '@tanstack/react-query';
+import {observer} from 'mobx-react-lite';
+
 import {optionsQuery} from '../data/options';
 import {RootContext} from '../stores/rootContext';
+
+import FiltersPanel from './FiltersPanel';
 
 export default observer(function Filters() {
   const {filters} = useContext(RootContext);

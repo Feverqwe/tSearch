@@ -1,14 +1,16 @@
-import {useMutation, useQueryClient} from '@tanstack/react-query';
-import {observer} from 'mobx-react-lite';
 import {useEffect} from 'react';
 
+import {useMutation, useQueryClient} from '@tanstack/react-query';
+import {observer} from 'mobx-react-lite';
+
 import {profilesQuery, saveProfileOrder} from '../../data/catalog';
+import type ProfileEditorStore from '../../stores/ProfileEditorStore';
+import getTitle from '../../tools/getTitle';
 import {useRouteNavigate} from '../../ui/navigation';
 import {profileRoute} from '../../ui/profileRoutes';
-import type ProfileEditorStore from '../../stores/ProfileEditorStore';
-import ProfileEditorList from './ProfileEditorList';
-import getTitle from '../../tools/getTitle';
 import Button from '../ui/Button';
+
+import ProfileEditorList from './ProfileEditorList';
 
 export default observer(function ProfileEditorProfiles({
   profileEditorStore: editor,

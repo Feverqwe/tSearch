@@ -1,18 +1,20 @@
-import builtInTrackers from '../../trackers.json';
-import {observer} from 'mobx-react-lite';
 import {useId} from 'react';
-import {useMutation} from '@tanstack/react-query';
 
-import blankSvg from '../../assets/img/blank.svg';
-import {RouteLink} from '../../ui/navigation';
+import {useMutation} from '@tanstack/react-query';
+import {observer} from 'mobx-react-lite';
+
+import {removeTrackerRecord} from '../../data/trackerRecords';
 import {
   type ListedTracker,
   type ProfileEditorProfileStore,
   isInstalledTracker,
 } from '../../stores/ProfileEditorStore';
-import {removeTrackerRecord} from '../../data/trackerRecords';
+import {RouteLink} from '../../ui/navigation';
 import IconButton from '../ui/IconButton';
 import {useSortableItem} from '../ui/SortableList';
+
+import blankSvg from '../../assets/img/blank.svg';
+import builtInTrackers from '../../trackers.json';
 
 const message = (key: string) => chrome.i18n.getMessage(key);
 

@@ -1,27 +1,29 @@
-import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import {useContext, useEffect} from 'react';
 
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
+
+import Header from '../components/Header';
+import OptionsPanel from '../components/OptionsPanel';
 import QualityEditor from '../components/QualityEditor';
+import ScrollTop from '../components/ScrollTop';
+import {exportZip, inspectBackup, restoreBackup} from '../data/backup';
+import {setTabProfile} from '../data/catalog';
+import type {ExtensionOptions} from '../data/options';
+import {optionsQuery, useSaveOptions} from '../data/options';
 import {
+  QualityConflict,
   effectiveQuality,
   qualityRevision,
   qualitySettingsQuery,
-  QualityConflict,
   saveQualitySettings,
 } from '../data/qualitySettings';
-import type {QualityConfig} from '../tools/qualityConfig';
-import type {ExtensionOptions} from '../data/options';
-import ProfileEditor from './ProfileEditor';
-import Header from '../components/Header';
-import ThemeControl from '../ui/ThemeControl';
-import OptionsPanel from '../components/OptionsPanel';
-import ScrollTop from '../components/ScrollTop';
-import {optionsQuery, useSaveOptions} from '../data/options';
-import {exportZip, inspectBackup, restoreBackup} from '../data/backup';
-import {setTabProfile} from '../data/catalog';
 import {normalizeProfiles} from '../stores/ProfileStore';
 import {RootContext} from '../stores/rootContext';
 import getTitle from '../tools/getTitle';
+import type {QualityConfig} from '../tools/qualityConfig';
+import ThemeControl from '../ui/ThemeControl';
+
+import ProfileEditor from './ProfileEditor';
 
 export default function Options({page, detail}: {page?: string; detail?: string}) {
   const query = useQuery(optionsQuery);

@@ -1,12 +1,16 @@
-import type SearchStore from '../stores/SearchStore';
-import {RootContext} from '../stores/rootContext';
-import {observer} from 'mobx-react-lite';
 import {useContext, useEffect} from 'react';
-import TrackerRow from './TrackerRow';
-import blankSvg from '../assets/img/blank.svg';
+
+import {observer} from 'mobx-react-lite';
 
 import type {ProfileTracker as ProfileTrackerRecord} from '../stores/ProfileStore';
+import type SearchStore from '../stores/SearchStore';
 import type TrackerStore from '../stores/TrackerStore';
+import {RootContext} from '../stores/rootContext';
+
+import TrackerRow from './TrackerRow';
+
+import blankSvg from '../assets/img/blank.svg';
+
 interface ProfileTrackerProps {
   profileTrackerStore: ProfileTrackerRecord;
   searchStore?: SearchStore;

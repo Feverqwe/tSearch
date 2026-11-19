@@ -1,7 +1,8 @@
 import {compareVersions} from 'compare-versions';
 
 import type {KitSettings} from '../sandbox/exKitTracker';
-import {readTrackerRequestMode, type TrackerRequestMode} from './tabProxy.ts';
+
+import {type TrackerRequestMode, readTrackerRequestMode} from './tabProxy.ts';
 
 interface TrackerDefinition extends KitSettings {
   version: 3;

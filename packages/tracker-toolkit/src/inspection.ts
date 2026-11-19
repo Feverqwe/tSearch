@@ -1,6 +1,7 @@
 import {monthReplace} from '../../../src/tools/exKitLegacyFn.ts';
-import {inferSearch, type SearchEvidence} from './search-template.ts';
-import {inferDateFormat, inferSizeFormat, type ValueFormat} from './value-formats.ts';
+
+import {type SearchEvidence, inferSearch} from './search-template.ts';
+import {type ValueFormat, inferDateFormat, inferSizeFormat} from './value-formats.ts';
 
 // This module runs in a browser without a framework or external model runtime.
 export const fields = [

@@ -1,10 +1,12 @@
+import {type ComponentProps, useState} from 'react';
+
 import type {Meta, StoryObj} from '@storybook/react-vite';
-import {useState, type ComponentProps} from 'react';
 import {MemoryRouter} from 'react-router-dom';
 import {fn} from 'storybook/test';
 
-import '../../assets/css/options.less';
 import ProfileEditorList from './ProfileEditorList';
+
+import '../../assets/css/options.less';
 
 const meta = {
   title: 'Editors/Profiles',

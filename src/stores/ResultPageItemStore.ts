@@ -1,5 +1,5 @@
-import type {TitleMatch} from '../tools/titlePresentation';
 import type {Rating} from '../tools/rate';
+import type {TitleMatch} from '../tools/titlePresentation';
 
 export default interface SearchResult {
   trackerId: string;

@@ -1,16 +1,19 @@
 import {
+  type ReactNode,
+  type Ref,
+  type RefObject,
   useEffect,
   useId,
   useLayoutEffect,
   useRef,
   useState,
-  type ReactNode,
-  type Ref,
-  type RefObject,
 } from 'react';
+
 import {createPortal} from 'react-dom';
+
 import Button from '../components/ui/Button';
 import IconButton from '../components/ui/IconButton';
+
 import {message} from './trackerBuilderLabels';
 
 const positions = ['bottom', 'right', 'window'] as const;

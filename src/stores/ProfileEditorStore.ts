@@ -1,12 +1,14 @@
-import {makeAutoObservable, observableRef, observableShallow, observable, runInAction} from 'mobx';
+import {makeAutoObservable, observable, observableRef, observableShallow, runInAction} from 'mobx';
 
-import builtInTrackers from '../trackers.json';
+import {profileIdentity} from '../data/profileChanges';
+import getLogger from '../tools/getLogger';
+import moveBetween from '../tools/moveBetween';
+
+import {type ProfileRecord, type ProfileTracker, profileTracker} from './ProfileStore';
 import TrackerStore, {sendTrackerMessage} from './TrackerStore';
 import type TrackersStore from './TrackersStore';
-import {profileTracker, type ProfileTracker, type ProfileRecord} from './ProfileStore';
-import moveBetween from '../tools/moveBetween';
-import getLogger from '../tools/getLogger';
-import {profileIdentity} from '../data/profileChanges';
+
+import builtInTrackers from '../trackers.json';
 
 const logger = getLogger('profile editor');
 export type ProfileCategory = 'all' | 'withoutList' | 'selected' | 'builtIn' | 'installed';

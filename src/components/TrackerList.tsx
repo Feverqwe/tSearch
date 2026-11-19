@@ -1,5 +1,6 @@
-import {ResizableBox} from 'react-resizable';
 import type {ReactNode} from 'react';
+
+import {ResizableBox} from 'react-resizable';
 
 interface TrackerListProps {
   height: number;

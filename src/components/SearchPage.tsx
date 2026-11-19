@@ -1,13 +1,15 @@
 import {useContext} from 'react';
+
 import {observer} from 'mobx-react-lite';
+
+import {useChangeHistory} from '../data/history';
+import type SearchPageStore from '../stores/SearchPageStore';
+import type SearchStore from '../stores/SearchStore';
+import {RootContext} from '../stores/rootContext';
+import {typeSortMap} from '../tools/sortResults';
 
 import SearchCategories from './SearchCategories';
 import SearchResultsTable from './SearchResultsTable';
-import {useChangeHistory} from '../data/history';
-import {RootContext} from '../stores/rootContext';
-import {typeSortMap} from '../tools/sortResults';
-import type SearchStore from '../stores/SearchStore';
-import type SearchPageStore from '../stores/SearchPageStore';
 
 interface SearchPageProps {
   searchStore: SearchStore;

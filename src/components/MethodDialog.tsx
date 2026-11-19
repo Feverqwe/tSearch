@@ -1,13 +1,15 @@
-import {useLayoutEffect, useRef, useState, type FormEvent} from 'react';
+import {type FormEvent, useLayoutEffect, useRef, useState} from 'react';
+
 import exKitPipelineMethods from '../tools/exKitPipelineMethods';
 import {checkPipelineStep} from '../tools/trackerPipeline';
-import type {PipelineStep} from './selectorTypes';
+
 import Dialog from './Dialog';
-import Button from './ui/Button';
-import IconButton from './ui/IconButton';
-import Field from './ui/Field';
 import PipelineChain from './PipelineChain';
 import BuilderHelp from './TrackerFieldHelp';
+import type {PipelineStep} from './selectorTypes';
+import Button from './ui/Button';
+import Field from './ui/Field';
+import IconButton from './ui/IconButton';
 
 const names = Object.keys(exKitPipelineMethods);
 const argumentExamples: Record<string, string> = {

@@ -1,12 +1,15 @@
+import {useContext, useState} from 'react';
+
+import {observer} from 'mobx-react-lite';
+
+import {useSaveOptions} from '../data/options';
+import type {ProfileRecord} from '../stores/ProfileStore';
 import type SearchStore from '../stores/SearchStore';
 import {RootContext} from '../stores/rootContext';
-import {useContext, useState} from 'react';
-import {useSaveOptions} from '../data/options';
-import {observer} from 'mobx-react-lite';
+
 import ProfileTracker from './ProfileTracker';
 import TrackerList from './TrackerList';
 
-import type {ProfileRecord} from '../stores/ProfileStore';
 interface ProfileProps {
   searchStore?: SearchStore;
   profileStore: ProfileRecord;

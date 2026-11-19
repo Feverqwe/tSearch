@@ -1,4 +1,5 @@
 import {expect} from '@playwright/test';
+
 import {test} from './extensionTest';
 
 for (const action of ['search button', 'Tab', 'Enter', 'Escape', 'blur', 'option click']) {

@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
+
+import type {TrackerInference} from '../../tools/trackerInference/index.ts';
 import {createCodeDraft, serializeCodeDraft} from '../codeDraft.ts';
 import {applyTrackerInference, createBuilderOperation, extractionKey} from '../trackerBuilder.ts';
-import type {TrackerInference} from '../../tools/trackerInference/index.ts';
 
 test('partial inference retains missing rules and metadata from the existing draft', () => {
   const draft = createCodeDraft();

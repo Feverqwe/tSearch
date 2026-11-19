@@ -1,7 +1,8 @@
-import {makeAutoObservable, observableRef, observable} from 'mobx';
+import {makeAutoObservable, observable, observableRef} from 'mobx';
 
 import {saveOptions} from '../data/options';
 import sortResults from '../tools/sortResults';
+
 import type SearchResult from './ResultPageItemStore';
 import type RootStore from './RootStore';
 import type SearchStore from './SearchStore';

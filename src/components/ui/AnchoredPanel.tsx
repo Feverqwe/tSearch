@@ -1,5 +1,6 @@
+import {type ReactNode, type RefCallback, useRef} from 'react';
+
 import {arrow, autoUpdate, flip, offset, shift, size, useFloating} from '@floating-ui/react-dom';
-import {useRef, type ReactNode, type RefCallback} from 'react';
 
 interface AnchoredPanelProps {
   open: boolean;

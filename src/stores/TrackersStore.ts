@@ -1,6 +1,7 @@
 import {makeAutoObservable, observable} from 'mobx';
 
 import type {TrackerRecord} from '../data/trackerRecords';
+
 import TrackerStore from './TrackerStore';
 
 export default class TrackersStore {

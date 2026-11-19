@@ -1,13 +1,14 @@
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
+
 import JSZip from 'jszip';
 
 import {
+  type BackupArea,
   BackupWriteError,
   createBackup,
   planBackup,
   writeBackup,
-  type BackupArea,
 } from '../backupPlan.ts';
 
 function zip(entries: Record<string, unknown>) {

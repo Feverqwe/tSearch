@@ -1,10 +1,12 @@
-import type {Meta, StoryObj} from '@storybook/react-vite';
 import {useState} from 'react';
+
+import type {Meta, StoryObj} from '@storybook/react-vite';
 import {expect, fn} from 'storybook/test';
+
+import Button from '../ui/Button';
 
 import ExplorerSectionView from './ExplorerSectionView';
 import ExplorerViewSettings from './ExplorerViewSettings';
-import Button from '../ui/Button';
 
 function Shelf(args: React.ComponentProps<typeof ExplorerSectionView>) {
   const [collapsed, setCollapsed] = useState(Boolean(args.collapsed));

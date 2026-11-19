@@ -1,6 +1,9 @@
-import {expect, type Page} from '@playwright/test';
 import {createServer} from 'node:http';
+
+import {type Page, expect} from '@playwright/test';
+
 import {test} from './extensionTest';
+
 import pageModel from '../../tools/trackerInference/page-model.json' with {type: 'json'};
 
 const detect = (page: Page) => page.getByRole('button', {name: 'Open and detect fields'});

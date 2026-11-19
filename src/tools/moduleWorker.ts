@@ -1,6 +1,6 @@
-import FrameWorker from './frameWorker';
-import exKitRequest, {type TrackerRequestContext, type TrackerRequestOptions} from './exKitRequest';
 import exKitBuildConnectRe from './exKitBuildConnectRe';
+import exKitRequest, {type TrackerRequestContext, type TrackerRequestOptions} from './exKitRequest';
+import FrameWorker from './frameWorker';
 import {parseTrackerDefinition, prepareTrackerDefinition} from './trackerDefinition';
 import {
   isTrackerScript,
@@ -8,8 +8,9 @@ import {
   readTrackerScriptApprovals,
   trackerScriptDigest,
 } from './trackerScript';
-import trackers from '../trackers.json';
+
 import explorerModules from '../explorers.json';
+import trackers from '../trackers.json';
 
 interface ModuleSnapshot {
   id: string;

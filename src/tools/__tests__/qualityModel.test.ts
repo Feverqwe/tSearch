@@ -1,13 +1,15 @@
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
-import weights from '../qualityWeights.json' with {type: 'json'};
+
 import {
+  type QualityConfig,
   defaults,
   parseQualityImport,
   planQualityImport,
-  type QualityConfig,
 } from '../qualityConfig.ts';
 import {calculateQuality} from '../qualityModel.ts';
+
+import weights from '../qualityWeights.json' with {type: 'json'};
 
 const now = 1794733200;
 const gib = 2 ** 30;

@@ -1,8 +1,9 @@
 import {useRef, useState} from 'react';
 
 import type {BackupPlan} from '../data/backupPlan';
-import Button from './ui/Button';
+
 import Dialog from './Dialog';
+import Button from './ui/Button';
 
 export interface BackupActions {
   exportArchive: () => Promise<void>;

@@ -1,10 +1,10 @@
 import {Fragment} from 'react';
 
 import {
-  defaultTitlePresentation,
-  titleSpans,
   type TitleMatch,
   type TitlePresentation,
+  defaultTitlePresentation,
+  titleSpans,
 } from '../tools/titlePresentation';
 
 export default function ResultTitle({

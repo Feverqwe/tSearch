@@ -1,5 +1,5 @@
-import {dateFormat, monthReplace, sizeFormat, todayReplace} from '../tools/exKitLegacyFn';
 import encodeCp1251 from '../tools/encodeCp1251';
+import {dateFormat, monthReplace, sizeFormat, todayReplace} from '../tools/exKitLegacyFn';
 
 import ExKitTracker, {type KitSettings} from './exKitTracker';
 

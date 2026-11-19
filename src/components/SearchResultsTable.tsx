@@ -1,4 +1,5 @@
 import type {TitlePresentation} from '../tools/titlePresentation';
+
 import SearchResultRow, {type ResultRow} from './SearchResultRow';
 
 type SortDirection = 'up' | 'down';

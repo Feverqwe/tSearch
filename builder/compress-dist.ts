@@ -6,8 +6,9 @@ import {pipeline} from 'node:stream/promises';
 
 import JSZip from 'jszip';
 
-import manifest from '../src/manifest.json' with {type: 'json'};
 import {extensionDir, outputDir} from './paths.ts';
+
+import manifest from '../src/manifest.json' with {type: 'json'};
 
 await access(path.join(extensionDir, 'manifest.json'));
 const files = (await readdir(extensionDir, {recursive: true, withFileTypes: true}))

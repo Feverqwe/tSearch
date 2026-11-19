@@ -1,16 +1,18 @@
-import {useEffect, useRef, useState, type FormEvent} from 'react';
+import {type FormEvent, useEffect, useRef, useState} from 'react';
+
 import Dialog from '../components/Dialog';
-import Button from '../components/ui/Button';
-import IconButton from '../components/ui/IconButton';
-import Field from '../components/ui/Field';
 import BuilderHelp from '../components/TrackerFieldHelp';
-import {parseCodeDraft, serializeCodeDraft, type CodeDraft} from '../data/codeDraft';
+import Button from '../components/ui/Button';
+import Field from '../components/ui/Field';
+import IconButton from '../components/ui/IconButton';
+import {type CodeDraft, parseCodeDraft, serializeCodeDraft} from '../data/codeDraft';
 import {createBuilderOperation} from '../data/trackerBuilder';
 import colorToIcon from '../tools/colorToIcon';
 import getRandomColor from '../tools/getRandomColor';
 import {prepareTrackerDefinition} from '../tools/trackerDefinition';
-import {message} from './trackerBuilderLabels';
+
 import {decodeTrackerIcon, fetchTrackerIcon} from './trackerBuilderIcon';
+import {message} from './trackerBuilderLabels';
 
 type Description = CodeDraft['description'];
 

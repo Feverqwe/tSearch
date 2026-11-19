@@ -1,17 +1,18 @@
-import {makeAutoObservable, observable, runInAction} from 'mobx';
 import {hashKey} from '@tanstack/react-query';
 import {filesize} from 'filesize';
+import {makeAutoObservable, observable, runInAction} from 'mobx';
 
-import type {NextPage, TrackerItem} from '../tools/trackerWorker';
-import highlight, {type HighlightMap} from '../tools/highlight';
-import {calculateQuality} from '../tools/qualityModel';
-import type {QualityConfig} from '../tools/qualityConfig';
-import rate, {type RateScheme} from '../tools/rate';
-import {unixTimeToFromNow, unixTimeToString} from '../tools/unixTimeTo';
 import getLogger from '../tools/getLogger';
-import SearchPageStore from './SearchPageStore';
+import highlight, {type HighlightMap} from '../tools/highlight';
+import type {QualityConfig} from '../tools/qualityConfig';
+import {calculateQuality} from '../tools/qualityModel';
+import rate, {type RateScheme} from '../tools/rate';
+import type {NextPage, TrackerItem} from '../tools/trackerWorker';
+import {unixTimeToFromNow, unixTimeToString} from '../tools/unixTimeTo';
+
 import type SearchResult from './ResultPageItemStore';
 import type RootStore from './RootStore';
+import SearchPageStore from './SearchPageStore';
 
 const logger = getLogger('search');
 type SearchState = 'idle' | 'pending' | 'done' | 'error';

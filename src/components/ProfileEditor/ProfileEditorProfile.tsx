@@ -1,35 +1,39 @@
-import Button from '../ui/Button';
-import {useMutation, useQueryClient} from '@tanstack/react-query';
-import {profilesQuery, saveProfileDraft} from '../../data/catalog';
-import {ProfileConflict} from '../../data/profileChanges';
-import {isWebAddress} from '../../tools/explorerView';
-import {profileRoute} from '../../ui/profileRoutes';
-import {useRouteNavigate} from '../../ui/navigation';
-import IconButton from '../ui/IconButton';
-import Field from '../ui/Field';
-import {useSaveOptions} from '../../data/options';
-import {RootContext} from '../../stores/rootContext';
-import {observer} from 'mobx-react-lite';
 import {
+  type FormEvent,
+  type MouseEvent,
+  type ReactElement,
   useContext,
   useEffect,
   useRef,
   useState,
-  type FormEvent,
-  type MouseEvent,
-  type ReactElement,
 } from 'react';
-import {RouteLink as Link} from '../../ui/navigation';
-import getTitle from '../../tools/getTitle';
-import TackerStore from './TackerStore';
-import ProfileEditorTrackerItem from './ProfileEditorTrackerItem';
-import Dialog from '../Dialog';
 
+import {useMutation, useQueryClient} from '@tanstack/react-query';
+import {observer} from 'mobx-react-lite';
+
+import {profilesQuery, saveProfileDraft} from '../../data/catalog';
+import {useSaveOptions} from '../../data/options';
+import {ProfileConflict} from '../../data/profileChanges';
+import type {
+  ListedTracker,
+  ProfileCategory,
+  ProfileEditorProfileStore,
+  default as ProfileEditorStore,
+} from '../../stores/ProfileEditorStore';
+import {RootContext} from '../../stores/rootContext';
+import {isWebAddress} from '../../tools/explorerView';
+import getTitle from '../../tools/getTitle';
+import {RouteLink as Link, useRouteNavigate} from '../../ui/navigation';
+import {profileRoute} from '../../ui/profileRoutes';
+import Dialog from '../Dialog';
+import Button from '../ui/Button';
+import Field from '../ui/Field';
+import IconButton from '../ui/IconButton';
 import {SortableList} from '../ui/SortableList';
 
-import type {ListedTracker, ProfileCategory} from '../../stores/ProfileEditorStore';
-import type ProfileEditorStore from '../../stores/ProfileEditorStore';
-import type {ProfileEditorProfileStore} from '../../stores/ProfileEditorStore';
+import ProfileEditorTrackerItem from './ProfileEditorTrackerItem';
+import TackerStore from './TackerStore';
+
 interface ProfileEditorProfileProps {
   profileEditorStore: ProfileEditorStore;
   profileEditorProfileStore: ProfileEditorProfileStore;

@@ -1,4 +1,5 @@
-import {expect, test as base, type BrowserContext, type Page} from '@playwright/test';
+import {type BrowserContext, type Page, test as base, expect} from '@playwright/test';
+
 import {launchLiveBrowser, liveExtensionHome} from './profile.ts';
 
 const test = base.extend<{live: {page: Page}}, {liveContext: BrowserContext}>({

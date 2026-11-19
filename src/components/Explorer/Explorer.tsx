@@ -1,18 +1,20 @@
-import {useQuery} from '@tanstack/react-query';
 import {useLayoutEffect, useRef, useState} from 'react';
 
-import ExploreSection from './ExploreSection';
-import type QuickSearchStore from '../../stores/QuickSearchStore';
-import {optionsQuery} from '../../data/options';
+import {useQuery} from '@tanstack/react-query';
+
 import {
   explorerFavorites,
   explorerModules,
   explorerSections,
   useSaveSections,
 } from '../../data/explorer';
+import {optionsQuery} from '../../data/options';
+import type QuickSearchStore from '../../stores/QuickSearchStore';
 import {moveByKey} from '../../tools/explorerView';
 import moveBetween from '../../tools/moveBetween';
 import {SortableList} from '../ui/SortableList';
+
+import ExploreSection from './ExploreSection';
 
 export default function Explorer({quickSearch}: {quickSearch: QuickSearchStore}) {
   const modules = useQuery(explorerModules);

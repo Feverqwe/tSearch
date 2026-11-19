@@ -1,17 +1,19 @@
 import {useRef, useState} from 'react';
 
+import downloadBlob from '../tools/downloadBlob';
 import {
+  type QualityConfig,
+  QualityValidationError,
   planQualityImport,
   qualityJsonLimit,
-  QualityValidationError,
-  type QualityConfig,
 } from '../tools/qualityConfig';
-import schema from '../tools/quality-weights.schema.json';
-import downloadBlob from '../tools/downloadBlob';
+
 import Dialog from './Dialog';
+import {message} from './qualityLabels';
 import Button from './ui/Button';
 import Field from './ui/Field';
-import {message} from './qualityLabels';
+
+import schema from '../tools/quality-weights.schema.json';
 
 export default function QualityTransfer({
   config,

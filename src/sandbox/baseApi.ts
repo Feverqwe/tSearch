@@ -1,10 +1,10 @@
+import exKitGetDoc from '../tools/exKitGetDoc';
+import exKitNormalizeUrl from '../tools/exKitNormalizeUrl';
+import type {TrackerResponse} from '../tools/exKitRequest';
 import exKitRequestOptionsNormalize, {
   type RawRequestOptions,
 } from '../tools/exKitRequestOptionsNormalize';
-import exKitGetDoc from '../tools/exKitGetDoc';
-import exKitNormalizeUrl from '../tools/exKitNormalizeUrl';
 import {getExplorerPoster} from '../tools/explorerPoster';
-import type {TrackerResponse} from '../tools/exKitRequest';
 import type Transport from '../tools/transport';
 
 type ModuleCallback = (...args: unknown[]) => unknown;

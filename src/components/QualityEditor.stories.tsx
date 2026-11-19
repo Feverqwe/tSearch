@@ -1,9 +1,11 @@
-import type {Meta, StoryObj} from '@storybook/react-vite';
 import {useState} from 'react';
+
+import type {Meta, StoryObj} from '@storybook/react-vite';
 import {expect, within} from 'storybook/test';
 
-import QualityEditor, {type QualityEditorProps} from './QualityEditor';
 import {defaults} from '../tools/qualityConfig';
+
+import QualityEditor, {type QualityEditorProps} from './QualityEditor';
 
 const fixture: QualityEditorProps['saved'] = {
   ...defaults,

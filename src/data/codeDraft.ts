@@ -1,6 +1,6 @@
 import type {OptionalResultSelectorId, PipelineStep, Selector} from '../components/selectorTypes';
 import getRandomColor from '../tools/getRandomColor.ts';
-import {readTrackerRequestMode, type TrackerRequestMode} from '../tools/tabProxy.ts';
+import {type TrackerRequestMode, readTrackerRequestMode} from '../tools/tabProxy.ts';
 
 const searchDefaults = {
   url: '',

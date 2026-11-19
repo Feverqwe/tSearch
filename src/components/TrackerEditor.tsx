@@ -1,7 +1,8 @@
+import {useEffect, useRef} from 'react';
+
 import {json} from '@codemirror/lang-json';
 import {keymap, placeholder} from '@codemirror/view';
-import {basicSetup, EditorView} from 'codemirror';
-import {useEffect, useRef} from 'react';
+import {EditorView, basicSetup} from 'codemirror';
 
 const theme = EditorView.theme({
   '&': {color: 'var(--ink)', backgroundColor: 'var(--field)'},

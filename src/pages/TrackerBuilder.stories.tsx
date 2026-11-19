@@ -1,12 +1,16 @@
+import {useRef} from 'react';
+
 import type {Meta, StoryObj} from '@storybook/react-vite';
 import {expect, fn, userEvent, waitFor} from 'storybook/test';
-import {useRef} from 'react';
-import VerticalSplit from '../components/ui/VerticalSplit';
+
 import {useCodeMakerFrame} from '../components/CodeMakerFrame';
-import TrackerBuilderPreview from './TrackerBuilderPreview';
+import VerticalSplit from '../components/ui/VerticalSplit';
 import {createCodeDraft, serializeCodeDraft} from '../data/codeDraft';
-import TrackerBuilderResult from './TrackerBuilderResult';
+
 import {BuilderCode} from './TrackerBuilderFiles';
+import TrackerBuilderPreview from './TrackerBuilderPreview';
+import TrackerBuilderResult from './TrackerBuilderResult';
+
 import '../assets/css/magic.less';
 
 const code = createCodeDraft();

@@ -1,7 +1,9 @@
-import {test as base, chromium, type BrowserContext, type Worker} from '@playwright/test';
 import {mkdtemp, rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
+
+import {type BrowserContext, type Worker, test as base, chromium} from '@playwright/test';
+
 import {extensionDir} from '../../../builder/paths.ts';
 
 export const test = base.extend<{

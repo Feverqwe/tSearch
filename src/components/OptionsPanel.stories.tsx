@@ -1,10 +1,12 @@
+import {type ComponentProps, useRef, useState} from 'react';
+
 import type {Meta, StoryObj} from '@storybook/react-vite';
-import {useRef, useState, type ComponentProps} from 'react';
 import {MemoryRouter, Route, Routes, useParams} from 'react-router-dom';
 import {expect, fn} from 'storybook/test';
 
-import OptionsPanel from './OptionsPanel';
 import {defaultOptions} from '../data/options';
+
+import OptionsPanel from './OptionsPanel';
 
 const meta = {
   title: 'Screens/Options',

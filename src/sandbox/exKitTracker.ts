@@ -1,10 +1,10 @@
-import {sizzleQuerySelector, sizzleQuerySelectorAll} from '../tools/sizzleQuery';
+import {isNumber, isString} from '../tools/assertType';
 import encodeCp1251 from '../tools/encodeCp1251';
 import exKitGetDoc from '../tools/exKitGetDoc';
 import exKitNormalizeUrl from '../tools/exKitNormalizeUrl';
-import {isNumber, isString} from '../tools/assertType';
-import {compilePipeline, PipelineError} from '../tools/trackerPipeline';
 import type {TrackerRequestOptions, TrackerResponse} from '../tools/exKitRequest';
+import {sizzleQuerySelector, sizzleQuerySelectorAll} from '../tools/sizzleQuery';
+import {PipelineError, compilePipeline} from '../tools/trackerPipeline';
 
 const resultFields = [
   'categoryTitle',

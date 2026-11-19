@@ -1,20 +1,21 @@
-import {useCallback, type Ref} from 'react';
+import {type Ref, useCallback} from 'react';
+
 import {
   Link,
+  type LinkProps,
   NavLink,
+  type NavLinkProps,
   Navigate,
+  type NavigateOptions,
+  type NavigateProps,
+  type To,
   createPath,
   parsePath,
   useLocation,
   useNavigate,
-  type LinkProps,
-  type NavLinkProps,
-  type NavigateProps,
-  type NavigateOptions,
-  type To,
 } from 'react-router-dom';
 
-import {themedSearch, themeInSearch} from './theme';
+import {themeInSearch, themedSearch} from './theme';
 
 function withTheme(to: To, search: string): To {
   const mode = themeInSearch(search);

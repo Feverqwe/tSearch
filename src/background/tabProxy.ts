@@ -1,10 +1,10 @@
 import {serializeError} from 'serialize-error';
 
 import {
-  readTabProxyMode,
-  tabProxyPort,
   type TabProxyReply,
   type TabProxyRequest,
+  readTabProxyMode,
+  tabProxyPort,
 } from '../tools/tabProxy';
 
 const extensionUrl = chrome.runtime.getURL('');

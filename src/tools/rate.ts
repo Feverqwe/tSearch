@@ -1,5 +1,5 @@
-import {prepareTitleQuery, type TitleQuery} from './titleMatchFeatures.ts';
-import {evaluateTitleMatch, type TitleMatchScore} from './titleMatch.ts';
+import {type TitleMatchScore, evaluateTitleMatch} from './titleMatch.ts';
+import {type TitleQuery, prepareTitleQuery} from './titleMatchFeatures.ts';
 
 export type RateScheme = TitleQuery;
 

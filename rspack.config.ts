@@ -1,9 +1,11 @@
-import path from 'node:path';
 import {stripTypeScriptTypes} from 'node:module';
-import {rspack, type Configuration} from '@rspack/core';
+import path from 'node:path';
+
+import {type Configuration, rspack} from '@rspack/core';
+
+import {extensionDir} from './builder/paths.ts';
 
 import manifest from './src/manifest.json' with {type: 'json'};
-import {extensionDir} from './builder/paths.ts';
 
 export default (
   _env: unknown,

@@ -2,6 +2,7 @@ import {makeAutoObservable, observableRef, runInAction} from 'mobx';
 
 import {collectQuickResults, saveQuickResults} from '../data/quickSearch';
 import getLogger from '../tools/getLogger';
+
 import type RootStore from './RootStore';
 import type SearchStore from './SearchStore';
 

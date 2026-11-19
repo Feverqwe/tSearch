@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
-import {mergeProfileDraft, mergeProfileOrder, ProfileConflict} from '../profileChanges.ts';
+
 import {profileRoute} from '../../ui/profileRoutes.ts';
+import {ProfileConflict, mergeProfileDraft, mergeProfileOrder} from '../profileChanges.ts';
 
 const films = {id: 'films', name: 'Films', trackers: []};
 const other = {id: 'other', name: 'Other', trackers: []};

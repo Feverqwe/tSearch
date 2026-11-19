@@ -1,8 +1,10 @@
-import {expect} from '@playwright/test';
 import {createHash} from 'node:crypto';
 import {readFile} from 'node:fs/promises';
 import {createServer} from 'node:http';
+
+import {expect} from '@playwright/test';
 import JSZip from 'jszip';
+
 import {test as base} from './extensionTest';
 
 const site = 'https://uniongang.org';

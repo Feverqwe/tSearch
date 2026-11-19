@@ -1,12 +1,14 @@
-import {useRef, useState, type ReactNode} from 'react';
+import {type ReactNode, useRef, useState} from 'react';
 
-import {RouteNavLink} from '../ui/navigation';
-import '../assets/css/options.less';
 import type {ExtensionOptions, OptionsChange} from '../data/options';
-import {readTabProxyMode, type TabProxyMode} from '../tools/tabProxy';
+import {type TabProxyMode, readTabProxyMode} from '../tools/tabProxy';
+import {RouteNavLink} from '../ui/navigation';
+
 import BackupPanel, {type BackupActions} from './BackupPanel';
-import Field from './ui/Field';
 import TitleOptions from './TitleOptions';
+import Field from './ui/Field';
+
+import '../assets/css/options.less';
 
 type BooleanKeys<T> = {[K in keyof T]-?: T[K] extends boolean ? K : never}[keyof T];
 type SectionKey = keyof ExtensionOptions['explorerSections'];

@@ -1,10 +1,12 @@
 import type {FormEvent, ReactNode} from 'react';
-import {RouteLink} from '../ui/navigation';
+
+import BuilderHelp from '../components/TrackerFieldHelp';
 import Button from '../components/ui/Button';
 import Field from '../components/ui/Field';
 import type {CodeDraft} from '../data/codeDraft';
 import type {TrackerRequestMode} from '../tools/tabProxy';
-import BuilderHelp from '../components/TrackerFieldHelp';
+import {RouteLink} from '../ui/navigation';
+
 import {message} from './trackerBuilderLabels';
 
 export default function SearchSettings({

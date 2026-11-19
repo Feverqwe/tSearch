@@ -1,9 +1,9 @@
 import {useLocation} from 'react-router-dom';
+
 import {useRouteNavigate as useNavigate} from '../ui/navigation';
 
-import SearchForm from './SearchForm/SearchForm';
-
 import HeaderView from './HeaderView';
+import SearchForm from './SearchForm/SearchForm';
 
 export default function Header({searchPending}: {searchPending?: boolean}) {
   const location = useLocation();

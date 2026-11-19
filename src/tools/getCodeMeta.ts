@@ -1,4 +1,5 @@
 import {compareVersions} from 'compare-versions';
+
 import getLogger from './getLogger.ts';
 
 const debug = getLogger('getCodeMeta');

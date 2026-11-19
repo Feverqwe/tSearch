@@ -1,5 +1,6 @@
-import type {Meta, StoryObj} from '@storybook/react-vite';
 import {useState} from 'react';
+
+import type {Meta, StoryObj} from '@storybook/react-vite';
 import {MemoryRouter} from 'react-router-dom';
 import {fn} from 'storybook/test';
 
@@ -7,11 +8,12 @@ import SearchCategories from '../components/SearchCategories';
 import SearchLayout from '../components/SearchLayout';
 import SearchResultsTable from '../components/SearchResultsTable';
 import Button from '../components/ui/Button';
+
 import {
-  columns,
   FiltersFixture,
   HeaderFixture,
   ProfileFixture,
+  columns,
   results,
   trackerNames,
 } from './searchFixtures';

@@ -1,5 +1,6 @@
-import exKitPipelineMethods from './exKitPipelineMethods.ts';
 import type {PipelineStep} from '../components/selectorTypes.ts';
+
+import exKitPipelineMethods from './exKitPipelineMethods.ts';
 
 type Pipeline = (value: unknown) => unknown;
 

@@ -1,8 +1,9 @@
-import {useQuery} from '@tanstack/react-query';
 import {useEffect} from 'react';
 
-import HistoryList from '../components/HistoryList';
+import {useQuery} from '@tanstack/react-query';
+
 import Header from '../components/Header';
+import HistoryList from '../components/HistoryList';
 import ScrollTop from '../components/ScrollTop';
 import {historyQuery, useHistoryMutation} from '../data/history';
 import {optionsQuery} from '../data/options';

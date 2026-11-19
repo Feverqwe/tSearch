@@ -1,14 +1,15 @@
 import {queryOptions} from '@tanstack/react-query';
 
 import {
+  type QualityConfig,
   defaults,
   upgradeBundledQuality,
   validateQualityImport,
-  type QualityConfig,
 } from '../tools/qualityConfig';
 import storageGet from '../tools/storageGet';
 import storageSet from '../tools/storageSet';
-import {readOptions, type ExtensionOptions} from './options';
+
+import {type ExtensionOptions, readOptions} from './options';
 
 export interface QualityRecord {
   revision: string;

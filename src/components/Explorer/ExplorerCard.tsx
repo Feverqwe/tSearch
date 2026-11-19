@@ -1,14 +1,15 @@
-import {useCallback, useEffect, useId, useRef, useState, type ReactNode, type Ref} from 'react';
+import {type ReactNode, type Ref, useCallback, useEffect, useId, useRef, useState} from 'react';
 
-import {RouteLink as Link} from '../../ui/navigation';
+import type {QuickResult} from '../../data/quickSearch';
 import highlight from '../../tools/highlight';
 import type {TitlePresentation} from '../../tools/titlePresentation';
-import type {QuickResult} from '../../data/quickSearch';
+import {RouteLink as Link} from '../../ui/navigation';
+import QualityMeter from '../QualityMeter';
+import ResultTitle from '../ResultTitle';
 import AnchoredPanel from '../ui/AnchoredPanel';
 import Button from '../ui/Button';
 import IconButton from '../ui/IconButton';
-import QualityMeter from '../QualityMeter';
-import ResultTitle from '../ResultTitle';
+
 import '../../assets/css/explore.less';
 
 interface ExplorerCardProps {

@@ -1,4 +1,5 @@
-import {expect, type Page} from '@playwright/test';
+import {type Page, expect} from '@playwright/test';
+
 import {test} from './extensionTest';
 
 const origin = 'https://builder.example.test';

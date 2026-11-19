@@ -1,4 +1,5 @@
-import {RegExpParser, visitRegExpAST, type AST} from '@eslint-community/regexpp';
+import {type AST, RegExpParser, visitRegExpAST} from '@eslint-community/regexpp';
+
 import baselineWeights from './qualityWeights.json' with {type: 'json'};
 
 export const criteria = [

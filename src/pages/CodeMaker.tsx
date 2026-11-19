@@ -1,46 +1,48 @@
 import {useEffect, useLayoutEffect, useRef, useState} from 'react';
-import {RouteNavLink as Link, RouteLink, useRouteNavigate} from '../ui/navigation';
 
-import '../assets/css/magic.less';
-import {profileRoute} from '../ui/profileRoutes';
-import Button from '../components/ui/Button';
-import VerticalSplit from '../components/ui/VerticalSplit';
-import SelectorField from '../components/SelectorField';
 import {requestPreview, useCodeMakerFrame} from '../components/CodeMakerFrame';
+import SelectorField from '../components/SelectorField';
 import type {
   Selection,
   SelectorId,
   SelectorLocation,
   SelectorPreview,
 } from '../components/selectorTypes';
-import {createCodeDraft, serializeCodeDraft, type CodeDraft} from '../data/codeDraft';
+import Button from '../components/ui/Button';
+import VerticalSplit from '../components/ui/VerticalSplit';
+import {type CodeDraft, createCodeDraft, serializeCodeDraft} from '../data/codeDraft';
 import {
+  type TrackerDetectionReport,
   applyTrackerInference,
   createBuilderOperation,
   extractionKey,
-  type TrackerDetectionReport,
 } from '../data/trackerBuilder';
 import type {TrackerRequestOptions, TrackerResponse} from '../tools/exKitRequest';
 import getTitle from '../tools/getTitle';
-import TrackerBuilderResult from './TrackerBuilderResult';
-import {message, selectorLabels} from './trackerBuilderLabels';
-import SearchSettings, {TextField} from './TrackerBuilderSearch';
+import {RouteNavLink as Link, RouteLink, useRouteNavigate} from '../ui/navigation';
+import {profileRoute} from '../ui/profileRoutes';
+
 import ResultSelectors, {resultLocation, setTrackerSection} from './TrackerBuilderFields';
+import {BuilderCode, BuilderDescription, type BuilderExport} from './TrackerBuilderFiles';
 import TrackerBuilderPreview, {
   PreviewPortal,
+  type PreviewPosition,
   usePreviewPosition,
   usePreviewWindow,
-  type PreviewPosition,
 } from './TrackerBuilderPreview';
+import TrackerBuilderResult from './TrackerBuilderResult';
+import SearchSettings, {TextField} from './TrackerBuilderSearch';
 import {
+  type CheckResult,
   checkTracker,
   isSearchRequest,
   searchRequest,
   trackerConnectRule,
-  type CheckResult,
 } from './trackerBuilderCheck';
-import {BuilderCode, BuilderDescription, type BuilderExport} from './TrackerBuilderFiles';
 import {detectTrackerIcon} from './trackerBuilderIcon';
+import {message, selectorLabels} from './trackerBuilderLabels';
+
+import '../assets/css/magic.less';
 
 const checks = {
   check: 'maker_result',

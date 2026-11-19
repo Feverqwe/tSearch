@@ -1,5 +1,7 @@
-import {expect} from '@playwright/test';
 import {createServer} from 'node:http';
+
+import {expect} from '@playwright/test';
+
 import {test} from './extensionTest';
 
 test('the builder sends POST through a site tab with cookies and exports its request mode', async ({

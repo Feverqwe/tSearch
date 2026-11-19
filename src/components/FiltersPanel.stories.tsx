@@ -1,9 +1,11 @@
-import type {Meta, StoryObj} from '@storybook/react-vite';
 import {useState} from 'react';
+
+import type {Meta, StoryObj} from '@storybook/react-vite';
 import {fn} from 'storybook/test';
 
-import FiltersPanel from './FiltersPanel';
 import {FiltersFixture} from '../storybook/searchFixtures';
+
+import FiltersPanel from './FiltersPanel';
 
 function PanelFixture({showPeers}: {showPeers?: boolean}) {
   const [text, setText] = useState('');

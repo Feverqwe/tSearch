@@ -1,7 +1,8 @@
-import type {KitSettings} from './exKitTracker';
-import type {exKit as TrackerUtilities} from './exKit';
 import type {TrackerResponse} from '../tools/exKitRequest';
 import type {RawRequestOptions} from '../tools/exKitRequestOptionsNormalize';
+
+import type {exKit as TrackerUtilities} from './exKit';
+import type {KitSettings} from './exKitTracker';
 
 declare global {
   type PackagedTracker = KitSettings & {

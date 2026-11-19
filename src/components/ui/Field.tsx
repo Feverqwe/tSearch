@@ -1,4 +1,4 @@
-import {useId, type ReactNode} from 'react';
+import {type ReactNode, useId} from 'react';
 
 interface FieldProps {
   label: ReactNode;

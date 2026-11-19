@@ -1,16 +1,17 @@
-import {makeAutoObservable, observableRef, observable} from 'mobx';
+import {makeAutoObservable, observable, observableRef} from 'mobx';
 import {deserializeError} from 'serialize-error';
 
-import {defaultOptions, type ExtensionOptions} from '../data/options';
-import {effectiveQuality, qualityRevision, type QualityRecord} from '../data/qualitySettings';
+import {type ExtensionOptions, defaultOptions} from '../data/options';
+import {type QualityRecord, effectiveQuality, qualityRevision} from '../data/qualitySettings';
+import getLogger from '../tools/getLogger';
+import getNow from '../tools/getNow';
+import storageGet from '../tools/storageGet';
+import storageSet from '../tools/storageSet';
+
 import FiltersStore from './FiltersStore';
 import ProfilesStore from './ProfilesStore';
 import SearchStore from './SearchStore';
 import TrackersStore from './TrackersStore';
-import storageGet from '../tools/storageGet';
-import storageSet from '../tools/storageSet';
-import getNow from '../tools/getNow';
-import getLogger from '../tools/getLogger';
 
 const logger = getLogger('runtime');
 

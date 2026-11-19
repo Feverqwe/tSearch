@@ -1,5 +1,5 @@
-import ModuleWorker from './moduleWorker';
 import {ErrorWithCode} from './errors';
+import ModuleWorker from './moduleWorker';
 
 interface ExplorerResult {
   success: boolean;

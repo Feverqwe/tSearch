@@ -1,5 +1,6 @@
+import {type ComponentProps, useState} from 'react';
+
 import type {Meta, StoryObj} from '@storybook/react-vite';
-import {useState, type ComponentProps} from 'react';
 import {MemoryRouter} from 'react-router-dom';
 import {expect, fn} from 'storybook/test';
 

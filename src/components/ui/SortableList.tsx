@@ -1,8 +1,9 @@
 import type {ReactNode} from 'react';
-import {DragDropProvider, DragOverlay, PointerSensor} from '@dnd-kit/react';
-import {isSortable, useSortable} from '@dnd-kit/react/sortable';
+
 import {PointerActivationConstraints} from '@dnd-kit/dom';
 import {SortableKeyboardPlugin} from '@dnd-kit/dom/sortable';
+import {DragDropProvider, DragOverlay, PointerSensor} from '@dnd-kit/react';
+import {isSortable, useSortable} from '@dnd-kit/react/sortable';
 
 const pointer = PointerSensor.configure({
   activationConstraints(event) {

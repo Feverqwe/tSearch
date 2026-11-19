@@ -3,8 +3,8 @@ import {existsSync} from 'node:fs';
 import {registerHooks} from 'node:module';
 import {test} from 'node:test';
 
-import type RootStore from '../RootStore';
 import type {TrackerResult} from '../../tools/trackerWorker';
+import type RootStore from '../RootStore';
 
 Object.defineProperty(globalThis, 'chrome', {value: {i18n: {getUILanguage: () => 'en'}}});
 

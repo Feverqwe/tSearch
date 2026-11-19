@@ -1,10 +1,11 @@
-import {useLayoutEffect, useRef, useState, type MouseEvent} from 'react';
+import {type MouseEvent, useLayoutEffect, useRef, useState} from 'react';
 
-import {RouteLink as Link} from '../ui/navigation';
-import type {HistoryEntry, HistoryChange} from '../data/history';
-import type {TitlePresentation} from '../tools/titlePresentation';
+import type {HistoryChange, HistoryEntry} from '../data/history';
 import highlight from '../tools/highlight';
+import type {TitlePresentation} from '../tools/titlePresentation';
 import {unixTimeToString} from '../tools/unixTimeTo';
+import {RouteLink as Link} from '../ui/navigation';
+
 import ResultTitle from './ResultTitle';
 
 import '../assets/css/history.less';

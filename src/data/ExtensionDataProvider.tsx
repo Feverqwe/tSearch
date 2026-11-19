@@ -1,5 +1,6 @@
+import {type ReactNode, useEffect, useState} from 'react';
+
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
-import {useEffect, useState, type ReactNode} from 'react';
 
 export default function ExtensionDataProvider({children}: {children: ReactNode}) {
   const [client] = useState(

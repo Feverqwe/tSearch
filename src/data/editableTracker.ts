@@ -1,10 +1,13 @@
 import {queryOptions} from '@tanstack/react-query';
-import builtInTrackers from '../trackers.json';
-import {readTrackerRecords, updateTrackerRecords} from './trackerRecords';
+
+import loadLocalTrackerModule from '../tools/loadLocalTrackerModule';
+import ModuleWorker from '../tools/moduleWorker';
 import {parseTrackerDefinition, prepareTrackerDefinition} from '../tools/trackerDefinition';
 import {prepareTrackerScript, trackerScriptDigest} from '../tools/trackerScript';
-import ModuleWorker from '../tools/moduleWorker';
-import loadLocalTrackerModule from '../tools/loadLocalTrackerModule';
+
+import {readTrackerRecords, updateTrackerRecords} from './trackerRecords';
+
+import builtInTrackers from '../trackers.json';
 
 export interface TrackerDraft {
   code: string;

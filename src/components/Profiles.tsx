@@ -1,9 +1,12 @@
+import {useContext} from 'react';
+
+import {useMutation} from '@tanstack/react-query';
+import {observer} from 'mobx-react-lite';
+
+import {saveSelectedProfile} from '../data/catalog';
 import type SearchStore from '../stores/SearchStore';
 import {RootContext} from '../stores/rootContext';
-import {useContext} from 'react';
-import {useMutation} from '@tanstack/react-query';
-import {saveSelectedProfile} from '../data/catalog';
-import {observer} from 'mobx-react-lite';
+
 import Profile from './Profile';
 import ProfileSelector from './ProfileSelector';
 
